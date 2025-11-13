@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "html-to-docx": "^1.8.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "jest": "^30.2.0"
+  }
+}
