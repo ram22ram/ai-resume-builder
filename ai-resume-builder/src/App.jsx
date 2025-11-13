@@ -53,8 +53,15 @@ const loadInitialData = () => {
   return {
     personalInfo: { fullName: '', email: '', phone: '', address: '', linkedin: '', portfolio: '' },
     summary: '',
-    experience: [{ id: 1, title: '', company: '', startDate: null, endDate: null, description: '' }],
-    education: [{ id: 1, degree: '', school: '', city: '', year: null }],
+    experience: [{ id: 1, 
+      title: '', 
+      company: '', 
+      location: '', 
+      startDate: '', 
+      endDate: '',   
+      isPresent: false, 
+      description: '' }],
+    education: [{ id: 1, degree: '', school: '', city: '', year: '' }],
     projects: [{ id: 1, title: '', link: '', description: '' }],
     skills: ['React', 'JavaScript', 'MUI'],
     hobbies: '',
@@ -129,6 +136,15 @@ function App() {
     }));
   };
 
+  const handleExperienceCheckboxChange = (id, isChecked) => {
+    setResumeData(prev => ({
+      ...prev,
+      experience: prev.experience.map(item =>
+        item.id === id ? { ...item, isPresent: isChecked, endDate: isChecked ? '' : item.endDate } : item
+      )
+    }));
+  };
+
   const handleDateChange = (section, id, fieldName, newValue) => {
     setResumeData(prev => ({ 
       ...prev, 
@@ -138,11 +154,30 @@ function App() {
     }));
   };
 
-  const addListItem = (section, newItem) => {
+const addListItem = (section) => {
     const newId = Date.now();
+    let newItem = { id: newId };
+
+    if (section === 'experience') {
+      newItem = { 
+        id: newId, 
+        title: '', 
+        company: '', 
+        location: '', 
+        startDate: '', 
+        endDate: '', 
+        description: '', 
+        isPresent: false 
+      };
+    } else if (section === 'education') {
+      newItem = { id: newId, degree: '', school: '', city: '', year: '' };
+    } else if (section === 'projects') {
+      newItem = { id: newId, title: '', link: '', description: '' };
+    }
+    
     setResumeData(prev => ({ 
       ...prev, 
-      [section]: [...prev[section], { ...newItem, id: newId }] 
+      [section]: [...prev[section], newItem] 
     }));
   };
 
@@ -288,13 +323,13 @@ function App() {
     handleSummaryChange, 
     handleHobbiesChange,
     handleListChange, 
-    handleDateChange, 
     addListItem, 
     deleteListItem,
     handleAddSkill, 
     handleDeleteSkill, 
     handleAiGenerate,
-    handleGenerateBullets
+    handleGenerateBullets,
+    handleExperienceCheckboxChange
   };
 
   const customizationHandlers = {
