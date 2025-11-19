@@ -333,7 +333,7 @@ function App() {
     };
 
     const options = {
-      key: "1PonYlx7j6UHP6m0FAnniw0j", 
+      key: "rzp_live_RhWXT9ZwKy6sUh", 
       amount: 30 * 100, 
       currency: "INR",
       name: "AI Resume Builder",
