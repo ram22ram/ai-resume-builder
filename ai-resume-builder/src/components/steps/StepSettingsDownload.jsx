@@ -1,11 +1,13 @@
 import React from 'react';
 import { 
   Box, Typography, ToggleButton, ToggleButtonGroup, 
-  Select, MenuItem, FormControl, InputLabel,
+  Select, MenuItem, FormControl, 
   FormGroup, FormControlLabel
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Switch } from '@mui/material'; 
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { GripVertical } from 'lucide-react'; // Drag handle icon
 
 // --- Styled Components ---
 
@@ -45,7 +47,22 @@ const StyledColorButton = styled(ToggleButton)(({ theme, colorValue }) => ({
 }));
 
 const StyledSwitch = styled(Switch)(({ theme }) => ({
-  // Custom switch styling yahaan daalein
+  // Custom switch styling can go here if needed
+}));
+
+const DraggableItem = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: theme.spacing(1),
+  padding: theme.spacing(1.5),
+  borderRadius: '8px',
+  backgroundColor: '#f8fafc',
+  border: '1px solid #e2e8f0',
+  transition: 'background-color 0.2s',
+  '&:hover': {
+    backgroundColor: '#f1f5f9',
+  }
 }));
 
 const accentColors = [
@@ -53,6 +70,8 @@ const accentColors = [
   { value: '#d32f2f', label: 'Red' },
   { value: '#388e3c', label: 'Green' },
   { value: '#000000', label: 'Black' },
+  { value: '#6d28d9', label: 'Purple' },
+  { value: '#ed6c02', label: 'Orange' },
 ];
 
 const fontFamilies = [
@@ -62,9 +81,19 @@ const fontFamilies = [
 
 const StepSettingsDownload = (props) => {
   const { 
-    visibleSections, currentTemplate, accentColor, fontFamily, 
-    handlers // <-- Yahaan 'handlers' prop aa raha hai
+    visibleSections, sectionOrder, currentTemplate, accentColor, fontFamily, 
+    handlers 
   } = props;
+
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const newOrder = Array.from(sectionOrder);
+    const [reorderedItem] = newOrder.splice(result.source.index, 1);
+    newOrder.splice(result.destination.index, 0, reorderedItem);
+
+    handlers.handleSectionReorder(newOrder);
+  };
 
   return (
     <Box>
@@ -78,7 +107,7 @@ const StepSettingsDownload = (props) => {
         <ToggleButtonGroup
           value={currentTemplate}
           exclusive
-          onChange={handlers.handleTemplateChange} // <-- 'handlers' se function call karein
+          onChange={handlers.handleTemplateChange}
           sx={{ flexWrap: 'wrap', gap: 1 }}
         >
           <StyledTemplateButton value="modern">Modern</StyledTemplateButton>
@@ -94,7 +123,7 @@ const StepSettingsDownload = (props) => {
         <ToggleButtonGroup
           value={accentColor}
           exclusive
-          onChange={(e, newValue) => handlers.handleColorChange(newValue)} // <-- 'handlers' se function call karein
+          onChange={(e, newValue) => handlers.handleColorChange(newValue)}
         >
           {accentColors.map(color => (
             <StyledColorButton 
@@ -113,7 +142,7 @@ const StepSettingsDownload = (props) => {
         <FormControl fullWidth>
           <Select
             value={fontFamily}
-            onChange={(e) => handlers.handleFontChange(e.target.value)} // <-- 'handlers' se function call karein
+            onChange={(e) => handlers.handleFontChange(e.target.value)}
             sx={{ borderRadius: '8px' }}
           >
             {fontFamilies.map(font => (
@@ -123,34 +152,53 @@ const StepSettingsDownload = (props) => {
         </FormControl>
       </Box>
 
-      {/* --- VISIBLE SECTIONS --- */}
+      {/* --- SECTIONS ORDER & VISIBILITY (DRAG & DROP) --- */}
       <Box sx={{ mb: 3 }}>
-        <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>VISIBLE SECTIONS</Typography>
-        <FormGroup>
-          {Object.keys(visibleSections).map(sectionName => (
-            <FormControlLabel 
-              key={sectionName}
-              control={
-                <StyledSwitch 
-                  checked={visibleSections[sectionName]} 
-                  onChange={handlers.handleSectionToggle} // <-- 'handlers' se function call karein
-                  name={sectionName} 
-                />
-              } 
-              label={sectionName.charAt(0).toUpperCase() + sectionName.slice(1)}
-              sx={{ 
-                justifyContent: 'space-between', 
-                ml: 0, 
-                mb: 1,
-                p: 1.5,
-                borderRadius: '8px',
-                background: '#f8fafc',
-                border: '1px solid #e2e8f0'
-              }}
-              labelPlacement="start" 
-            />
-          ))}
-        </FormGroup>
+        <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>REORDER & TOGGLE SECTIONS</Typography>
+        <Typography variant="caption" sx={{ color: 'text.secondary', mb: 2, display: 'block' }}>
+          Drag to reorder. Toggle to show/hide.
+        </Typography>
+        
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="sections-list">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                <FormGroup>
+                  {sectionOrder.map((sectionName, index) => (
+                    <Draggable key={sectionName} draggableId={sectionName} index={index}>
+                      {(provided) => (
+                        <DraggableItem
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                        >
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Box
+                              {...provided.dragHandleProps}
+                              sx={{ mr: 2, display: 'flex', alignItems: 'center', cursor: 'grab', color: '#94a3b8' }}
+                            >
+                              <GripVertical size={20} />
+                            </Box>
+                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                              {sectionName.charAt(0).toUpperCase() + sectionName.slice(1)}
+                            </Typography>
+                          </Box>
+
+                          <StyledSwitch 
+                            checked={visibleSections[sectionName]} 
+                            onChange={handlers.handleSectionToggle}
+                            name={sectionName} 
+                            inputProps={{ 'aria-label': sectionName }}
+                          />
+                        </DraggableItem>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </FormGroup>
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </Box>
     </Box>
   );

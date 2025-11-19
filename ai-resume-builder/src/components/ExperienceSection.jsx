@@ -6,8 +6,8 @@ import dayjs from 'dayjs';
 
 function ExperienceSection({ data, onChange, onDateChange, onAdd, onDelete, errors = [], onAiGenerate, loadingAi }) { 
   return (
-    <Box sx={{ p: 3, bgcolor: '#f8fafc' }}>
-      <Typography variant="body2" sx={{ mb: 3, color: 'grey.600', fontStyle: 'italic' }}>
+     <Box sx={{ p: 3, bgcolor: '#f8fafc' }}>
+          <Typography variant="body2" sx={{ mb: 3, color: 'grey.600', fontStyle: 'italic' }}>
         Add your professional experience. Start with your most recent position.
       </Typography>
 
@@ -131,6 +131,8 @@ function ExperienceSection({ data, onChange, onDateChange, onAdd, onDelete, erro
       >
         Add Another Experience
       </Button>
+
+      
       
       <Alert severity="info" icon="💼" sx={{ mt: 3, borderRadius: '8px', bgcolor: '#fff7ed', color: '#9a3412' }}>
         Pro Tip: Quantify your achievements! Use numbers, percentages, and metrics to show your impact.

@@ -1,19 +1,22 @@
 import React, { useState, useRef, Suspense, useMemo } from 'react';
 import { 
   Box, Paper, CircularProgress, 
-  CssBaseline, Container 
+  CssBaseline, Container, Button 
 } from '@mui/material';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
+import { ArrowLeft } from 'lucide-react';
 
 // 'html2pdf' library
 import html2pdf from 'html2pdf.js';
 
-// कॉम्पोनेंट्स
+// Components
+import HomePage from './components/HomePage';
 import { PREDEFINED_SKILL_LIST } from './utils/constants'; 
 import { validateStep } from './utils/resumeUtils';
 import StepPersonalInfo from './components/steps/StepPersonalInfo';
 import StepSummary from './components/steps/StepSummary';
 import StepExperience from './components/steps/StepExperience';
+import EducationSection from './components/EducationSection';
 import StepProjects from './components/steps/StepProjects';
 import StepSkills from './components/steps/StepSkills';
 import StepSettingsDownload from './components/steps/StepSettingsDownload';
@@ -27,12 +30,23 @@ const TemplateClassic = React.lazy(() => import('./components/templates/Template
 const TemplateSwiss = React.lazy(() => import('./components/templates/TemplateSwiss'));
 const TemplateCorporate = React.lazy(() => import('./components/templates/TemplateCorporate'));
 
-// Initial data and utility functions
+// --- Styled Back Button ---
+const BackButton = styled(Button)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  color: '#4b5563',
+  backgroundColor: 'rgba(255,255,255,0.5)',
+  textTransform: 'none',
+  fontWeight: 600,
+  '&:hover': {
+    backgroundColor: 'rgba(255,255,255,0.8)',
+  },
+}));
+
+// Initial data loader
 const loadInitialData = () => {
   try {
     const savedData = localStorage.getItem('resumeData');
     if (savedData) {
-      // Date ko string hi rakhein taaki HTML input unhein padh sake
       return JSON.parse(savedData);
     }
   } catch (error) {
@@ -67,7 +81,7 @@ const initialErrors = {
   skills: null 
 };
 
-const steps = ['Personal Info', 'Summary', 'Experience', 'Projects', 'Skills', 'Settings & Download'];
+const steps = ['Personal Info', 'Summary', 'Experience', 'Education', 'Projects', 'Skills', 'Settings & Download'];
 
 const createAppTheme = (fontFamily) => {
   return createTheme({
@@ -77,6 +91,8 @@ const createAppTheme = (fontFamily) => {
 };
 
 function App() {
+  const [view, setView] = useState('home');
+  
   const [resumeData, setResumeData] = useState(loadInitialData);
   const [errors, setErrors] = useState(initialErrors);
   const [loadingAi, setLoadingAi] = useState(false);
@@ -87,6 +103,8 @@ function App() {
   const [currentTemplate, setCurrentTemplate] = useState('modern');
   const [accentColor, setAccentColor] = useState('#0B57D0');
   const [fontFamily, setFontFamily] = useState('Roboto');
+  
+  // Visibility State
   const [visibleSections, setVisibleSections] = useState({
     summary: true, 
     experience: true, 
@@ -95,29 +113,54 @@ function App() {
     skills: true, 
     hobbies: true,
   });
+
+  // Section Order State
+  const [sectionOrder, setSectionOrder] = useState([
+    'summary', 'experience', 'education', 'projects', 'skills', 'hobbies',
+  ]);
   
   const previewRef = useRef(null);
   const theme = useMemo(() => createAppTheme(fontFamily), [fontFamily]);
 
-  // Form handlers (Aapke original handlers)
+  // --- HANDLERS ---
+
   const handlePersonalInfoChange = (e) => {
     const { name, value } = e.target;
-    setResumeData(prev => ({ ...prev, personalInfo: { ...prev.personalInfo, [name]: value } }));
+    setResumeData((prev) => ({ ...prev, personalInfo: { ...prev.personalInfo, [name]: value } }));
   };
-  const handleSummaryChange = (e) => setResumeData(prev => ({ ...prev, summary: e.target.value }));
-  const handleHobbiesChange = (e) => setResumeData(prev => ({ ...prev, hobbies: e.target.value }));
+  const handleSummaryChange = (e) => setResumeData((prev) => ({ ...prev, summary: e.target.value }));
+  const handleHobbiesChange = (e) => setResumeData((prev) => ({ ...prev, hobbies: e.target.value }));
+  
   const handleListChange = (section, id, event) => {
     const { name, value } = event.target;
-    setResumeData(prev => ({ ...prev, [section]: prev[section].map(item => item.id === id ? { ...item, [name]: value } : item) }));
+    setResumeData((prev) => ({ ...prev, [section]: prev[section].map((item) => item.id === id ? { ...item, [name]: value } : item) }));
   };
-  const handleExperienceCheckboxChange = (id, isChecked) => {
-    setResumeData(prev => ({
+
+  const handleDateChange = (section, id, fieldName, newValue) => {
+    setResumeData((prev) => ({
       ...prev,
-      experience: prev.experience.map(item =>
+      [section]: prev[section].map((item) =>
+        item.id === id ? { ...item, [fieldName]: newValue } : item
+      )
+    }));
+  };
+
+  const handleListReorder = (section, newItems) => {
+    setResumeData((prev) => ({
+      ...prev,
+      [section]: newItems
+    }));
+  };
+
+  const handleExperienceCheckboxChange = (id, isChecked) => {
+    setResumeData((prev) => ({
+      ...prev,
+      experience: prev.experience.map((item) =>
         item.id === id ? { ...item, isPresent: isChecked, endDate: isChecked ? '' : item.endDate } : item
       )
     }));
   };
+
   const addListItem = (section) => {
     const newId = Date.now();
     let newItem = { id: newId };
@@ -128,50 +171,122 @@ function App() {
     } else if (section === 'projects') {
       newItem = { id: newId, title: '', link: '', description: '' };
     }
-    setResumeData(prev => ({ ...prev, [section]: [...prev[section], newItem] }));
-  };
-  const deleteListItem = (section, id) => {
-    if (resumeData[section].length > 1) {
-      setResumeData(prev => ({ ...prev, [section]: prev[section].filter(item => item.id !== id) }));
-    }
-  };
-  const handleAddSkill = (skill) => {
-    if (skill.trim() !== '' && !resumeData.skills.includes(skill.trim())) {
-      setResumeData(prev => ({ ...prev, skills: [...prev.skills, skill.trim()] }));
-    }
-  };
-  const handleDeleteSkill = (skillToDelete) => {
-    setResumeData(prev => ({ ...prev, skills: prev.skills.filter(s => s !== skillToDelete) }));
-  };
-  const extractSkillsFromText = (text) => {
-    // ... (Aapka skill extraction logic)
-  };
-  const handleGenerateBullets = async (title, context) => {
-    // ... (Aapka AI bullet logic)
-  };
-  const handleAiGenerate = async (section, id, promptText) => {
-    // ... (Aapka main AI logic)
+    setResumeData((prev) => ({ ...prev, [section]: [...prev[section], newItem] }));
   };
 
+  const deleteListItem = (section, id) => {
+    if (resumeData[section].length > 1) {
+      setResumeData((prev) => ({ ...prev, [section]: prev[section].filter((item) => item.id !== id) }));
+    }
+  };
+
+  const handleAddSkill = (skill) => {
+    if (skill.trim() !== '' && !resumeData.skills.includes(skill.trim())) {
+      setResumeData((prev) => ({ ...prev, skills: [...prev.skills, skill.trim()] }));
+    }
+  };
+
+  const handleDeleteSkill = (skillToDelete) => {
+    setResumeData((prev) => ({ ...prev, skills: prev.skills.filter((s) => s !== skillToDelete) }));
+  };
+  
+  // --- FIX: RESTORED AI LOGIC ---
+  const extractSkillsFromText = (text) => {
+    const foundSkills = new Set();
+    const lowerCaseText = text.toLowerCase();
+    PREDEFINED_SKILL_LIST.forEach(skill => {
+      if (lowerCaseText.includes(skill.toLowerCase())) {
+        foundSkills.add(skill);
+      }
+    });
+    return Array.from(foundSkills);
+  };
+
+  const handleGenerateBullets = async (title, context) => {
+    // Placeholder if you need specific bullet generation logic later
+  };
+
+  const handleAiGenerate = async (section, id, promptText) => {
+    if (section !== 'summary' && !promptText.trim()) {
+      alert("Please enter a Title first to generate description.");
+      return;
+    }
+    if (section === 'summary' && !promptText.trim()) {
+      promptText = "a software developer";
+    }
+
+    setLoadingAi(true);
+    
+    try {
+      // Call the Netlify Function
+      const response = await fetch('/.netlify/functions/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ section, promptText }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'AI generation failed. Please try again.');
+      }
+
+      const aiResponse = data.aiResponse;
+
+      if (section === 'summary') {
+        // For Summary: Update summary text & extract skills
+        setResumeData(prev => ({ ...prev, summary: aiResponse }));
+        const extractedSkills = extractSkillsFromText(aiResponse);
+        setResumeData(prev => {
+          const currentSkillsLower = prev.skills.map(s => s.toLowerCase());
+          const newSkills = extractedSkills.filter(s => !currentSkillsLower.includes(s.toLowerCase()));
+          return { ...prev, skills: [...prev.skills, ...newSkills] };
+        });
+
+      } else {
+        // For Experience/Projects: Append to description
+        setResumeData(prev => ({
+          ...prev,
+          [section]: prev[section].map(item =>
+            item.id === id ? { ...item, description: (item.description + "\n" + aiResponse).trim() } : item
+          )
+        }));
+      }
+
+    } catch (error) {
+      console.error('Error calling AI function:', error);
+      alert(error.message);
+    } finally {
+      setLoadingAi(false);
+    }
+  };
+  // ---------------------------------
+
+  // Combined Handlers Object
   const handlers = {
     handlePersonalInfoChange, 
     handleSummaryChange, 
     handleHobbiesChange,
     handleListChange, 
+    handleDateChange, 
+    handleListReorder, 
     addListItem, 
     deleteListItem,
     handleAddSkill, 
     handleDeleteSkill, 
-    handleAiGenerate,
+    handleAiGenerate, // <-- Now this contains the real logic
     handleGenerateBullets,
     handleExperienceCheckboxChange
   };
 
   const customizationHandlers = {
     handleTemplateChange: (e, newTemplate) => newTemplate && setCurrentTemplate(newTemplate),
-    handleSectionToggle: (e) => setVisibleSections(prev => ({ ...prev, [e.target.name]: e.target.checked })),
+    handleSectionToggle: (e) => setVisibleSections((prev) => ({ ...prev, [e.target.name]: e.target.checked })),
     handleColorChange: (newColor) => newColor && setAccentColor(newColor),
     handleFontChange: (newFont) => setFontFamily(newFont),
+    handleSectionReorder: (newOrder) => setSectionOrder(newOrder),
   };
 
   const handleNext = () => {
@@ -183,32 +298,30 @@ function App() {
       setValidationError(error);
     }
   };
+
   const handleBack = () => setActiveStep((prev) => prev - 1);
+  
   const handleSave = () => { 
     localStorage.setItem('resumeData', JSON.stringify(resumeData)); 
     alert('Progress Saved!'); 
   };
 
-  // --- FIX: 'handleDownloadPDF' function ko Razorpay logic se badal diya gaya hai ---
+  // --- RAZORPAY INTEGRATION ---
   const handleDownloadPDF = () => {
-    
-    // 1. Asli PDF download logic (ise hum payment ke baad call karenge)
     const triggerPdfDownload = () => {
-      console.log("Payment successful, triggering download...");
       const element = previewRef.current;
       if (!element) {
-        console.error("Preview element (ref) not found!");
         alert("Error: Download failed. Please try again.");
         return;
       }
       
       const fileName = resumeData.personalInfo.fullName.trim() || 'resume';
       const opt = {
-        margin:       0.5,
-        filename:     `${fileName}_${currentTemplate}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        margin: 0.5,
+        filename: `${fileName}_${currentTemplate}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
       };
       
       try {
@@ -219,92 +332,77 @@ function App() {
       }
     };
 
-    // 2. Razorpay Options
     const options = {
-      // --- FIX: Yahaan sirf "Key ID" aayegi ---
-      // Aapne `rzp_test_RTqlujdlisjX34` daala tha, jo bilkul sahi hai
-      key: "rzp_test_RTqlujdlisjX34", 
-      
-      // --- DANGER: Yeh keys Yahaan KABHI NAHI daalein ---
-      // RAZORPAY_KEY_SECRET = 'uRDDsWwskPrM7EJ7mHwv2CiA' (YEH HATAO)
-      // RAZORPAY_WEBHOOK_SECRET = 'Tco@2025' (YEH BHI HATAO)
-      
-      amount: 30 * 100, // 30 RS (yaani 3000 paise)
+      key: "1PonYlx7j6UHP6m0FAnniw0j", 
+      amount: 30 * 100, 
       currency: "INR",
       name: "AI Resume Builder",
-      description: "PDF Download",
-      // image: "https://ai-builder-resume.netlify.app/logo.png", // (Optional: Apna logo URL)
-      
-      // 3. Payment successful hone par yeh function chalaayein
+      description: "Premium Resume Download",
       handler: function (response) {
-        // response.razorpay_payment_id // Payment ID
         alert("Payment Successful! Your download will start now.");
-        // Ab PDF download shuru karein
         triggerPdfDownload(); 
       },
-      
-      // (Optional) Pehle se bhari hui jaankaari
       prefill: {
         name: resumeData.personalInfo.fullName || "User",
         email: resumeData.personalInfo.email || "",
         contact: resumeData.personalInfo.phone || ""
       },
-      theme: {
-        color: "#6d28d9" // Aapke app ke theme se match karta hua
-      }
+      theme: { color: "#6d28d9" }
     };
 
-    // 4. Payment popup ko kholne ke liye
     try {
-      // 'window.Razorpay' tabhi kaam karega jab aapne index.html mein script daali ho
       const paymentObject = new window.Razorpay(options);
-      
-      // Payment fail hone par
       paymentObject.on('payment.failed', function (response) {
         alert("Payment Failed: " + response.error.description);
-        console.error("Payment Failed:", response.error);
       });
-      
-      // Popup kholien
       paymentObject.open();
     } catch (e) {
       console.error("Razorpay error:", e);
-      alert("Error: Payment gateway failed to load. Please check your internet connection or if the script is added to index.html.");
+      alert("Error: Payment gateway failed to load. Please ensure you are online.");
     }
   };
   
-  // Har step ke liye sahi props pass karein
   const getStepContent = (step) => {
-    const stepProps = { 
-      resumeData, 
-      errors, 
-      handlers, 
-      loadingAi 
-    };
+    const stepProps = { resumeData, errors, handlers, loadingAi };
     
     switch (step) {
-      case 0: 
-        return <StepPersonalInfo {...stepProps} />;
-      case 1: 
-        return <StepSummary {...stepProps} />;
-      case 2: 
-        return <StepExperience {...stepProps} />;
-      case 3: 
-        return <StepProjects {...stepProps} />;
-      case 4: 
-        return <StepSkills {...stepProps} PREDEFINED_SKILL_LIST={PREDEFINED_SKILL_LIST} />;
-      case 5: 
+      case 0: return <StepPersonalInfo {...stepProps} />;
+      case 1: return <StepSummary {...stepProps} />;
+      case 2: return <StepExperience {...stepProps} />;
+      case 3: return (
+        <EducationSection 
+           data={resumeData.education}
+           onChange={(id, e) => handlers.handleListChange('education', id, e)}
+           onDateChange={handlers.handleDateChange}
+           onAdd={() => handlers.addListItem('education')}
+           onDelete={(id) => handlers.deleteListItem('education', id)}
+           onReorder={(newItems) => handlers.handleListReorder('education', newItems)}
+           errors={errors.education}
+        />
+      );
+      case 4: return <StepProjects {...stepProps} />;
+      case 5: return <StepSkills {...stepProps} PREDEFINED_SKILL_LIST={PREDEFINED_SKILL_LIST} />;
+      case 6: 
         return <StepSettingsDownload
+          sectionOrder={sectionOrder}
           visibleSections={visibleSections}
           currentTemplate={currentTemplate}
           accentColor={accentColor}
           fontFamily={fontFamily}
           handlers={customizationHandlers}
         />;
-      default: 
-        return 'Unknown step';
+      default: return 'Unknown step';
     }
   };
+
+  if (view === 'home') {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <HomePage onStart={() => setView('builder')} />
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -315,6 +413,15 @@ function App() {
         background: 'linear-gradient(to bottom right, #f3e8ff, #e9d5ff, #c084fc, #9333ea)', 
       }}>
         <Container maxWidth="xl" sx={{ p: 0 }}>
+          
+          <BackButton 
+            startIcon={<ArrowLeft />} 
+            onClick={() => setView('home')} 
+            variant="outlined"
+          >
+            Back to Home
+          </BackButton>
+
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 4 }}>
             
             {/* --- LEFT COLUMN (EDITOR) --- */}
@@ -341,7 +448,7 @@ function App() {
                 handleBack={handleBack}
                 handleSave={handleSave}
                 handleNext={handleNext}
-                handleDownloadPDF={handleDownloadPDF} // <-- Yahaan function pass ho raha hai
+                handleDownloadPDF={handleDownloadPDF} 
               />
             </Paper>
 
@@ -368,12 +475,12 @@ function App() {
                     <CircularProgress />
                   </Box>
                 }>
-                  {/* Sabhi templates ko 'ref={previewRef}' pass ho raha hai */}
                   {currentTemplate === 'modern' && (
                     <TemplateModern 
                       data={resumeData} 
                       ref={previewRef} 
                       visibleSections={visibleSections} 
+                      sectionOrder={sectionOrder}
                       theme={{ accentColor, fontFamily }} 
                       stretchHeight={true}
                     /> 
@@ -383,6 +490,7 @@ function App() {
                       data={resumeData} 
                       ref={previewRef} 
                       visibleSections={visibleSections} 
+                      sectionOrder={sectionOrder}
                       theme={{ accentColor, fontFamily }} 
                       stretchHeight={true}
                     />
@@ -392,6 +500,7 @@ function App() {
                       data={resumeData} 
                       ref={previewRef} 
                       visibleSections={visibleSections} 
+                      sectionOrder={sectionOrder}
                       theme={{ accentColor, fontFamily }} 
                       stretchHeight={true}
                     />
@@ -401,6 +510,7 @@ function App() {
                       data={resumeData} 
                       ref={previewRef} 
                       visibleSections={visibleSections} 
+                      sectionOrder={sectionOrder}
                       theme={{ accentColor, fontFamily }} 
                       stretchHeight={true}
                     />

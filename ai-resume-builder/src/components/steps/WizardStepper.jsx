@@ -5,21 +5,22 @@ import {
 } from '@mui/material';
 import { Save } from 'lucide-react';
 
-// FIX 1: Path ko ../../ karna hai taaki yeh 'src/utils/' tak pahuche
 import { validateStep } from '../../utils/resumeUtils';
 
-// FIX 2: Path se './steps/' hatana hai kyunki file pehle se hi 'steps' folder mein hai
 import StepPersonalInfo from './StepPersonalInfo';
 import StepSummary from './StepSummary';
 import StepExperience from './StepExperience';
+import EducationSection from '../EducationSection'; // <-- FIX: Import EducationSection (Parent folder se)
 import StepProjects from './StepProjects';
 import StepSkills from './StepSkills';
 import StepSettingsDownload from './StepSettingsDownload';
 
+// --- FIX: Added 'Education' to steps ---
 const steps = [
   'Personal Info', 
   'Summary', 
   'Experience', 
+  'Education', 
   'Projects', 
   'Skills', 
   'Settings & Download'
@@ -64,11 +65,23 @@ const WizardStepper = (props) => {
         return <StepSummary {...stepProps} />;
       case 2:
         return <StepExperience {...stepProps} />;
+      // --- FIX: Added Education Case ---
       case 3:
-        return <StepProjects {...stepProps} />;
+        return (
+          <EducationSection 
+             data={resumeData.education}
+             onChange={(id, e) => handlers.handleListChange('education', id, e)}
+             onDateChange={handlers.handleDateChange} // Ensure handleDateChange is passed in handlers from App.js
+             onAdd={() => handlers.addListItem('education')}
+             onDelete={(id) => handlers.deleteListItem('education', id)}
+             errors={errors.education}
+          />
+        );
       case 4:
-        return <StepSkills {...stepProps} PREDEFINED_SKILL_LIST={[]} />;
+        return <StepProjects {...stepProps} />;
       case 5:
+        return <StepSkills {...stepProps} PREDEFINED_SKILL_LIST={[]} />;
+      case 6:
         return <StepSettingsDownload
           visibleSections={visibleSections}
           currentTemplate={currentTemplate}
@@ -120,6 +133,7 @@ const WizardStepper = (props) => {
           Save
         </Button>
 
+        {/* Next button logic updated for new length */}
         {activeStep < steps.length - 1 && (
           <Button variant="contained" onClick={handleNext}>
             Next

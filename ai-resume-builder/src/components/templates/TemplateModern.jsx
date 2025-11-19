@@ -1,6 +1,5 @@
 import React, { forwardRef } from 'react';
-// FIX: 'Chip' ko import karein (Skills section ke liye)
-import { Box, Typography, Paper, Divider, Chip } from '@mui/material';
+import { Box, Typography, Paper, Divider } from '@mui/material';
 import dayjs from 'dayjs';
 
 const wrapTextStyle = {
@@ -8,13 +7,9 @@ const wrapTextStyle = {
   wordWrap: 'break-word',  
 };
 
-// FIX: 'theme' prop ko yahaan accept karein
-const TemplateModern = forwardRef(({ data, visibleSections, theme }, ref) => {
+const TemplateModern = forwardRef(({ data, visibleSections, sectionOrder, theme }, ref) => {
   const { personalInfo, summary, experience, education, projects, skills, hobbies } = data;
-
-  // FIX: Naye props (Theme) ko set karein
-  const accentColor = theme?.accentColor || '#1976d2'; // Default blue
-  const fontFamily = theme?.fontFamily || 'Arial, sans-serif'; // Aapka default
+  const { accentColor = '#0B57D0', fontFamily = 'Roboto' } = theme || {};
 
   const formatDate = (date, format) => {
     if (!date) return 'Present'; 
@@ -26,21 +21,96 @@ const TemplateModern = forwardRef(({ data, visibleSections, theme }, ref) => {
     return dateObj.format(format);
   };
 
-  // Ek helper component taaki har section mein color/font add kar sakein
-  const SectionHeader = ({ title }) => (
-    <Typography 
-      variant="h6" 
-      sx={{ 
-        fontWeight: 'bold',
-        // FIX: Accent color yahaan istemaal karein
-        borderBottom: `2px solid ${accentColor}`,
-        pb: 0.5,
-        mb: 1
-      }}
-    >
-      {title.toUpperCase()}
-    </Typography>
-  );
+  const renderSection = (sectionId) => {
+    switch(sectionId) {
+      case 'summary':
+        return visibleSections.summary && summary && (
+          <Box sx={{ marginBottom: 2 }} key="summary">
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: accentColor, borderBottom: `2px solid ${accentColor}20`, pb: 0.5, mb: 1 }}>Summary</Typography>
+            <Typography variant="body2" sx={wrapTextStyle}>
+              {summary}
+            </Typography>
+          </Box>
+        );
+
+      case 'experience':
+        return visibleSections.experience && experience[0]?.title && (
+          <Box sx={{ marginBottom: 2 }} key="experience">
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: accentColor, borderBottom: `2px solid ${accentColor}20`, pb: 0.5, mb: 1 }}>Experience</Typography>
+            {experience.map(exp => (
+              <Box key={exp.id} sx={{ marginBottom: 2, '&:last-child': {mb: 0} }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', ...wrapTextStyle }}>
+                  {exp.title || 'Job Title'} {exp.company && <span style={{ fontWeight: 'normal' }}>at {exp.company}</span>}
+                </Typography>
+                <Typography variant="caption" sx={{ fontStyle: 'italic', display: 'block', mb: 0.5 }}>
+                  {formatDate(exp.startDate, 'MMM YYYY')} - {exp.isPresent ? 'Present' : formatDate(exp.endDate, 'MMM YYYY')} | {exp.location}
+                </Typography>
+                <Typography variant="body2" sx={wrapTextStyle}>{exp.description}</Typography>
+              </Box>
+            ))}
+          </Box>
+        );
+
+      case 'education':
+        return visibleSections.education && education[0]?.degree && (
+          <Box sx={{ marginBottom: 2 }} key="education">
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: accentColor, borderBottom: `2px solid ${accentColor}20`, pb: 0.5, mb: 1 }}>Education</Typography>
+            {education.map(edu => (
+              <Box key={edu.id} sx={{ marginBottom: 1.5, '&:last-child': {mb: 0} }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', ...wrapTextStyle }}>
+                  {edu.degree || 'Degree'}
+                </Typography>
+                <Typography variant="body2">
+                  {edu.school && `${edu.school}, `}{edu.city}
+                </Typography>
+                <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
+                  {edu.year && `Year of Completion: ${edu.year}`}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        );
+
+      case 'projects':
+        return visibleSections.projects && projects[0]?.title && (
+          <Box sx={{ marginBottom: 2 }} key="projects">
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: accentColor, borderBottom: `2px solid ${accentColor}20`, pb: 0.5, mb: 1 }}>Projects</Typography>
+            {projects.map(proj => (
+              <Box key={proj.id} sx={{ marginBottom: 1.5, '&:last-child': {mb: 0} }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', ...wrapTextStyle }}>
+                  {proj.title || 'Project Title'} {proj.link && <a href={proj.link} style={{color: accentColor, fontSize: '0.85em', fontWeight: 'normal'}} target="_blank" rel="noreferrer">| Link</a>}
+                </Typography>
+                <Typography variant="body2" sx={wrapTextStyle}>{proj.description}</Typography>
+              </Box>
+            ))}
+          </Box>
+        );
+
+      case 'skills':
+        return visibleSections.skills && skills.length > 0 && (
+          <Box sx={{ marginBottom: 2 }} key="skills">
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: accentColor, borderBottom: `2px solid ${accentColor}20`, pb: 0.5, mb: 1 }}>Skills</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {skills.map((skill, index) => (
+                <Box key={index} sx={{ px: 1.5, py: 0.5, bgcolor: `${accentColor}10`, color: accentColor, borderRadius: 1, fontSize: '0.85rem', fontWeight: 500 }}>
+                  {skill}
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        );
+
+      case 'hobbies':
+        return visibleSections.hobbies && hobbies && (
+          <Box key="hobbies">
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: accentColor, borderBottom: `2px solid ${accentColor}20`, pb: 0.5, mb: 1 }}>Hobbies</Typography>
+            <Typography variant="body2" sx={wrapTextStyle}>{hobbies}</Typography>
+          </Box>
+        );
+      
+      default: return null;
+    }
+  };
 
   return (
     <Paper 
@@ -48,120 +118,32 @@ const TemplateModern = forwardRef(({ data, visibleSections, theme }, ref) => {
       elevation={3} 
       sx={{ 
         padding: { xs: 2, sm: 3, md: 4 }, 
-        // FIX: Font family ko state se link karein
         fontFamily: fontFamily,
         minHeight: '100%' 
       }}
     >
-      
-      {/* --- Header (Personal Info) --- */}
-      <Box sx={{ textAlign: 'center', marginBottom: 2 }}>
-        <Typography variant="h4" sx={{ fontWeight: 'bold', fontSize: { xs: '1.8rem', md: '2.5rem' }, ...wrapTextStyle }}>
+      {/* --- Header (Fixed at Top) --- */}
+      <Box sx={{ textAlign: 'center', marginBottom: 3 }}>
+        <Typography variant="h3" sx={{ fontWeight: 'bold', color: accentColor, fontSize: { xs: '2rem', md: '2.5rem' }, ...wrapTextStyle }}>
           {personalInfo.fullName || 'Your Name'}
         </Typography>
-        <Typography variant="body1" sx={{...wrapTextStyle, fontSize: { xs: '0.9rem', md: '1rem' }}}>
-          {personalInfo.address} {personalInfo.phone && `| ${personalInfo.phone}`} {personalInfo.email && `| ${personalInfo.email}`}
+        <Typography variant="body1" sx={{...wrapTextStyle, mt: 1, fontSize: '0.95rem' }}>
+          {personalInfo.address}
         </Typography>
-        <Typography variant="body1" sx={{...wrapTextStyle, fontSize: { xs: '0.9rem', md: '1rem' }}}>
-          {personalInfo.linkedin && `LinkedIn: ${personalInfo.linkedin}`} {personalInfo.portfolio && `| Portfolio: ${personalInfo.portfolio}`}
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap', mt: 0.5 }}>
+          {personalInfo.phone && <Typography variant="body2">📞 {personalInfo.phone}</Typography>}
+          {personalInfo.email && <Typography variant="body2">✉️ {personalInfo.email}</Typography>}
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap', mt: 0.5 }}>
+          {personalInfo.linkedin && <Typography variant="body2" component="a" href={personalInfo.linkedin} sx={{color: accentColor, textDecoration: 'none'}}>LinkedIn</Typography>}
+          {personalInfo.portfolio && <Typography variant="body2" component="a" href={personalInfo.portfolio} sx={{color: accentColor, textDecoration: 'none'}}>Portfolio</Typography>}
+        </Box>
       </Box>
 
-      {/* FIX: Divider mein accent color daalein */}
-      <Divider sx={{ marginY: 2, borderColor: accentColor, borderWidth: '1px', opacity: 0.5 }} />
+      <Divider sx={{ marginY: 2, borderColor: `${accentColor}40` }} />
 
-      {/* --- Summary (CONDITIONAL) --- */}
-      {visibleSections.summary && summary && (
-        <Box sx={{ marginBottom: 2 }}>
-          <SectionHeader title="Summary" />
-          <Typography variant="body2" sx={wrapTextStyle}>
-            {summary}
-          </Typography>
-        </Box>
-      )}
-
-      {/* --- Experience (CONDITIONAL) --- */}
-      {visibleSections.experience && experience[0]?.title && ( 
-        <Box sx={{ marginBottom: 2 }}>
-          <SectionHeader title="Experience" />
-          {experience.map(exp => (
-            <Box key={exp.id} sx={{ marginBottom: 1, '&:last-child': {mb: 0} }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', ...wrapTextStyle }}>
-                {exp.title || 'Job Title'} {exp.company && `at ${exp.company}`}
-              </Typography>
-              <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
-                {formatDate(exp.startDate, 'MMM YYYY')} - {formatDate(exp.endDate, 'MMM YYYY')}
-              </Typography>
-              <Typography variant="body2" sx={wrapTextStyle}>{exp.description}</Typography>
-            </Box>
-          ))}
-        </Box>
-      )}
-
-      {/* --- Education (CONDITIONAL) --- */}
-      {visibleSections.education && education[0]?.degree && (
-        <Box sx={{ marginBottom: 2 }}>
-          <SectionHeader title="Education" />
-          {education.map(edu => (
-            <Box key={edu.id} sx={{ marginBottom: 1, '&:last-child': {mb: 0} }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', ...wrapTextStyle }}>
-                {edu.degree || 'Degree'} {edu.school && `from ${edu.school}`}
-              </Typography>
-              <Typography variant="caption" sx={{ fontStyle: 'italic', ...wrapTextStyle }}>
-                {edu.city} {edu.year && `| ${formatDate(edu.year, 'YYYY')}`}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-      )}
-      
-      {/* --- Projects (CONDITIONAL) --- */}
-      {visibleSections.projects && projects[0]?.title && (
-        <Box sx={{ marginBottom: 2 }}>
-          <SectionHeader title="Projects" />
-          {projects.map(proj => (
-            <Box key={proj.id} sx={{ marginBottom: 1, '&:last-child': {mb: 0} }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', ...wrapTextStyle }}>
-                {proj.title || 'Project Title'}
-              </Typography>
-              {/* FIX: Link mein accent color daalein */}
-              <Typography variant="caption" sx={{...wrapTextStyle, fontStyle: 'italic', color: accentColor}}>{proj.link}</Typography>
-              <Typography variant="body2" sx={wrapTextStyle}>{proj.description}</Typography>
-            </Box>
-          ))}
-        </Box>
-      )}
-
-      {/* --- Skills (CONDITIONAL) --- */}
-      {/* FIX: Skills ko Chips mein badal diya hai (UI behtar karne ke liye) */}
-      {visibleSections.skills && skills.length > 0 && (
-        <Box sx={{ marginBottom: 2 }}>
-          <SectionHeader title="Skills" />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {skills.map(skill => (
-              <Chip 
-                key={skill} 
-                label={skill} 
-                size="small"
-                sx={{ 
-                  backgroundColor: `${accentColor}20`, // Halka accent
-                  color: accentColor,
-                  fontWeight: 'medium',
-                  border: `1px solid ${accentColor}50`
-                }} 
-              />
-            ))}
-          </Box>
-        </Box>
-      )}
-      
-      {/* --- Hobbies (CONDITIONAL) --- */}
-      {visibleSections.hobbies && hobbies && (
-        <Box>
-          <SectionHeader title="Hobbies" />
-          <Typography variant="body2" sx={wrapTextStyle}>{hobbies}</Typography>
-        </Box>
-      )}
+      {/* --- Dynamic Sections Rendered Here --- */}
+      {sectionOrder.map(sectionId => renderSection(sectionId))}
 
     </Paper>
   );
