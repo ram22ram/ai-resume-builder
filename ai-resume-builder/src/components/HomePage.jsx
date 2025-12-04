@@ -219,7 +219,7 @@ const HomePage = ({ onStart }) => {
               </Typography>
            </Box>
            
-           <Grid container spacing={4}>
+           <Grid container spacing={2}>
              {[
                { title: 'Modern', desc: 'Clean & minimalist. Best for tech.', color: '#e0e7ff', icon: <Zap /> },
                { title: 'Classic', desc: 'Traditional & elegant. Best for finance.', color: '#f3e8ff', icon: <FileText /> },
@@ -357,18 +357,13 @@ const HomePage = ({ onStart }) => {
       </Box>
 
       {/* === 8. FOOTER === */}
-      <Box sx={{ py: 8, bgcolor: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
+      <Box sx={{ py: 4, bgcolor: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
         <Container maxWidth="lg">
            <Divider sx={{ my: 6, borderColor: '#f1f5f9' }} />
            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
              <Typography variant="caption" color="text.secondary">
                © 2025 ResumeAI Builder. All rights reserved.
              </Typography>
-             <Stack direction="row" spacing={2}>
-               {/* Social Icons Placeholder */}
-               <Box sx={{ width: 32, height: 32, bgcolor: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}><MousePointerClick size={14} /></Box>
-               <Box sx={{ width: 32, height: 32, bgcolor: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}><Star size={14} /></Box>
-             </Stack>
            </Box>
         </Container>
       </Box>
