@@ -133,22 +133,6 @@ const HomePage = ({ onStart }) => {
         </Container>
       </Box>
 
-      {/* === 3. SOCIAL PROOF (Trusted By) === */}
-      <Box sx={{ py: 6, borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', bgcolor: '#fafafa' }}>
-        <Container maxWidth="lg">
-          <Typography variant="caption" display="block" textAlign="center" color="text.secondary" mb={4} fontWeight="bold" letterSpacing={1.5}>
-            OUR USERS HAVE BEEN HIRED BY
-          </Typography>
-          <Grid container justifyContent="center" alignItems="center" spacing={{ xs: 4, md: 10 }}>
-            {['Amazon', 'Google', 'Microsoft', 'Tesla', 'Spotify', 'Netflix'].map((brand) => (
-              <Grid item key={brand}>
-                <CompanyLogo name={brand} />
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
-
       {/* === 4. FEATURE HIGHLIGHT (AI & ATS) === */}
       <Box sx={{ py: 12 }}>
         <Container maxWidth="lg">
@@ -242,7 +226,7 @@ const HomePage = ({ onStart }) => {
                { title: 'Swiss', desc: 'Strong sidebar. Best for creatives.', color: '#dcfce7', icon: <Layers /> },
                { title: 'Corporate', desc: 'Structured. Best for management.', color: '#ffedd5', icon: <ShieldCheck /> },
              ].map((tpl, idx) => (
-               <Grid item xs={12} sm={6} md={3} key={idx}>
+               <Grid item xs={12} lg={3} key={idx}>
                  <Box 
                    onClick={onStart}
                    sx={{ 
