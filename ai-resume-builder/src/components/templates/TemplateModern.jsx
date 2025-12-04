@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { Box, Typography, Paper, Divider } from '@mui/material';
+import { Box, Typography, Paper, Divider, Avatar } from '@mui/material';
 import dayjs from 'dayjs';
 
 const wrapTextStyle = {
@@ -9,15 +9,17 @@ const wrapTextStyle = {
 
 const TemplateModern = forwardRef(({ data, visibleSections, sectionOrder, theme }, ref) => {
   const { personalInfo, summary, experience, education, projects, skills, hobbies } = data;
-  const { accentColor = '#0B57D0', fontFamily = 'Roboto' } = theme || {};
+  
+  // --- DYNAMIC THEME SETTINGS ---
+  // Agar theme prop nahi mila toh default values use karo
+  const accentColor = theme?.accentColor || '#0B57D0';
+  const font = theme?.fontFamily || 'Roboto';
+  // ------------------------------
 
   const formatDate = (date, format) => {
     if (!date) return 'Present'; 
     const dateObj = dayjs(date);
-    if (!dateObj.isValid()) {
-      if (typeof date === 'string') return date;
-      return 'Present';
-    }
+    if (!dateObj.isValid()) return typeof date === 'string' ? date : 'Present';
     return dateObj.format(format);
   };
 
@@ -118,12 +120,28 @@ const TemplateModern = forwardRef(({ data, visibleSections, sectionOrder, theme 
       elevation={3} 
       sx={{ 
         padding: { xs: 2, sm: 3, md: 4 }, 
-        fontFamily: fontFamily,
-        minHeight: '100%' 
+        fontFamily: font, // <-- Dynamic Font apply kiya
+        minHeight: '100%',
+        color: '#333'
       }}
     >
       {/* --- Header (Fixed at Top) --- */}
       <Box sx={{ textAlign: 'center', marginBottom: 3 }}>
+        
+        {/* --- PHOTO LOGIC ADDED HERE --- */}
+        {personalInfo.photo && (
+          <Avatar 
+            src={personalInfo.photo} 
+            sx={{ 
+              width: 120, 
+              height: 120, 
+              margin: '0 auto 16px auto', 
+              border: `3px solid ${accentColor}` 
+            }}
+          />
+        )}
+        {/* ------------------------------ */}
+
         <Typography variant="h3" sx={{ fontWeight: 'bold', color: accentColor, fontSize: { xs: '2rem', md: '2.5rem' }, ...wrapTextStyle }}>
           {personalInfo.fullName || 'Your Name'}
         </Typography>

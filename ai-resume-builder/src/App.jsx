@@ -24,6 +24,9 @@ import WizardHeader from './components/WizardHeader';
 import WizardFooter from './components/WizardFooter';
 import ResumeScore from './components/common/ResumeScore';
 
+// Import template configuration
+import { LAYOUTS, COLORS, FONTS } from './utils/templateConfig'; // <-- Add this import
+
 // Lazy load templates
 const TemplateModern = React.lazy(() => import('./components/templates/TemplateModern'));
 const TemplateClassic = React.lazy(() => import('./components/templates/TemplateClassic'));
@@ -42,18 +45,31 @@ const BackButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// Initial data loader
+// Initial data loader - UPDATED to include photo
 const loadInitialData = () => {
   try {
     const savedData = localStorage.getItem('resumeData');
     if (savedData) {
-      return JSON.parse(savedData);
+      const parsed = JSON.parse(savedData);
+      // Ensure photo field exists in backward compatibility
+      if (!parsed.personalInfo.photo) {
+        parsed.personalInfo.photo = null;
+      }
+      return parsed;
     }
   } catch (error) {
     console.error("Failed to load data from localStorage", error);
   }
   return {
-    personalInfo: { fullName: '', email: '', phone: '', address: '', linkedin: '', portfolio: '' },
+    personalInfo: { 
+      fullName: '', 
+      email: '', 
+      phone: '', 
+      address: '', 
+      linkedin: '', 
+      portfolio: '',
+      photo: null // <-- Add photo field
+    },
     summary: '',
     experience: [{ 
       id: 1, 
@@ -84,8 +100,12 @@ const initialErrors = {
 const steps = ['Personal Info', 'Summary', 'Experience', 'Education', 'Projects', 'Skills', 'Settings & Download'];
 
 const createAppTheme = (fontFamily) => {
+  // Find font object from FONTS array
+  const fontObj = FONTS.find(f => f.id === fontFamily) || FONTS[0];
   return createTheme({
-    typography: { fontFamily: fontFamily || '"Roboto", "Helvetica", "Arial", sans-serif' },
+    typography: { 
+      fontFamily: fontObj.value || '"Roboto", "Helvetica", "Arial", sans-serif' 
+    },
     palette: { primary: { main: '#6d28d9' } },
   });
 };
@@ -100,9 +120,10 @@ function App() {
   const [activeStep, setActiveStep] = useState(0);
   const [validationError, setValidationError] = useState(null);
 
+  // Updated to use IDs from templateConfig
   const [currentTemplate, setCurrentTemplate] = useState('modern');
   const [accentColor, setAccentColor] = useState('#0B57D0');
-  const [fontFamily, setFontFamily] = useState('Roboto');
+  const [fontFamily, setFontFamily] = useState('roboto'); // Use ID instead of name
   
   // Visibility State
   const [visibleSections, setVisibleSections] = useState({
@@ -128,6 +149,15 @@ function App() {
     const { name, value } = e.target;
     setResumeData((prev) => ({ ...prev, personalInfo: { ...prev.personalInfo, [name]: value } }));
   };
+
+  // NEW: Image upload handler
+  const handleImageUpload = (imageData) => {
+    setResumeData((prev) => ({ 
+      ...prev, 
+      personalInfo: { ...prev.personalInfo, photo: imageData } 
+    }));
+  };
+
   const handleSummaryChange = (e) => setResumeData((prev) => ({ ...prev, summary: e.target.value }));
   const handleHobbiesChange = (e) => setResumeData((prev) => ({ ...prev, hobbies: e.target.value }));
   
@@ -264,7 +294,7 @@ function App() {
   };
   // ---------------------------------
 
-  // Combined Handlers Object
+  // Combined Handlers Object - UPDATED to include handleImageUpload
   const handlers = {
     handlePersonalInfoChange, 
     handleSummaryChange, 
@@ -276,16 +306,24 @@ function App() {
     deleteListItem,
     handleAddSkill, 
     handleDeleteSkill, 
-    handleAiGenerate, // <-- Now this contains the real logic
+    handleAiGenerate,
     handleGenerateBullets,
-    handleExperienceCheckboxChange
+    handleExperienceCheckboxChange,
+    handleImageUpload // <-- Add this
   };
 
+  // UPDATED customization handlers to use templateConfig
   const customizationHandlers = {
     handleTemplateChange: (e, newTemplate) => newTemplate && setCurrentTemplate(newTemplate),
     handleSectionToggle: (e) => setVisibleSections((prev) => ({ ...prev, [e.target.name]: e.target.checked })),
-    handleColorChange: (newColor) => newColor && setAccentColor(newColor),
-    handleFontChange: (newFont) => setFontFamily(newFont),
+    handleColorChange: (newColor) => {
+      // Find the color object by value and set the value
+      const colorObj = COLORS.find(c => c.value === newColor);
+      if (colorObj) {
+        setAccentColor(colorObj.value);
+      }
+    },
+    handleFontChange: (newFontId) => setFontFamily(newFontId),
     handleSectionReorder: (newOrder) => setSectionOrder(newOrder),
   };
 
@@ -390,6 +428,8 @@ function App() {
           accentColor={accentColor}
           fontFamily={fontFamily}
           handlers={customizationHandlers}
+          // Pass template config to StepSettingsDownload
+          templateConfig={{ LAYOUTS, COLORS, FONTS }}
         />;
       default: return 'Unknown step';
     }
