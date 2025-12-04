@@ -359,46 +359,6 @@ const HomePage = ({ onStart }) => {
       {/* === 8. FOOTER === */}
       <Box sx={{ py: 8, bgcolor: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
         <Container maxWidth="lg">
-           <Grid container spacing={8}>
-              <Grid item xs={12} md={4}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                  <Box sx={{ width: 24, height: 24, borderRadius: 1, background: brandGradient }} />
-                  <Typography variant="h6" sx={{ fontWeight: '800', color: '#1e293b' }}>
-                    Resume<span style={{ color: '#7c3aed' }}>AI</span>
-                  </Typography>
-                </Box>
-                <Typography variant="body2" color="text.secondary" lineHeight={1.6}>
-                  The smartest way to build your resume. Fast, easy, and effective. Trusted by job seekers worldwide.
-                </Typography>
-              </Grid>
-              <Grid item xs={6} md={2}>
-                 <Typography variant="subtitle2" fontWeight="bold" mb={3} color="#0f172a">Support</Typography>
-                 <Stack spacing={1.5}>
-                    <Typography variant="body2" color="text.secondary" sx={{ cursor: 'pointer', '&:hover': { color: '#7c3aed' } }}>FAQ</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ cursor: 'pointer', '&:hover': { color: '#7c3aed' } }}>Contact Us</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ cursor: 'pointer', '&:hover': { color: '#7c3aed' } }}>Privacy Policy</Typography>
-                 </Stack>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                 <Typography variant="subtitle2" fontWeight="bold" mb={3} color="#0f172a">Start Building</Typography>
-                 <Button 
-                   variant="contained" 
-                   onClick={onStart}
-                   fullWidth
-                   sx={{ 
-                     bgcolor: '#0f172a', 
-                     py: 1.5,
-                     fontWeight: 'bold',
-                     '&:hover': { bgcolor: '#1e293b' } 
-                   }}
-                 >
-                   Create My Resume
-                 </Button>
-                 <Typography variant="caption" display="block" mt={2} color="text.secondary" textAlign="center">
-                   Free to build • No credit card required
-                 </Typography>
-              </Grid>
-           </Grid>
            <Divider sx={{ my: 6, borderColor: '#f1f5f9' }} />
            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
              <Typography variant="caption" color="text.secondary">
