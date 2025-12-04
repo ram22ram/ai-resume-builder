@@ -356,7 +356,7 @@ const HomePage = ({ onStart }) => {
         </Container>
       </Box>
 
-      === 8. FOOTER ===
+      {/* === 8. FOOTER === */}
       <Box sx={{ py: 8, bgcolor: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
         <Container maxWidth="lg">
            <Grid container spacing={8}>
@@ -370,14 +370,6 @@ const HomePage = ({ onStart }) => {
                 <Typography variant="body2" color="text.secondary" lineHeight={1.6}>
                   The smartest way to build your resume. Fast, easy, and effective. Trusted by job seekers worldwide.
                 </Typography>
-              </Grid>
-              <Grid item xs={6} md={2}>
-                 <Typography variant="subtitle2" fontWeight="bold" mb={3} color="#0f172a">Product</Typography>
-                 <Stack spacing={1.5}>
-                    <Typography variant="body2" color="text.secondary" sx={{ cursor: 'pointer', '&:hover': { color: '#7c3aed' } }}>Templates</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ cursor: 'pointer', '&:hover': { color: '#7c3aed' } }}>Examples</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ cursor: 'pointer', '&:hover': { color: '#7c3aed' } }}>Pricing</Typography>
-                 </Stack>
               </Grid>
               <Grid item xs={6} md={2}>
                  <Typography variant="subtitle2" fontWeight="bold" mb={3} color="#0f172a">Support</Typography>
