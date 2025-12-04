@@ -68,7 +68,7 @@ const HomePage = ({ onStart }) => {
               {/* LOGO IMAGE */}
         <Box 
           component="img"
-          src="/assets/logo.png" 
+          src="/logo.png" 
           alt="Brand Logo"
           sx={{ width: 36, height: 36, borderRadius: '8px', objectFit: 'cover' }}
         />
