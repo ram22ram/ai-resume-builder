@@ -5,29 +5,57 @@ import {
 } from '@mui/material';
 import { 
   ArrowRight, CheckCircle2, Zap, ShieldCheck, Download, 
-  Star, ChevronDown, Sparkles, FileText, MousePointerClick, Layers 
+  Star, ChevronDown, Sparkles 
 } from 'lucide-react';
 
 const HomePage = ({ onStart }) => {
   
   const brandGradient = 'linear-gradient(135deg, #6d28d9 0%, #a855f7 100%)';
-  
-  // Generic Company Logos (Text-based for simplicity and speed)
-  const CompanyLogo = ({ name }) => (
-    <Typography 
-      variant="h6" 
-      sx={{ 
-        fontWeight: '900', 
-        color: '#cbd5e1', 
-        textTransform: 'uppercase', 
-        letterSpacing: 1.5,
-        fontSize: '1.2rem',
-        userSelect: 'none'
-      }}
-    >
-      {name}
-    </Typography>
-  );
+
+  // --- EXPANDED TEMPLATE LIST WITH IMAGES ---
+  // Note: These are demo images. You can replace them with screenshots of your actual templates.
+  const templates = [
+    { 
+      title: 'Modern Blue', 
+      desc: 'Clean & minimalist. Best for tech.', 
+      image: 'https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg' 
+    },
+    { 
+      title: 'Classic Serif', 
+      desc: 'Traditional & elegant. Best for finance.', 
+      image: 'https://marketplace.canva.com/EAFcO7D4D-I/1/0/1131w/canva-simple-professional-cv-resume-pL8c7D6S2wM.jpg' 
+    },
+    { 
+      title: 'Swiss Bold', 
+      desc: 'Strong sidebar. Best for creatives.', 
+      image: 'https://marketplace.canva.com/EAFhHRX56-w/1/0/1131w/canva-grey-minimalist-cv-resume-c_v89z8S4W8.jpg' 
+    },
+    { 
+      title: 'Corporate Gray', 
+      desc: 'Structured. Best for management.', 
+      image: 'https://marketplace.canva.com/EAFK2t645f4/1/0/1131w/canva-grey-clean-cv-resume-photo-p-c8o5s2t8I.jpg' 
+    },
+    { 
+      title: 'Minimalist', 
+      desc: 'Simple and effective.', 
+      image: 'https://marketplace.canva.com/EAFHLi015wY/1/0/1131w/canva-white-minimalist-cv-resume-h1I3b6o9l8Y.jpg' 
+    },
+    { 
+      title: 'Tech Dark', 
+      desc: 'Modern dark theme for developers.', 
+      image: 'https://marketplace.canva.com/EAFW7J5YyC4/1/0/1131w/canva-dark-blue-simple-cv-resume-L-3_K9c4z8Q.jpg' 
+    },
+    { 
+      title: 'Creative Pink', 
+      desc: 'Stand out with a splash of color.', 
+      image: 'https://marketplace.canva.com/EAF5FX4y5wU/1/0/1131w/canva-pink-minimalist-cv-resume-v9n8X8q8X4k.jpg' 
+    },
+    { 
+      title: 'Executive', 
+      desc: 'High-level professional layout.', 
+      image: 'https://marketplace.canva.com/EAF4-4Qj4y8/1/0/1131w/canva-beige-minimalist-cv-resume-9X4j8X4k8X4.jpg' 
+    },
+  ];
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#ffffff', overflowX: 'hidden', fontFamily: '"Roboto", sans-serif' }}>
@@ -208,7 +236,7 @@ const HomePage = ({ onStart }) => {
         </Container>
       </Box>
 
-      {/* === 5. TEMPLATE GALLERY === */}
+      {/* === 5. TEMPLATE GALLERY (UPDATED) === */}
       <Box sx={{ py: 12, bgcolor: '#0f172a', color: 'white' }}>
         <Container maxWidth="lg">
            <Box textAlign="center" mb={8}>
@@ -219,46 +247,46 @@ const HomePage = ({ onStart }) => {
               </Typography>
            </Box>
            
-           <Grid container spacing={2}>
-             {[
-               { title: 'Modern', desc: 'Clean & minimalist. Best for tech.', color: '#e0e7ff', icon: <Zap /> },
-               { title: 'Classic', desc: 'Traditional & elegant. Best for finance.', color: '#f3e8ff', icon: <FileText /> },
-               { title: 'Swiss', desc: 'Strong sidebar. Best for creatives.', color: '#dcfce7', icon: <Layers /> },
-               { title: 'Corporate', desc: 'Structured. Best for management.', color: '#ffedd5', icon: <ShieldCheck /> },
-             ].map((tpl, idx) => (
-               <Grid item xs={12} lg={3} key={idx}>
+           <Grid container spacing={3}>
+             {templates.map((tpl, idx) => (
+               <Grid item xs={12} sm={6} md={3} key={idx}>
                  <Box 
                    onClick={onStart}
                    sx={{ 
                      cursor: 'pointer',
-                     p: 3,
-                     bgcolor: 'rgba(255,255,255,0.05)',
-                     borderRadius: '20px',
-                     border: '1px solid rgba(255,255,255,0.1)',
+                     position: 'relative',
+                     overflow: 'hidden',
+                     borderRadius: '16px',
+                     border: '4px solid transparent',
                      transition: 'all 0.3s',
-                     height: '100%',
                      '&:hover': { 
                        transform: 'translateY(-8px)', 
-                       bgcolor: 'rgba(255,255,255,0.08)',
-                       borderColor: '#a855f7'
+                       borderColor: '#a855f7',
+                       boxShadow: '0 10px 30px -5px rgba(168, 85, 247, 0.4)'
                      }
                    }}
                  >
                     <Box sx={{ 
-                      height: 200, 
-                      bgcolor: tpl.color, 
-                      borderRadius: '12px', 
-                      mb: 3, 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center',
-                      color: '#475569'
+                      height: 320, // Increased height for resume preview
+                      bgcolor: '#e2e8f0', 
+                      backgroundImage: `url(${tpl.image})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'top center',
+                    }} />
+                    
+                    {/* Overlay Info */}
+                    <Box sx={{ 
+                      position: 'absolute', 
+                      bottom: 0, 
+                      left: 0, 
+                      width: '100%', 
+                      background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)',
+                      p: 3,
+                      pt: 8
                     }}>
-                       {/* Placeholder for Template Preview */}
-                       {tpl.icon}
+                      <Typography variant="h6" fontWeight="bold" color="white">{tpl.title}</Typography>
+                      <Typography variant="body2" color="rgba(255,255,255,0.7)" fontSize="0.85rem">{tpl.desc}</Typography>
                     </Box>
-                    <Typography variant="h6" fontWeight="bold" mb={0.5}>{tpl.title}</Typography>
-                    <Typography variant="body2" color="#94a3b8">{tpl.desc}</Typography>
                  </Box>
                </Grid>
              ))}
