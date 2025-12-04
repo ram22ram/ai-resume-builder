@@ -71,8 +71,6 @@ const HomePage = ({ onStart }) => {
               </Typography>
             </Box>
             <Stack direction="row" spacing={{ xs: 1, md: 2 }}>
-               <Button color="inherit" sx={{ display: { xs: 'none', md: 'block' }, fontWeight: 500 }}>Templates</Button>
-               <Button color="inherit" sx={{ display: { xs: 'none', md: 'block' }, fontWeight: 500 }}>Pricing</Button>
                <Button 
                 variant="contained" 
                 onClick={onStart}
