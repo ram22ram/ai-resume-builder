@@ -373,7 +373,7 @@ const HomePage = ({ onStart }) => {
       </Box>
 
       === 8. FOOTER ===
-      {/* <Box sx={{ py: 8, bgcolor: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
+      <Box sx={{ py: 8, bgcolor: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
         <Container maxWidth="lg">
            <Grid container spacing={8}>
               <Grid item xs={12} md={4}>
@@ -429,13 +429,13 @@ const HomePage = ({ onStart }) => {
                © 2025 ResumeAI Builder. All rights reserved.
              </Typography>
              <Stack direction="row" spacing={2}>
-               {/* Social Icons Placeholder 
+               {/* Social Icons Placeholder */}
                <Box sx={{ width: 32, height: 32, bgcolor: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}><MousePointerClick size={14} /></Box>
                <Box sx={{ width: 32, height: 32, bgcolor: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}><Star size={14} /></Box>
              </Stack>
            </Box>
         </Container>
-      </Box> */}
+      </Box>
 
     </Box>
   );
