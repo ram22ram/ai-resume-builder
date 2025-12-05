@@ -2,12 +2,12 @@ import React, { useState, useRef, useMemo, forwardRef, useEffect } from 'react';
 import { 
   Box, Paper, Button, Typography, Stack, Grid, Chip, Avatar, Divider,
   FormControl, InputLabel, Select, MenuItem, Switch, FormControlLabel,
-  Container, IconButton, useMediaQuery
+  Container, IconButton, useMediaQuery, Accordion, AccordionSummary, AccordionDetails
 } from '@mui/material';
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
 import { 
   Download, ArrowLeft, Mail, Phone, MapPin, Linkedin, Globe, 
-  Layout, Palette, Type, Maximize2, Minimize2, User, Sparkles, CheckCircle2, Star, ArrowRight
+  Layout, Palette, Type, Maximize2, Minimize2, User, Sparkles, CheckCircle2, Star, ArrowRight, ChevronDown, ShieldCheck, Zap
 } from 'lucide-react';
 // Loaded via CDN in useEffect
 import dayjs from 'dayjs';
@@ -393,6 +393,99 @@ const HomePage = ({ onStart }) => {
           <Typography variant="h6" sx={{ mb: 6, color: '#64748b', fontWeight: 'normal', maxWidth: '650px', mx: 'auto' }}>
             Select a template below to start building your ATS-friendly resume.
           </Typography>
+          <Button 
+              variant="contained" 
+              size="large" 
+              onClick={() => onStart('modern')}
+              endIcon={<ArrowRight size={20} />}
+              sx={{ 
+                py: 2, px: 5, 
+                fontSize: '1.1rem', 
+                borderRadius: '12px', 
+                background: '#0f172a', 
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+                textTransform: 'none',
+                fontWeight: 'bold',
+                '&:hover': { background: '#1e293b', transform: 'translateY(-2px)' }
+              }}
+            >
+              Create My Resume Now
+            </Button>
+        </Container>
+      </Box>
+
+      {/* === FEATURE HIGHLIGHT (AI & ATS) === */}
+      <Box sx={{ py: 12 }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={8} alignItems="center">
+            
+            {/* Left: Text Content */}
+            <Grid item xs={12} md={5}>
+              <Chip icon={<Sparkles size={14} />} label="Smart AI Writer" sx={{ bgcolor: '#eff6ff', color: '#3b82f6', fontWeight: 'bold', mb: 2, border: '1px solid #dbeafe' }} />
+              <Typography variant="h3" fontWeight="800" mb={3} color="#0f172a" lineHeight={1.2}>
+                Write like a Pro,<br/> without the effort.
+              </Typography>
+              <Typography variant="body1" color="text.secondary" mb={4} fontSize="1.1rem" lineHeight={1.7}>
+                Struggling to describe your experience? Our AI transforms basic job descriptions into powerful, result-oriented bullet points that impress recruiters and pass ATS scans.
+              </Typography>
+              
+              <Stack spacing={2} mb={4}>
+                {[
+                  "Auto-generate summaries & skill lists",
+                  "Fix grammar & professional tone",
+                  "Keywords optimized for ATS algorithms"
+                ].map((item, idx) => (
+                  <Box key={idx} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <Box sx={{ p: 0.5, borderRadius: '50%', bgcolor: '#dcfce7' }}><CheckCircle2 size={16} color="#16a34a" /></Box>
+                    <Typography fontWeight="500" color="#334155">{item}</Typography>
+                  </Box>
+                ))}
+              </Stack>
+
+              <Button variant="outlined" color="primary" onClick={() => onStart('modern')} size="large" sx={{ textTransform: 'none', fontWeight: 'bold', borderRadius: '10px', border: '2px solid' }}>
+                Try AI Writer Free
+              </Button>
+            </Grid>
+
+            {/* Right: Visual Demo */}
+            <Grid item xs={12} md={7}>
+              <Box sx={{ position: 'relative' }}>
+                {/* Background Blob */}
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '100%', height: '100%', background: 'radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, rgba(255,255,255,0) 70%)', zIndex: 0 }} />
+                
+                <Stack spacing={3} sx={{ position: 'relative', zIndex: 1 }}>
+                  {/* Before Card */}
+                  <Paper elevation={0} sx={{ p: 3, borderLeft: '4px solid #ef4444', bgcolor: '#fef2f2', borderRadius: '12px', opacity: 0.8, transform: 'scale(0.95)' }}>
+                    <Typography variant="caption" fontWeight="bold" color="#ef4444" display="flex" alignItems="center" gap={1} mb={1}>
+                      ❌ BEFORE
+                    </Typography>
+                    <Typography variant="body1" color="#7f1d1d" fontFamily="monospace">
+                      "I managed a team of sales people."
+                    </Typography>
+                  </Paper>
+                  
+                  {/* Arrow */}
+                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                     <Box sx={{ bgcolor: 'white', p: 1.5, borderRadius: '50%', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', color: '#7c3aed' }}>
+                       <Sparkles size={24} fill="currentColor" />
+                     </Box>
+                  </Box>
+
+                  {/* After Card */}
+                  <Paper elevation={10} sx={{ p: 4, borderLeft: '4px solid #16a34a', bgcolor: 'white', borderRadius: '16px' }}>
+                    <Chip label="✨ AI Enhanced" size="small" sx={{ float: 'right', bgcolor: '#dcfce7', color: '#16a34a', fontWeight: 'bold' }} />
+                    <Typography variant="caption" fontWeight="bold" color="#16a34a" display="flex" alignItems="center" gap={1} mb={1}>
+                      ✅ AFTER
+                    </Typography>
+                    <Typography variant="body1" fontWeight="500" color="#0f172a" fontSize="1.1rem" lineHeight={1.6}>
+                      "Spearheaded a high-performing sales team of 15+, driving a <span style={{backgroundColor: '#dcfce7', padding: '0 4px'}}>40% increase in annual revenue</span> through strategic mentorship and process optimization."
+                    </Typography>
+                  </Paper>
+                </Stack>
+              </Box>
+            </Grid>
+
+          </Grid>
         </Container>
       </Box>
 
@@ -458,6 +551,108 @@ const HomePage = ({ onStart }) => {
                </Grid>
              ))}
            </Grid>
+        </Container>
+      </Box>
+
+      {/* === PRICING SECTION === */}
+      <Box sx={{ py: 12, bgcolor: '#ffffff' }}>
+        <Container maxWidth="md">
+           <Paper elevation={0} sx={{ 
+             p: { xs: 4, md: 8 }, 
+             borderRadius: '32px', 
+             background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+             border: '1px solid #e2e8f0',
+             textAlign: 'center',
+             position: 'relative',
+             overflow: 'hidden',
+             boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)'
+           }}>
+              <Typography variant="overline" color="#16a34a" fontWeight="bold" letterSpacing={2}>SIMPLE & TRANSPARENT</Typography>
+              <Typography variant="h3" fontWeight="900" my={2} color="#0f172a">Pay once. Use forever.</Typography>
+              <Typography variant="body1" color="text.secondary" mb={5} maxWidth="500px" mx="auto">
+                No monthly subscriptions. No hidden fees. Build your resume for free, pay only when you are ready to download.
+              </Typography>
+
+              <Grid container spacing={4} justifyContent="center">
+                <Grid item xs={12} md={6}>
+                  <Box sx={{ p: 4, bgcolor: '#0f172a', borderRadius: '24px', color: 'white', textAlign: 'left', position: 'relative', overflow: 'hidden' }}>
+                     <Box sx={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, bgcolor: '#7c3aed', borderRadius: '50%', filter: 'blur(40px)', opacity: 0.5 }} />
+                     
+                     <Typography variant="h6" fontWeight="bold" mb={1}>Premium Download</Typography>
+                     <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 3 }}>
+                        <Typography variant="h3" fontWeight="800">₹30</Typography>
+                        <Typography variant="body2" color="#94a3b8">/ download</Typography>
+                     </Box>
+                     
+                     <Stack spacing={2} mb={4}>
+                        {['Unlimited AI Suggestions', 'PDF Export (High Quality)', 'No Watermark', 'ATS Optimized Layout'].map(feat => (
+                          <Box key={feat} sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+                            <CheckCircle2 size={18} color="#4ade80" />
+                            <Typography variant="body2" fontWeight="500" color="#e2e8f0">{feat}</Typography>
+                          </Box>
+                        ))}
+                     </Stack>
+                     
+                     <Button 
+                       fullWidth 
+                       variant="contained" 
+                       size="large"
+                       onClick={() => onStart('modern')}
+                       sx={{ 
+                         bgcolor: '#7c3aed', 
+                         color: 'white', 
+                         fontWeight: 'bold',
+                         py: 1.5,
+                         '&:hover': { bgcolor: '#6d28d9' }
+                       }}
+                     >
+                       Create Resume
+                     </Button>
+                  </Box>
+                </Grid>
+              </Grid>
+              
+              <Typography variant="caption" display="block" mt={3} color="text.secondary">
+                Secure payment via Razorpay • 100% Money-back guarantee if not satisfied
+              </Typography>
+           </Paper>
+        </Container>
+      </Box>
+
+      {/* === FAQ SECTION === */}
+      <Box sx={{ py: 10, bgcolor: '#f8fafc' }}>
+        <Container maxWidth="md">
+          <Typography variant="h4" fontWeight="800" textAlign="center" mb={6} color="#0f172a">Frequently Asked Questions</Typography>
+          
+          <Stack spacing={2}>
+            {[
+              { q: "Is this resume builder really free to try?", a: "Yes! You can build your resume, try all templates, and use the AI features for free. You only pay ₹30 when you are ready to download the final PDF." },
+              { q: "Can I edit my resume after downloading?", a: "Since the download is a PDF file, you cannot edit the file directly. However, your data is saved in your browser, so you can come back, make edits, and download again." },
+              { q: "Is the payment secure?", a: "Absolutely. We use Razorpay, India's leading payment gateway, which uses industry-standard encryption to process your payment securely." },
+              { q: "Does it work for freshers?", a: "Yes! Our templates are designed to highlight skills and education, making them perfect for students and freshers with little work experience." }
+            ].map((item, index) => (
+              <Accordion key={index} elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: '12px !important', '&:before': { display: 'none' }, bgcolor: 'white' }}>
+                <AccordionSummary expandIcon={<ChevronDown color="#94a3b8" />}>
+                  <Typography fontWeight="bold" color="#334155">{item.q}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography color="text.secondary" lineHeight={1.6}>{item.a}</Typography>
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </Stack>
+        </Container>
+      </Box>
+
+      {/* === FOOTER === */}
+      <Box sx={{ py: 2, bgcolor: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
+        <Container maxWidth="lg">
+           <Divider sx={{ my: 6, borderColor: '#f1f5f9' }} />
+           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+             <Typography variant="caption" color="text.secondary">
+               © 2025 ResumeAI Builder. All rights reserved.
+             </Typography>
+           </Box>
         </Container>
       </Box>
 
