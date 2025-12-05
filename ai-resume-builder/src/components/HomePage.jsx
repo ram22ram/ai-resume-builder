@@ -392,7 +392,7 @@ const HomePage = ({ onStart }) => {
       <Box sx={{ py: 2, bgcolor: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
         <Container maxWidth="lg">
            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-             <Typography variant="caption" color="text.secondary">
+             <Typography variant="caption" color="text.primary">
                © 2025 ResumeAI Builder. All rights reserved.
              </Typography>
            </Box>
