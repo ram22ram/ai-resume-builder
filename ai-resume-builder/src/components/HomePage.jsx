@@ -389,7 +389,7 @@ const HomePage = ({ onStart }) => {
       </Box>
 
       {/* === 8. FOOTER === */}
-      <Box sx={{ py: 2, bgcolor: '#ffffff', borderTop: '1px solid #f1f5f9' }}>
+      <Box sx={{ py: 2, bgcolor: '#7c3aed', borderTop: '1px solid #f1f5f9' }}>
         <Container maxWidth="lg">
            <Divider sx={{ my: 6, borderColor: '#f1f5f9' }} />
            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
