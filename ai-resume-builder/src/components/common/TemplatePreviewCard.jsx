@@ -11,7 +11,7 @@ import {
   TemplateElena,
   TemplateEileen,
   TemplateHarvey
-} from '../templates';
+} from '../templates/index';
 
 const TemplatePreviewCard = ({ templateId, color = '#0B57D0' }) => {
   // Dummy data for preview
