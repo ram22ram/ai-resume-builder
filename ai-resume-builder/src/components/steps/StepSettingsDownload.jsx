@@ -1,14 +1,27 @@
 import React from 'react';
-import { 
-  Box, Typography, ToggleButton, ToggleButtonGroup, 
-  Select, MenuItem, FormControl, 
-  FormGroup, Grid
+import {
+  Box,
+  Typography,
+  ToggleButton,
+  ToggleButtonGroup,
+  Select,
+  MenuItem,
+  FormControl,
+  FormGroup,
+  Grid,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Switch } from '@mui/material'; 
+import { Switch } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { GripVertical, Check } from 'lucide-react';
-import { LAYOUTS, COLORS, FONTS } from '../../utils/templateConfig'; // <-- Import Config
+import {
+  LAYOUTS,
+  COLORS,
+  FONTS,
+  LAYOUT_CONFIG,
+  DENSITIES,
+  PHOTO_MODES,
+} from '../../utils/templateConfig';
 
 // --- Styled Components ---
 
@@ -24,7 +37,7 @@ const LayoutButton = styled(Box)(({ theme, selected }) => ({
     borderColor: theme.palette.primary.main,
     transform: 'translateY(-2px)',
     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-  }
+  },
 }));
 
 const StyledColorButton = styled(ToggleButton)(({ theme, colorValue }) => ({
@@ -44,16 +57,14 @@ const StyledColorButton = styled(ToggleButton)(({ theme, colorValue }) => ({
     backgroundColor: colorValue,
     borderColor: theme.palette.primary.main,
     borderWidth: '2px',
-    boxShadow: `0 0 0 2px white inset`, // White ring inside
+    boxShadow: `0 0 0 2px white inset`,
     '&:hover': {
-       backgroundColor: colorValue,
-    }
+      backgroundColor: colorValue,
+    },
   },
 }));
 
-const StyledSwitch = styled(Switch)(({ theme }) => ({
-  // Custom switch styling can go here if needed
-}));
+const StyledSwitch = styled(Switch)(() => ({}));
 
 const DraggableItem = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -67,14 +78,28 @@ const DraggableItem = styled(Box)(({ theme }) => ({
   transition: 'background-color 0.2s',
   '&:hover': {
     backgroundColor: '#f1f5f9',
-  }
+  },
 }));
 
 const StepSettingsDownload = (props) => {
-  const { 
-    visibleSections, sectionOrder, currentTemplate, accentColor, fontFamily, 
-    handlers 
+  const {
+    visibleSections,
+    sectionOrder,
+    currentTemplate,
+    accentColor,
+    fontFamily, // this is FONT id, e.g. 'roboto'
+    density, // new
+    photoMode, // new
+    handlers,
   } = props;
+
+  const currentLayoutConfig = LAYOUT_CONFIG[currentTemplate] || {};
+
+  const allowedColorIds = currentLayoutConfig.allowedColors || COLORS.map((c) => c.id);
+  const allowedFontIds = currentLayoutConfig.allowedFonts || FONTS.map((f) => f.id);
+
+  const availableColors = COLORS.filter((c) => allowedColorIds.includes(c.id));
+  const availableFonts = FONTS.filter((f) => allowedFontIds.includes(f.id));
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -94,56 +119,104 @@ const StepSettingsDownload = (props) => {
 
       {/* --- 1. LAYOUT SELECTION --- */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="subtitle2" sx={{ color: 'text.secondary', mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>Choose Layout</Typography>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            color: 'text.secondary',
+            mb: 1,
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          }}
+        >
+          Choose Layout
+        </Typography>
         <Grid container spacing={2}>
           {LAYOUTS.map((layout) => (
             <Grid item xs={6} key={layout.id}>
-              <LayoutButton 
+              <LayoutButton
                 selected={currentTemplate === layout.id}
                 onClick={() => handlers.handleTemplateChange(null, layout.id)}
               >
-                <Typography variant="subtitle1" fontWeight="bold">{layout.label}</Typography>
-                <Typography variant="caption" color="text.secondary">{layout.description}</Typography>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  {layout.label}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {layout.description}
+                </Typography>
               </LayoutButton>
             </Grid>
           ))}
         </Grid>
       </Box>
 
-      {/* --- 2. ACCENT COLOR (Using Config) --- */}
+      {/* --- 2. ACCENT COLOR (Layout-aware) --- */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="subtitle2" sx={{ color: 'text.secondary', mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>Accent Color</Typography>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            color: 'text.secondary',
+            mb: 1,
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          }}
+        >
+          Accent Color
+        </Typography>
         <ToggleButtonGroup
           value={accentColor}
           exclusive
-          onChange={(e, newValue) => { if (newValue) handlers.handleColorChange(newValue); }}
+          onChange={(e, newValue) => {
+            if (newValue) handlers.handleColorChange(newValue);
+          }}
           sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}
         >
-          {COLORS.map((color) => (
-            <StyledColorButton 
-              key={color.id} 
-              value={color.value} 
-              aria-label={color.label} 
+          {availableColors.map((color) => (
+            <StyledColorButton
+              key={color.id}
+              value={color.value}
+              aria-label={color.label}
               colorValue={color.value}
               title={color.label}
             >
-              {accentColor === color.value && <Check size={20} color="white" style={{ filter: 'drop-shadow(0 0 2px rgba(0,0,0,0.5))' }} />}
+              {accentColor === color.value && (
+                <Check
+                  size={20}
+                  color="white"
+                  style={{
+                    filter: 'drop-shadow(0 0 2px rgba(0,0,0,0.5))',
+                  }}
+                />
+              )}
             </StyledColorButton>
           ))}
         </ToggleButtonGroup>
       </Box>
-      
-      {/* --- 3. TYPOGRAPHY (Using Config) --- */}
+
+      {/* --- 3. TYPOGRAPHY (Layout-aware) --- */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="subtitle2" sx={{ color: 'text.secondary', mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>Typography</Typography>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            color: 'text.secondary',
+            mb: 1,
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          }}
+        >
+          Typography
+        </Typography>
         <FormControl fullWidth size="small">
           <Select
             value={fontFamily}
             onChange={(e) => handlers.handleFontChange(e.target.value)}
             sx={{ borderRadius: '8px', bgcolor: 'white' }}
           >
-            {FONTS.map(font => (
-              <MenuItem key={font.id} value={font.value} sx={{ fontFamily: font.value }}>
+            {availableFonts.map((font) => (
+              <MenuItem
+                key={font.id}
+                value={font.id} // send ID, not CSS string
+                sx={{ fontFamily: font.value }}
+              >
                 {font.label}
               </MenuItem>
             ))}
@@ -151,42 +224,141 @@ const StepSettingsDownload = (props) => {
         </FormControl>
       </Box>
 
-      {/* --- 4. SECTION ORDER & VISIBILITY --- */}
+      {/* --- 4. DENSITY (Compact vs Spacious) --- */}
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            color: 'text.secondary',
+            mb: 1,
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          }}
+        >
+          Layout Density
+        </Typography>
+        <ToggleButtonGroup
+          value={density}
+          exclusive
+          onChange={(e, newValue) => {
+            if (newValue) handlers.handleDensityChange(newValue);
+          }}
+          sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}
+        >
+          {DENSITIES.map((opt) => (
+            <ToggleButton
+              key={opt.id}
+              value={opt.id}
+              sx={{ px: 2, py: 0.5, borderRadius: '999px' }}
+            >
+              <Typography variant="body2">{opt.label}</Typography>
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Box>
+
+      {/* --- 5. PHOTO MODE (Yes / No variant) --- */}
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            color: 'text.secondary',
+            mb: 1,
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          }}
+        >
+          Photo Variant
+        </Typography>
+        <ToggleButtonGroup
+          value={photoMode}
+          exclusive
+          onChange={(e, newValue) => {
+            if (newValue) handlers.handlePhotoModeChange(newValue);
+          }}
+          sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}
+        >
+          {PHOTO_MODES.map((opt) => (
+            <ToggleButton
+              key={opt.id}
+              value={opt.id}
+              sx={{ px: 2, py: 0.5, borderRadius: '999px' }}
+            >
+              <Typography variant="body2">{opt.label}</Typography>
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Box>
+
+      {/* --- 6. SECTION ORDER & VISIBILITY --- */}
       <Box sx={{ mb: 2 }}>
-        <Typography variant="subtitle2" sx={{ color: 'text.secondary', mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>Reorder Sections</Typography>
-        <Typography variant="caption" sx={{ color: 'text.secondary', mb: 2, display: 'block' }}>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            color: 'text.secondary',
+            mb: 1,
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          }}
+        >
+          Reorder Sections
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{ color: 'text.secondary', mb: 2, display: 'block' }}
+        >
           Drag to reorder. Toggle to show/hide.
         </Typography>
-        
+
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="sections-list">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 <FormGroup>
                   {sectionOrder.map((sectionName, index) => (
-                    <Draggable key={sectionName} draggableId={sectionName} index={index}>
+                    <Draggable
+                      key={sectionName}
+                      draggableId={sectionName}
+                      index={index}
+                    >
                       {(provided) => (
                         <DraggableItem
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                         >
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
                             <Box
                               {...provided.dragHandleProps}
-                              sx={{ mr: 2, display: 'flex', alignItems: 'center', cursor: 'grab', color: '#94a3b8' }}
+                              sx={{
+                                mr: 2,
+                                display: 'flex',
+                                alignItems: 'center',
+                                cursor: 'grab',
+                                color: '#94a3b8',
+                              }}
                             >
                               <GripVertical size={20} />
                             </Box>
-                            <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                              {sectionName.charAt(0).toUpperCase() + sectionName.slice(1)}
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: 500 }}
+                            >
+                              {sectionName
+                                .charAt(0)
+                                .toUpperCase() + sectionName.slice(1)}
                             </Typography>
                           </Box>
 
-                          <StyledSwitch 
+                          <StyledSwitch
                             size="small"
-                            checked={visibleSections[sectionName]} 
+                            checked={visibleSections[sectionName]}
                             onChange={handlers.handleSectionToggle}
-                            name={sectionName} 
+                            name={sectionName}
                             inputProps={{ 'aria-label': sectionName }}
                           />
                         </DraggableItem>

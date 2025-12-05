@@ -2,8 +2,8 @@
 export const LAYOUTS = [
   { id: 'modern', label: 'Modern', description: 'Clean & Professional' },
   { id: 'classic', label: 'Classic', description: 'Traditional & Elegant' },
-  { id: 'swiss', label: 'Swiss', description: 'Sidebar Layout' },
-  { id: 'corporate', label: 'Corporate', description: 'Strict & Formal' },
+  { id: 'swiss', label: 'Swiss', description: 'Bold Minimalist' },
+  { id: 'corporate', label: 'Corporate', description: 'Sidebar & Business' },
 ];
 
 // COLOR PALETTES (10 Options)
@@ -29,4 +29,64 @@ export const FONTS = [
   { id: 'merriweather', label: 'Merriweather (Readable)', value: '"Merriweather", serif' },
 ];
 
-// Formula: 4 Layouts * 10 Colors * 5 Fonts = 200 Possible Templates
+// 🔹 Density options – design tight vs spacious
+export const DENSITIES = [
+  { id: 'compact', label: 'Compact (More Content)' },
+  { id: 'spacious', label: 'Spacious (More White Space)' },
+];
+
+// 🔹 Photo mode – design variants: with / without photo
+export const PHOTO_MODES = [
+  { id: 'auto', label: 'Auto (show if uploaded)' },
+  { id: 'hidden', label: 'No Photo Layout' },
+];
+
+// 🔹 Quick maps for easy lookup
+export const COLOR_MAP = COLORS.reduce((acc, c) => {
+  acc[c.id] = c;
+  return acc;
+}, {});
+
+export const FONT_MAP = FONTS.reduce((acc, f) => {
+  acc[f.id] = f;
+  return acc;
+}, {});
+
+// 🔹 Layout-wise curated configuration
+export const LAYOUT_CONFIG = {
+  modern: {
+    allowedColors: ['blue', 'emerald', 'teal', 'violet', 'indigo'],
+    allowedFonts: ['roboto', 'montserrat', 'lato'],
+    defaultColorId: 'blue',
+    defaultFontId: 'roboto',
+    defaultDensity: 'compact',
+    defaultPhotoMode: 'auto',
+  },
+  classic: {
+    allowedColors: ['black', 'slate', 'crimson', 'indigo'],
+    allowedFonts: ['playfair', 'merriweather', 'lato'],
+    defaultColorId: 'black',
+    defaultFontId: 'playfair',
+    defaultDensity: 'spacious',
+    defaultPhotoMode: 'auto',
+  },
+  swiss: {
+    allowedColors: ['blue', 'slate', 'teal', 'orange', 'pink'],
+    allowedFonts: ['montserrat', 'roboto', 'lato'],
+    defaultColorId: 'slate',
+    defaultFontId: 'montserrat',
+    defaultDensity: 'compact',
+    defaultPhotoMode: 'auto',
+  },
+  corporate: {
+    allowedColors: ['blue', 'slate', 'black', 'indigo', 'emerald'],
+    allowedFonts: ['roboto', 'montserrat', 'lato'],
+    defaultColorId: 'indigo',
+    defaultFontId: 'roboto',
+    defaultDensity: 'compact',
+    defaultPhotoMode: 'auto',
+  },
+};
+
+// Formula example (per layout):
+// 5 curated colors * 5 curated fonts * 2 densities * 2 photo modes = 100+ combos overall across layouts.
