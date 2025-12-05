@@ -79,7 +79,7 @@ const FormSection = ({ title, children }) => (
 );
 
 // ==========================================
-// 3. EDITOR COMPONENTS (The Content Forms)
+// 3. EDITOR COMPONENTS
 // ==========================================
 
 const StepPersonalInfo = ({ data, onChange, onUpload }) => {
@@ -345,11 +345,11 @@ const TemplatePreviewCard = ({ layoutId, colorId, fontId, onSelect }) => {
 
   return (
     <Box onClick={() => onSelect(layoutId, colorId, fontId)} sx={{ cursor: 'pointer', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0', transition: 'all 0.2s', bgcolor: 'white', '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 20px -5px rgba(0,0,0,0.1)', borderColor: color.primary } }}>
-      <Box sx={{ height: '450px', bgcolor: '#f1f5f9', overflow: 'hidden', position: 'relative', display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ height: '500px', bgcolor: '#f1f5f9', overflow: 'hidden', position: 'relative', display: 'flex', justifyContent: 'center' }}>
         {/* Centered and scaled Resume */}
         <Box sx={{ 
           width: '210mm', height: '297mm', 
-          transform: 'scale(0.65)', // Increased scale for clarity
+          transform: 'scale(0.6)', // Increased scale for clarity
           transformOrigin: 'top center',
           position: 'absolute', top: 0,
           bgcolor: 'white', pointerEvents: 'none',
@@ -436,7 +436,7 @@ const HomePage = ({ onStart }) => {
               <Box sx={{ position: 'relative' }}>
                 {/* Visual Demo Card */}
                 <Stack spacing={2}>
-                  {/* Before Card (Restored) */}
+                  {/* Before Card */}
                   <Paper elevation={0} sx={{ p: 3, borderLeft: '4px solid #ef4444', bgcolor: '#fef2f2', borderRadius: '16px', opacity: 0.8, transform: 'scale(0.95)' }}>
                     <Typography variant="caption" fontWeight="bold" color="#ef4444" display="flex" alignItems="center" gap={1} mb={1}>❌ BEFORE</Typography>
                     <Typography variant="body1" color="#7f1d1d" fontFamily="monospace">"I managed a team of sales people."</Typography>
@@ -459,13 +459,19 @@ const HomePage = ({ onStart }) => {
 
       {/* Template Gallery */}
       <Box sx={{ py: 12, bgcolor: '#0f172a', color: 'white' }} id="templates">
-        <Container maxWidth="xl">
+        <Container maxWidth="lg">
            <Box textAlign="center" mb={8}>
               <Typography variant="overline" color="#a855f7" fontWeight="bold" letterSpacing={2}>PREMIUM DESIGNS</Typography>
               <Typography variant="h3" fontWeight="900" my={2}>Pick a template. Start Building.</Typography>
               <Typography variant="body1" color="#94a3b8" maxWidth="600px" mx="auto">All templates are ATS-friendly and fully customizable.</Typography>
            </Box>
-           <Grid container spacing={4}>{templateCombinations.map((combo, idx) => (<Grid item xs={12} md={6} key={idx}><TemplatePreviewCard layoutId={combo.layoutId} colorId={combo.colorId} fontId={combo.fontId} onSelect={onStart} /></Grid>))}</Grid>
+           <Grid container spacing={4}>
+             {templateCombinations.map((combo, idx) => (
+               <Grid item xs={12} sm={6} md={6} lg={6} xl={6} key={idx}> {/* Forced 2-column layout */}
+                 <TemplatePreviewCard layoutId={combo.layoutId} colorId={combo.colorId} fontId={combo.fontId} onSelect={onStart} />
+               </Grid>
+             ))}
+           </Grid>
         </Container>
       </Box>
 
