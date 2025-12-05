@@ -1,17 +1,16 @@
 import React from 'react';
 import { Box, Paper, Typography } from '@mui/material';
-import {
-  TemplateModern,
-  TemplateClassic,
-  TemplateSwiss,
-  TemplateCorporate,
-  TemplateFred,
-  TemplatePat,
-  TemplateKristy,
-  TemplateElena,
-  TemplateEileen,
-  TemplateHarvey
-} from '../templates/index';
+import {TemplateModern} from '../templates/TemplateModern';
+import {TemplateClassic} from '../templates/TemplateClassic';
+import {TemplateSwiss} from '../templates/TemplateSwiss';
+import {TemplateCorporate} from '../templates/TemplateCorporate';
+import {TemplateFred} from '../templates/TemplateFred';
+import {TemplatePat} from '../templates/TemplatePat';
+import {TemplateKristy} from '../components/templates/TemplateKristy';
+import {TemplateElena} from '../components/templates/TemplateElena';
+import {TemplateEileen} from '../components/templates/TemplateEileen';
+import {TemplateHarvey} from '../components/templates/TemplateHarvey';
+
 
 const TemplatePreviewCard = ({ templateId, color = '#0B57D0' }) => {
   // Dummy data for preview
