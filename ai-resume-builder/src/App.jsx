@@ -44,7 +44,12 @@ const TemplateSwiss = React.lazy(() =>
 const TemplateCorporate = React.lazy(() =>
   import('./components/templates/TemplateCorporate')
 );
-
+const TemplateFred = React.lazy(() => import('./components/templates/TemplateFred'));
+    const TemplatePat = React.lazy(() => import('./components/templates/TemplatePat'));
+    const TemplateKristy = React.lazy(() => import('./components/templates/TemplateKristy'));
+    const TemplateElena = React.lazy(() => import('./components/templates/TemplateElena'));
+    const TemplateEileen = React.lazy(() => import('./components/templates/TemplateEileen'));
+    const TemplateHarvey = React.lazy(() => import('./components/templates/TemplateHarvey'));
 // --- Styled Back Button ---
 const BackButton = styled(Button)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -699,6 +704,66 @@ function App() {
                   )}
                   {currentTemplate === 'corporate' && (
                     <TemplateCorporate
+                      data={resumeData}
+                      ref={previewRef}
+                      visibleSections={visibleSections}
+                      sectionOrder={sectionOrder}
+                      theme={{ accentColor, fontFamily, density, photoMode }}
+                      stretchHeight={true}
+                    />
+                  )}
+                      {currentTemplate === 'fred' && (
+                    <TemplateFred
+                      data={resumeData}
+                      ref={previewRef}
+                      visibleSections={visibleSections}
+                      sectionOrder={sectionOrder}
+                      theme={{ accentColor, fontFamily, density, photoMode }}
+                      stretchHeight={true}
+                    />
+                  )}
+                      {currentTemplate === 'pat' && (
+                    <TemplatePat
+                      data={resumeData}
+                      ref={previewRef}
+                      visibleSections={visibleSections}
+                      sectionOrder={sectionOrder}
+                      theme={{ accentColor, fontFamily, density, photoMode }}
+                      stretchHeight={true}
+                    />
+                  )}
+                      {currentTemplate === 'kristy' && (
+                    <TemplateKristy
+                      data={resumeData}
+                      ref={previewRef}
+                      visibleSections={visibleSections}
+                      sectionOrder={sectionOrder}
+                      theme={{ accentColor, fontFamily, density, photoMode }}
+                      stretchHeight={true}
+                    />
+                  )}
+                      {currentTemplate === 'elena' && (
+                    <TemplateElena
+                      data={resumeData}
+                      ref={previewRef}
+                      visibleSections={visibleSections}
+                      sectionOrder={sectionOrder}
+                      theme={{ accentColor, fontFamily, density, photoMode }}
+                      stretchHeight={true}
+                    />
+                  )}
+                      {currentTemplate === 'eileen' && (
+                    <TemplateEileen
+                      data={resumeData}
+                      ref={previewRef}
+                      visibleSections={visibleSections}
+                      sectionOrder={sectionOrder}
+                      theme={{ accentColor, fontFamily, density, photoMode }}
+                      stretchHeight={true}
+                    />
+                  )}
+                      {currentTemplate === 'harvey' && (
+                    <TemplateHarvey
                       data={resumeData}
                       ref={previewRef}
                       visibleSections={visibleSections}

@@ -1,68 +1,154 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
+import {
+  TemplateModern,
+  TemplateClassic,
+  TemplateSwiss,
+  TemplateCorporate,
+  TemplateFred,
+  TemplatePat,
+  TemplateKristy,
+  TemplateElena,
+  TemplateEileen,
+  TemplateHarvey
+} from '../templates';
 
-const TemplatePreviewCard = ({ templateId, color }) => {
-  // Different preview designs for different templates
-  const getPreviewDesign = (id) => {
-    switch(id) {
-      case 'modern':
-        return (
-          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Box sx={{ width: '60%', height: 12, bgcolor: 'rgba(255,255,255,0.8)', borderRadius: 2 }} />
-              <Box sx={{ width: '30%', height: 12, bgcolor: 'rgba(255,255,255,0.5)', borderRadius: 2 }} />
-            </Box>
-            <Box sx={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
-              <Box sx={{ bgcolor: 'rgba(255,255,255,0.3)', borderRadius: 1 }} />
-              <Box sx={{ bgcolor: 'rgba(255,255,255,0.3)', borderRadius: 1 }} />
-              <Box sx={{ bgcolor: 'rgba(255,255,255,0.3)', borderRadius: 1 }} />
-              <Box sx={{ bgcolor: 'rgba(255,255,255,0.3)', borderRadius: 1 }} />
-            </Box>
-          </Box>
-        );
-      case 'classic':
-        return (
-          <Box sx={{ height: '100%', p: 2 }}>
-            <Box sx={{ width: '40%', height: 16, bgcolor: 'rgba(255,255,255,0.9)', borderRadius: 2, mb: 2 }} />
-            <Box sx={{ height: 8, width: '80%', bgcolor: 'rgba(255,255,255,0.6)', borderRadius: 2, mb: 1 }} />
-            <Box sx={{ height: 8, width: '70%', bgcolor: 'rgba(255,255,255,0.6)', borderRadius: 2, mb: 1 }} />
-            <Box sx={{ height: 8, width: '60%', bgcolor: 'rgba(255,255,255,0.6)', borderRadius: 2 }} />
-          </Box>
-        );
-      case 'swiss':
-        return (
-          <Box sx={{ height: '100%', display: 'flex', p: 2 }}>
-            <Box sx={{ width: '30%', mr: 1, bgcolor: 'rgba(255,255,255,0.4)', borderRadius: 1 }} />
-            <Box sx={{ flex: 1 }}>
-              <Box sx={{ height: 10, width: '100%', bgcolor: 'rgba(255,255,255,0.7)', borderRadius: 2, mb: 1 }} />
-              <Box sx={{ height: 10, width: '80%', bgcolor: 'rgba(255,255,255,0.5)', borderRadius: 2, mb: 1 }} />
-            </Box>
-          </Box>
-        );
-      default:
-        return (
-          <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold' }}>
-              {templateId.charAt(0).toUpperCase() + templateId.slice(1)}
-            </Typography>
-          </Box>
-        );
-    }
+const TemplatePreviewCard = ({ templateId, color = '#0B57D0' }) => {
+  // Dummy data for preview
+  const dummyData = {
+    personalInfo: {
+      name: 'John Smith',
+      title: 'Senior Software Engineer',
+      email: 'john.smith@example.com',
+      phone: '+1 (555) 123-4567',
+      location: 'San Francisco, CA',
+      summary: 'Experienced software engineer with 8+ years in full-stack development. Passionate about creating scalable solutions and leading cross-functional teams.'
+    },
+    workExperience: [
+      {
+        title: 'Senior Software Engineer',
+        company: 'Tech Corp Inc.',
+        location: 'San Francisco, CA',
+        startDate: '2020-03',
+        endDate: 'Present',
+        description: 'Lead development of scalable microservices architecture. Improved system performance by 40%. Mentored 5 junior developers.'
+      },
+      {
+        title: 'Software Developer',
+        company: 'Startup Labs',
+        location: 'New York, NY',
+        startDate: '2018-01',
+        endDate: '2020-02',
+        description: 'Developed and maintained React applications. Collaborated with design team on UI/UX improvements.'
+      }
+    ],
+    education: [
+      {
+        degree: 'M.S. in Computer Science',
+        institution: 'Stanford University',
+        location: 'Stanford, CA',
+        year: '2017'
+      }
+    ],
+    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'AWS', 'Docker', 'Kubernetes', 'CI/CD']
   };
+
+  // Template component mapping
+  const templateComponents = {
+    modern: TemplateModern,
+    classic: TemplateClassic,
+    swiss: TemplateSwiss,
+    corporate: TemplateCorporate,
+    fred: TemplateFred,
+    pat: TemplatePat,
+    kristy: TemplateKristy,
+    elena: TemplateElena,
+    eileen: TemplateEileen,
+    harvey: TemplateHarvey
+  };
+
+  const TemplateComponent = templateComponents[templateId] || TemplateModern;
 
   return (
     <Box
       sx={{
-        height: '100%',
+        position: 'relative',
         width: '100%',
-        bgcolor: color,
+        height: '100%',
+        minHeight: 220,
         borderRadius: '12px',
         overflow: 'hidden',
-        background: `linear-gradient(135deg, ${color} 0%, ${color}80 100%)`,
-        border: '2px solid rgba(255,255,255,0.2)'
+        '&:hover': {
+          transform: 'scale(1.02)',
+          transition: 'transform 0.2s ease'
+        }
       }}
     >
-      {getPreviewDesign(templateId)}
+      {/* Template preview container */}
+      <Paper
+        elevation={3}
+        sx={{
+          width: '100%',
+          height: '100%',
+          transform: 'scale(0.85)',
+          transformOrigin: 'top left',
+          overflow: 'hidden',
+          borderRadius: '8px',
+          bgcolor: '#ffffff',
+          position: 'relative',
+          '&:hover': {
+            cursor: 'pointer'
+          }
+        }}
+      >
+        {/* Template content */}
+        <Box sx={{ 
+          width: '100%', 
+          height: '100%',
+          position: 'relative',
+          zIndex: 1
+        }}>
+          <TemplateComponent
+            personalInfo={dummyData.personalInfo}
+            workExperience={dummyData.workExperience}
+            education={dummyData.education}
+            skills={dummyData.skills}
+            isPreview={true}
+          />
+        </Box>
+
+        {/* Overlay gradient for better visibility */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `linear-gradient(to bottom, transparent 70%, rgba(0,0,0,0.1) 100%)`,
+            pointerEvents: 'none'
+          }}
+        />
+      </Paper>
+
+      {/* Template indicator */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 8,
+          right: 8,
+          bgcolor: color,
+          color: 'white',
+          px: 1,
+          py: 0.5,
+          borderRadius: '4px',
+          fontSize: '0.7rem',
+          fontWeight: 'bold',
+          zIndex: 2
+        }}
+      >
+        {templateId.toUpperCase()}
+      </Box>
     </Box>
   );
 };

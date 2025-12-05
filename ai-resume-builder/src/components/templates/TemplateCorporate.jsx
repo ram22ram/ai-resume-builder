@@ -11,7 +11,13 @@ const formatDate = (date, format) => {
   return d.isValid() ? d.format(format) : date;
 };
 
-const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, theme }, ref) => {
+const TemplateCorporate = forwardRef(({ 
+  data, 
+  visibleSections, 
+  sectionOrder, 
+  theme, 
+  isPreview = false 
+}, ref) => {
   const { personalInfo, summary, experience, education, projects, skills, hobbies } = data;
 
   // --- DYNAMIC THEME ---
@@ -19,17 +25,28 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
   const font = theme?.fontFamily || '"Helvetica Neue", Helvetica, Arial, sans-serif';
   // ---------------------
 
+  // PREVIEW SCALING
+  const previewScale = isPreview ? 0.7 : 1;
+  
+  const getFontSize = (baseSize) => {
+    return isPreview ? `${baseSize * previewScale}rem` : `${baseSize}rem`;
+  };
+
+  const getSpacing = (baseSpacing) => {
+    return isPreview ? baseSpacing * 0.4 : baseSpacing;
+  };
+
   const Section = ({ title, children }) => (
-    <Box sx={{ mb: 2.5 }}>
+    <Box sx={{ mb: getSpacing(2.5) }}>
       <Typography
         variant="subtitle2"
         sx={{
           fontWeight: 700,
-          fontSize: '0.85rem',
+          fontSize: getFontSize(0.85),
           color: accentColor,
           textTransform: 'uppercase',
           letterSpacing: 1,
-          mb: 1,
+          mb: getSpacing(1),
         }}
       >
         {title}
@@ -39,16 +56,16 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
   );
 
   const MainSection = ({ title, children }) => (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ mb: getSpacing(3) }}>
       <Typography
         variant="h6"
         sx={{
           fontWeight: 700,
-          fontSize: '1rem',
+          fontSize: getFontSize(1),
           color: accentColor,
           borderBottom: `2px solid ${accentColor}33`,
-          pb: 0.5,
-          mb: 1.5,
+          pb: getSpacing(0.5),
+          mb: getSpacing(1.5),
           textTransform: 'uppercase',
           letterSpacing: 0.8,
         }}
@@ -62,17 +79,17 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
   const ContactItem = ({ icon: Icon, text, link = false }) => {
     if (!text) return null;
     const content = (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.7 }}>
-        <Icon size={14} color={accentColor} />
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: getSpacing(0.7) }}>
+        <Icon size={isPreview ? 10 : 14} color={accentColor} />
         <Typography
           variant="body2"
           sx={{
-            fontSize: '0.85rem',
+            fontSize: getFontSize(0.85),
             ...wrapTextStyle,
             color: link ? accentColor : '#333',
           }}
         >
-          {text}
+          {isPreview && text.length > 15 ? `${text.substring(0, 12)}...` : text}
         </Typography>
       </Box>
     );
@@ -90,17 +107,35 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
     );
   };
 
+  // Get limited data for preview
+  const getLimitedExperience = () => {
+    if (isPreview && experience.length > 0) {
+      return [experience[0]];
+    }
+    return experience;
+  };
+
+  const getLimitedEducation = () => {
+    if (isPreview && education.length > 0) {
+      return [education[0]];
+    }
+    return education;
+  };
+
   const renderSection = (sectionId, variant = 'main') => {
     switch (sectionId) {
       case 'summary':
         return (
           visibleSections.summary &&
           summary &&
-          (variant === 'main') && (
+          (variant === 'main') && !isPreview && ( // No summary in preview
             <MainSection title="Summary" key="summary">
               <Typography
                 variant="body2"
-                sx={{ fontSize: '0.95rem', ...wrapTextStyle }}
+                sx={{ 
+                  fontSize: getFontSize(0.95), 
+                  ...wrapTextStyle 
+                }}
               >
                 {summary}
               </Typography>
@@ -114,8 +149,12 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
           skills.length > 0 &&
           (variant === 'sidebar') && (
             <Section title="Skills" key="skills">
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.8 }}>
-                {skills.map((skill, index) => (
+              <Box sx={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: getSpacing(0.8) 
+              }}>
+                {skills.slice(0, isPreview ? 4 : skills.length).map((skill, index) => (
                   <Chip
                     key={index}
                     label={skill}
@@ -125,7 +164,8 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
                       color: accentColor,
                       fontWeight: 600,
                       borderRadius: '999px',
-                      fontSize: '0.75rem',
+                      fontSize: getFontSize(0.75),
+                      height: isPreview ? 20 : 'auto',
                     }}
                   />
                 ))}
@@ -135,13 +175,14 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
         );
 
       case 'experience':
+        const limitedExp = getLimitedExperience();
         return (
           visibleSections.experience &&
-          experience[0]?.title &&
+          limitedExp[0]?.title &&
           (variant === 'main') && (
             <MainSection title="Experience" key="experience">
-              {experience.map((exp) => (
-                <Box key={exp.id} sx={{ mb: 2 }}>
+              {limitedExp.map((exp) => (
+                <Box key={exp.id} sx={{ mb: getSpacing(2) }}>
                   <Box
                     sx={{
                       display: 'flex',
@@ -152,7 +193,10 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
                   >
                     <Typography
                       variant="subtitle1"
-                      sx={{ fontWeight: 700, fontSize: '0.98rem' }}
+                      sx={{ 
+                        fontWeight: 700, 
+                        fontSize: getFontSize(0.98) 
+                      }}
                     >
                       {exp.title || 'Job Title'}
                     </Typography>
@@ -161,7 +205,7 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
                       sx={{
                         fontStyle: 'italic',
                         color: '#555',
-                        fontSize: '0.8rem',
+                        fontSize: getFontSize(0.8),
                       }}
                     >
                       {formatDate(exp.startDate, 'MMM YYYY')} –{' '}
@@ -176,8 +220,8 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
                     sx={{
                       fontWeight: 600,
                       color: accentColor,
-                      fontSize: '0.9rem',
-                      mb: 0.3,
+                      fontSize: getFontSize(0.9),
+                      mb: getSpacing(0.3),
                     }}
                   >
                     {exp.company || 'Company'}
@@ -186,9 +230,12 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
 
                   <Typography
                     variant="body2"
-                    sx={{ fontSize: '0.9rem', ...wrapTextStyle }}
+                    sx={{ 
+                      fontSize: getFontSize(0.9), 
+                      ...wrapTextStyle 
+                    }}
                   >
-                    {exp.description}
+                    {isPreview ? `${exp.description?.substring(0, 40)}...` : exp.description}
                   </Typography>
                 </Box>
               ))}
@@ -200,13 +247,16 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
         return (
           visibleSections.projects &&
           projects[0]?.title &&
-          (variant === 'main') && (
+          (variant === 'main') && !isPreview && ( // No projects in preview
             <MainSection title="Projects" key="projects">
               {projects.map((proj) => (
-                <Box key={proj.id} sx={{ mb: 2 }}>
+                <Box key={proj.id} sx={{ mb: getSpacing(2) }}>
                   <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: 700, fontSize: '0.95rem' }}
+                    sx={{ 
+                      fontWeight: 700, 
+                      fontSize: getFontSize(0.95) 
+                    }}
                   >
                     {proj.title || 'Project Title'}
                   </Typography>
@@ -225,9 +275,9 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
                   <Typography
                     variant="body2"
                     sx={{
-                      fontSize: '0.9rem',
+                      fontSize: getFontSize(0.9),
                       ...wrapTextStyle,
-                      mt: 0.5,
+                      mt: getSpacing(0.5),
                     }}
                   >
                     {proj.description}
@@ -239,23 +289,26 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
         );
 
       case 'education':
-        // corporate me education main column me hi rakhenge
+        const limitedEdu = getLimitedEducation();
         return (
           visibleSections.education &&
-          education[0]?.degree &&
+          limitedEdu[0]?.degree &&
           (variant === 'main') && (
             <MainSection title="Education" key="education">
-              {education.map((edu) => (
-                <Box key={edu.id} sx={{ mb: 1.5 }}>
+              {limitedEdu.map((edu) => (
+                <Box key={edu.id} sx={{ mb: getSpacing(1.5) }}>
                   <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: 700, fontSize: '0.95rem' }}
+                    sx={{ 
+                      fontWeight: 700, 
+                      fontSize: getFontSize(0.95) 
+                    }}
                   >
                     {edu.degree || 'Degree'}
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ fontSize: '0.9rem' }}
+                    sx={{ fontSize: getFontSize(0.9) }}
                   >
                     {edu.school || 'Institution'}
                     {edu.city && ` • ${edu.city}`}
@@ -264,7 +317,7 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
                     <Typography
                       variant="body2"
                       sx={{
-                        fontSize: '0.8rem',
+                        fontSize: getFontSize(0.8),
                         fontStyle: 'italic',
                         color: '#555',
                       }}
@@ -282,11 +335,14 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
         return (
           visibleSections.hobbies &&
           hobbies &&
-          (variant === 'sidebar') && (
+          (variant === 'sidebar') && !isPreview && ( // No hobbies in preview
             <Section title="Interests" key="hobbies">
               <Typography
                 variant="body2"
-                sx={{ fontSize: '0.9rem', ...wrapTextStyle }}
+                sx={{ 
+                  fontSize: getFontSize(0.9), 
+                  ...wrapTextStyle 
+                }}
               >
                 {hobbies}
               </Typography>
@@ -309,18 +365,20 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
       ref={ref}
       elevation={0}
       sx={{
-        p: { xs: 2, sm: 3, md: 4 },
+        p: isPreview ? 1 : { xs: 2, sm: 3, md: 4 },
         fontFamily: font,
         minHeight: '100%',
         bgcolor: '#f5f6fa',
         borderRadius: 2,
+        transform: isPreview ? 'scale(0.85)' : 'none',
+        transformOrigin: 'top left',
       }}
     >
       {/* ===== HEADER ===== */}
       <Box
         sx={{
-          mb: 3,
-          pb: 2,
+          mb: getSpacing(3),
+          pb: getSpacing(2),
           borderBottom: `2px solid ${accentColor}33`,
           display: 'flex',
           flexDirection: { xs: 'column-reverse', sm: 'row' },
@@ -334,16 +392,19 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
             variant="h3"
             sx={{
               fontWeight: 800,
-              fontSize: { xs: '1.8rem', sm: '2.1rem' },
+              fontSize: isPreview ? '1.2rem' : { xs: '1.8rem', sm: '2.1rem' },
               color: accentColor,
-              mb: 1,
+              mb: getSpacing(1),
               ...wrapTextStyle,
             }}
           >
-            {personalInfo.fullName?.toUpperCase() || 'YOUR NAME'}
+            {isPreview 
+              ? personalInfo.fullName?.toUpperCase().substring(0, 15) || 'YOUR NAME'
+              : personalInfo.fullName?.toUpperCase() || 'YOUR NAME'
+            }
           </Typography>
 
-          <Grid container spacing={0.7}>
+          <Grid container spacing={getSpacing(0.7)}>
             <Grid item xs={12} sm={6}>
               <ContactItem icon={Mail} text={personalInfo.email} />
             </Grid>
@@ -353,22 +414,26 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
             <Grid item xs={12} sm={6}>
               <ContactItem icon={MapPin} text={personalInfo.address} />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <ContactItem icon={Linkedin} text={personalInfo.linkedin} link />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <ContactItem icon={Globe} text={personalInfo.portfolio} link />
-            </Grid>
+            {!isPreview && (
+              <>
+                <Grid item xs={12} sm={6}>
+                  <ContactItem icon={Linkedin} text={personalInfo.linkedin} link />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <ContactItem icon={Globe} text={personalInfo.portfolio} link />
+                </Grid>
+              </>
+            )}
           </Grid>
         </Box>
 
-        {personalInfo.photo && (
+        {personalInfo.photo && !isPreview && (
           <Avatar
             src={personalInfo.photo}
             variant="rounded"
             sx={{
-              width: 110,
-              height: 110,
+              width: isPreview ? 60 : 110,
+              height: isPreview ? 60 : 110,
               border: `2px solid ${accentColor}33`,
               bgcolor: '#fff',
             }}
@@ -380,27 +445,29 @@ const TemplateCorporate = forwardRef(({ data, visibleSections, sectionOrder, the
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          gap: 3,
+          flexDirection: { xs: 'column', md: isPreview ? 'column' : 'row' },
+          gap: getSpacing(3),
         }}
       >
-        {/* SIDEBAR */}
-        <Box
-          sx={{
-            width: { xs: '100%', md: '30%' },
-            bgcolor: '#ffffff',
-            borderRadius: 2,
-            p: 2,
-            border: `1px solid ${accentColor}15`,
-          }}
-        >
-          {sidebarOrder.map((id) => renderSection(id, 'sidebar'))}
-        </Box>
+        {/* SIDEBAR - Only skills in preview */}
+        {(!isPreview || (isPreview && sidebarOrder.includes('skills'))) && (
+          <Box
+            sx={{
+              width: isPreview ? '100%' : { xs: '100%', md: '30%' },
+              bgcolor: '#ffffff',
+              borderRadius: 2,
+              p: isPreview ? 1 : 2,
+              border: `1px solid ${accentColor}15`,
+            }}
+          >
+            {sidebarOrder.map((id) => renderSection(id, 'sidebar'))}
+          </Box>
+        )}
 
         {/* MAIN CONTENT */}
         <Box
           sx={{
-            width: { xs: '100%', md: '70%' },
+            width: isPreview ? '100%' : { xs: '100%', md: '70%' },
           }}
         >
           {mainOrder.map((id) => renderSection(id, 'main'))}

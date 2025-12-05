@@ -54,8 +54,6 @@ const HomePage = ({ onStart }) => {
               </Typography>
             </Box>
             <Stack direction="row" spacing={{ xs: 1, md: 2 }}>
-               <Button color="inherit" sx={{ display: { xs: 'none', md: 'block' }, fontWeight: 500 }}>Templates</Button>
-               <Button color="inherit" sx={{ display: { xs: 'none', md: 'block' }, fontWeight: 500 }}>How it Works</Button>
                <Button 
                 variant="contained" 
                 onClick={onStart}
@@ -136,21 +134,6 @@ const HomePage = ({ onStart }) => {
         </Container>
       </Box>
 
-      {/* === 3. LOGO STRIP === */}
-      <Box sx={{ py: 4, borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', bgcolor: '#fafafa' }}>
-        <Container maxWidth="lg">
-          <Typography variant="caption" display="block" textAlign="center" color="text.secondary" mb={3} fontWeight="bold" letterSpacing={1.5}>
-            OUR CUSTOMERS HAVE BEEN HIRED BY
-          </Typography>
-          <Grid container justifyContent="center" alignItems="center" spacing={{ xs: 4, md: 8 }}>
-            {['Amazon', 'Google', 'Microsoft', 'Tesla', 'Spotify', 'Netflix'].map((brand) => (
-              <Grid item key={brand}>
-                <CompanyLogo name={brand} />
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
 
       {/* === 4. HOW IT WORKS === */}
       <Box sx={{ py: 12, bgcolor: '#ffffff' }}>
@@ -251,7 +234,7 @@ const HomePage = ({ onStart }) => {
            
            <Grid container spacing={4}>
              {templates.map((tpl, idx) => (
-               <Grid item xs={12} sm={6} md={3} key={idx}>
+               <Grid item xs={12}key={idx}>
                  <Box 
                    onClick={onStart}
                    sx={{ 
