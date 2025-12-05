@@ -532,7 +532,7 @@ const HomePage = ({ onStart }) => {
               <Typography variant="h3" fontWeight="900" my={2}>Pick a template. Start Building.</Typography>
               <Typography variant="body1" color="#94a3b8" maxWidth="600px" mx="auto">All templates are ATS-friendly and fully customizable.</Typography>
            </Box>
-           <Grid container spacing={3}>{templateCombinations.map((combo, idx) => (<Grid item xs={12} md={6} lg={4} key={idx}><TemplatePreviewCard layoutId={combo.layoutId} colorId={combo.colorId} fontId={combo.fontId} onSelect={onStart} /></Grid>))}</Grid>
+           <Grid container spacing={3}>{templateCombinations.slice(0, 2).map((combo, idx) => (<Grid item xs={12} md={6} lg={4} key={idx}><TemplatePreviewCard layoutId={combo.layoutId} colorId={combo.colorId} fontId={combo.fontId} onSelect={onStart} /></Grid>))}</Grid>
         </Container>
       </Box>
 
