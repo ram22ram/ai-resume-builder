@@ -170,7 +170,9 @@ const TemplateModern = forwardRef(({ data, theme, config }, ref) => {
   return (
     <Paper ref={ref} elevation={0} sx={{ p: 4, fontFamily: font, minHeight: '100%', color: '#222', borderLeft: `8px solid ${accentColor}`, bgcolor: 'white' }}>
       <Box sx={{ textAlign: 'center', mb: 3 }}>
-        {data.personalInfo.photo && <Avatar src={data.personalInfo.photo} sx={{ width: 100, height: 100, mx: 'auto', mb: 2, border: `3px solid ${accentColor}` }} />}
+        {data.personalInfo.photo && (
+          <Avatar src={data.personalInfo.photo} sx={{ width: 100, height: 100, mx: 'auto', mb: 2, border: `3px solid ${accentColor}` }} />
+        )}
         <Typography variant="h3" sx={{ fontWeight: 800, color: accentColor, letterSpacing: -0.5, mb: 0.5, fontSize: '2.5rem' }}>{data.personalInfo.fullName}</Typography>
         <Typography variant="body1" sx={{ color: '#555' }}>{data.personalInfo.address}</Typography>
         <Stack direction="row" justifyContent="center" spacing={2} sx={{ fontSize: '0.9rem' }}>
@@ -178,10 +180,52 @@ const TemplateModern = forwardRef(({ data, theme, config }, ref) => {
         </Stack>
       </Box>
       {data.sectionOrder.map(sec => {
-        if (sec === 'summary' && data.visibleSections.summary && data.summary) return <Box key="sum" sx={{ mb: spacing + 1 }}><Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Summary</Typography><Typography variant="body2">{data.summary}</Typography></Box>;
-        if (sec === 'experience' && data.visibleSections.experience) return <Box key="exp" sx={{ mb: spacing + 1 }}><Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Experience</Typography>{data.experience.map(exp => <Box key={exp.id} mb={spacing} pl={2} borderLeft={`2px solid ${accentColor}44`}><Typography fontWeight={700}>{exp.title}</Typography><Typography variant="body2" color="text.secondary">{exp.company}</Typography><Typography variant="caption">{formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}</Typography><Typography variant="body2" mt={0.5}>{exp.description}</Typography></Box>)}</Box>;
-        if (sec === 'skills' && data.visibleSections.skills) return <Box key="sk" sx={{ mb: spacing }}><Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Skills</Typography><Box display="flex" gap={1} flexWrap="wrap">{data.skills.map(s => <Chip key={s} label={s} size="small" sx={{ bgcolor: `${accentColor}15`, color: accentColor, fontWeight: 600 }} />)}</Box></Box>;
-        if (sec === 'education' && data.visibleSections.education) return <Box key="edu" sx={{ mb: spacing }}><Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Education</Typography>{data.education.map(e => <Box key={e.id} mb={1}><Typography fontWeight={700}>{e.degree}</Typography><Typography variant="body2">{e.school}, {e.year}</Typography></Box>)}</Box>;
+        if (sec === 'summary' && data.visibleSections.summary && data.summary) {
+          return (
+            <Box key="sum" sx={{ mb: spacing + 1 }}>
+              <Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Summary</Typography>
+              <Typography variant="body2">{data.summary}</Typography>
+            </Box>
+          );
+        }
+        if (sec === 'experience' && data.visibleSections.experience) {
+          return (
+            <Box key="exp" sx={{ mb: spacing + 1 }}>
+              <Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Experience</Typography>
+              {data.experience.map(exp => (
+                <Box key={exp.id} mb={spacing} pl={2} borderLeft={`2px solid ${accentColor}44`}>
+                  <Typography fontWeight={700}>{exp.title}</Typography>
+                  <Typography variant="body2" color="text.secondary">{exp.company}</Typography>
+                  <Typography variant="caption">{formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}</Typography>
+                  <Typography variant="body2" mt={0.5}>{exp.description}</Typography>
+                </Box>
+              ))}
+            </Box>
+          );
+        }
+        if (sec === 'skills' && data.visibleSections.skills) {
+          return (
+            <Box key="sk" sx={{ mb: spacing }}>
+              <Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Skills</Typography>
+              <Box display="flex" gap={1} flexWrap="wrap">
+                {data.skills.map(s => <Chip key={s} label={s} size="small" sx={{ bgcolor: `${accentColor}15`, color: accentColor, fontWeight: 600 }} />)}
+              </Box>
+            </Box>
+          );
+        }
+        if (sec === 'education' && data.visibleSections.education) {
+          return (
+            <Box key="edu" sx={{ mb: spacing }}>
+              <Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Education</Typography>
+              {data.education.map(e => (
+                <Box key={e.id} mb={1}>
+                  <Typography fontWeight={700}>{e.degree}</Typography>
+                  <Typography variant="body2">{e.school}, {e.year}</Typography>
+                </Box>
+              ))}
+            </Box>
+          );
+        }
         return null;
       })}
     </Paper>
@@ -190,6 +234,7 @@ const TemplateModern = forwardRef(({ data, theme, config }, ref) => {
 
 const TemplateSwiss = forwardRef(({ data, theme, config }, ref) => {
   const { accentColor, font } = theme;
+  const spacing = config.density === 'compact' ? 2 : 3;
   return (
     <Paper ref={ref} elevation={0} sx={{ minHeight: '100%', fontFamily: font, bgcolor: '#fff' }}>
       <Box sx={{ bgcolor: accentColor, color: 'white', p: 4, display: 'flex', gap: 3, alignItems: 'center' }}>
@@ -201,9 +246,39 @@ const TemplateSwiss = forwardRef(({ data, theme, config }, ref) => {
       </Box>
       <Box sx={{ p: 4 }}>
         {data.sectionOrder.map(sec => {
-           if (sec === 'summary' && data.visibleSections.summary) return <Box key="sum" mb={3}><Typography fontWeight={700} textTransform="uppercase" mb={1}>Profile</Typography><Typography>{data.summary}</Typography></Box>;
-           if (sec === 'experience' && data.visibleSections.experience) return <Box key="exp" mb={3}><Typography fontWeight={700} textTransform="uppercase" mb={2}>Experience</Typography>{data.experience.map(exp => <Grid container key={exp.id} spacing={2} mb={2}><Grid item xs={3}><Typography variant="body2" fontWeight={700} color="text.secondary">{formatDate(exp.startDate)} - {exp.isPresent ? 'Now' : formatDate(exp.endDate)}</Typography></Grid><Grid item xs={9}><Typography variant="h6" fontSize="1.1rem" fontWeight={800}>{exp.title}</Typography><Typography variant="subtitle2" color={accentColor}>{exp.company}</Typography><Typography variant="body2">{exp.description}</Typography></Grid></Grid>)}</Box>;
-           if (sec === 'skills' && data.visibleSections.skills) return <Box key="sk" mb={3}><Typography fontWeight={700} textTransform="uppercase" mb={1}>Skills</Typography><Typography fontWeight={500}>{data.skills.join(' • ')}</Typography></Box>;
+           if (sec === 'summary' && data.visibleSections.summary) {
+             return (
+               <Box key="sum" mb={spacing}>
+                 <Typography fontWeight={700} textTransform="uppercase" mb={1}>Profile</Typography>
+                 <Typography>{data.summary}</Typography>
+               </Box>
+             );
+           }
+           if (sec === 'experience' && data.visibleSections.experience) {
+             return (
+               <Box key="exp" mb={spacing}>
+                 <Typography fontWeight={700} textTransform="uppercase" mb={2}>Experience</Typography>
+                 {data.experience.map(exp => (
+                   <Grid container key={exp.id} spacing={2} mb={2}>
+                     <Grid item xs={3}><Typography variant="body2" fontWeight={700} color="text.secondary">{formatDate(exp.startDate)} - {exp.isPresent ? 'Now' : formatDate(exp.endDate)}</Typography></Grid>
+                     <Grid item xs={9}>
+                       <Typography variant="h6" fontSize="1.1rem" fontWeight={800}>{exp.title}</Typography>
+                       <Typography variant="subtitle2" color={accentColor}>{exp.company}</Typography>
+                       <Typography variant="body2">{exp.description}</Typography>
+                     </Grid>
+                   </Grid>
+                 ))}
+               </Box>
+             );
+           }
+           if (sec === 'skills' && data.visibleSections.skills) {
+             return (
+               <Box key="sk" mb={spacing}>
+                 <Typography fontWeight={700} textTransform="uppercase" mb={1}>Skills</Typography>
+                 <Typography fontWeight={500}>{data.skills.join(' • ')}</Typography>
+               </Box>
+             );
+           }
            return null;
         })}
       </Box>
@@ -217,14 +292,59 @@ const TemplateCorporate = forwardRef(({ data, theme, config }, ref) => {
     <Paper ref={ref} elevation={0} sx={{ minHeight: '100%', display: 'flex', fontFamily: font, bgcolor: 'white' }}>
       <Box sx={{ width: '30%', bgcolor: '#f8fafc', p: 3, borderRight: '1px solid #e2e8f0' }}>
         {data.personalInfo.photo && <Avatar src={data.personalInfo.photo} sx={{ width: 100, height: 100, mb: 3 }} />}
-        <Box mb={3}><Typography variant="subtitle2" color={accentColor} fontWeight={700} mb={1}>CONTACT</Typography><Stack spacing={0.5} fontSize="0.85rem" color="#475569"><Box>{data.personalInfo.email}</Box><Box>{data.personalInfo.phone}</Box><Box>{data.personalInfo.address}</Box></Stack></Box>
-        {data.visibleSections.skills && <Box mb={3}><Typography variant="subtitle2" color={accentColor} fontWeight={700} mb={1}>SKILLS</Typography><Box display="flex" flexWrap="wrap" gap={0.5}>{data.skills.map(s => <Chip key={s} label={s} size="small" sx={{ bgcolor: 'white', border: '1px solid #cbd5e1' }} />)}</Box></Box>}
-        <Box><Typography variant="subtitle2" color={accentColor} fontWeight={700} mb={1}>EDUCATION</Typography>{data.education.map(e => <Box key={e.id} mb={1}><Typography fontWeight={700} fontSize="0.85rem">{e.degree}</Typography><Typography fontSize="0.8rem">{e.school}</Typography></Box>)}</Box>
+        <Box mb={3}>
+          <Typography variant="subtitle2" color={accentColor} fontWeight={700} mb={1}>CONTACT</Typography>
+          <Stack spacing={0.5} fontSize="0.85rem" color="#475569">
+            <Box>{data.personalInfo.email}</Box>
+            <Box>{data.personalInfo.phone}</Box>
+            <Box>{data.personalInfo.address}</Box>
+          </Stack>
+        </Box>
+        {data.visibleSections.skills && (
+          <Box mb={3}>
+            <Typography variant="subtitle2" color={accentColor} fontWeight={700} mb={1}>SKILLS</Typography>
+            <Box display="flex" flexWrap="wrap" gap={0.5}>
+              {data.skills.map(s => <Chip key={s} label={s} size="small" sx={{ bgcolor: 'white', border: '1px solid #cbd5e1' }} />)}
+            </Box>
+          </Box>
+        )}
+        <Box>
+          <Typography variant="subtitle2" color={accentColor} fontWeight={700} mb={1}>EDUCATION</Typography>
+          {data.education.map(e => (
+            <Box key={e.id} mb={1}>
+              <Typography fontWeight={700} fontSize="0.85rem">{e.degree}</Typography>
+              <Typography fontSize="0.8rem">{e.school}</Typography>
+            </Box>
+          ))}
+        </Box>
       </Box>
       <Box sx={{ width: '70%', p: 4 }}>
-        <Box sx={{ mb: 4, borderBottom: `2px solid ${accentColor}`, pb: 2 }}><Typography variant="h3" sx={{ fontWeight: 800, color: '#0f172a', textTransform: 'uppercase' }}>{data.personalInfo.fullName}</Typography><Typography variant="h6" color={accentColor}>{data.personalInfo.linkedin}</Typography></Box>
-        {data.visibleSections.summary && <Box mb={4}><Typography variant="h6" fontWeight={700} sx={{ mb: 1, color: '#334155' }}>PROFILE</Typography><Typography variant="body2">{data.summary}</Typography></Box>}
-        {data.visibleSections.experience && <Box><Typography variant="h6" fontWeight={700} sx={{ mb: 2, color: '#334155' }}>WORK HISTORY</Typography>{data.experience.map(exp => <Box key={exp.id} mb={3}><Typography variant="h6" fontWeight={700} fontSize="1.1rem">{exp.title}</Typography><Stack direction="row" spacing={1} alignItems="center" mb={0.5}><Typography fontWeight={600} color={accentColor}>{exp.company}</Typography><Divider orientation="vertical" flexItem /><Typography variant="caption">{formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}</Typography></Stack><Typography variant="body2">{exp.description}</Typography></Box>)}</Box>}
+        <Box sx={{ mb: 4, borderBottom: `2px solid ${accentColor}`, pb: 2 }}>
+          <Typography variant="h3" sx={{ fontWeight: 800, color: '#0f172a', textTransform: 'uppercase' }}>{data.personalInfo.fullName}</Typography>
+          <Typography variant="h6" color={accentColor}>{data.personalInfo.linkedin}</Typography>
+        </Box>
+        {data.visibleSections.summary && (
+          <Box mb={4}>
+            <Typography variant="h6" fontWeight={700} sx={{ mb: 1, color: '#334155' }}>PROFILE</Typography>
+            <Typography variant="body2">{data.summary}</Typography>
+          </Box>
+        )}
+        {data.visibleSections.experience && (
+          <Box>
+            <Typography variant="h6" fontWeight={700} sx={{ mb: 2, color: '#334155' }}>WORK HISTORY</Typography>
+            {data.experience.map(exp => (
+              <Box key={exp.id} mb={3}>
+                <Typography variant="h6" fontWeight={700} fontSize="1.1rem">{exp.title}</Typography>
+                <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
+                  <Typography fontWeight={600} color={accentColor}>{exp.company}</Typography>
+                  <Divider orientation="vertical" flexItem />
+                  <Typography variant="caption">{formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}</Typography>
+                </Stack>
+                <Typography variant="body2">{exp.description}</Typography>
+              </Box>
+            ))}
+          </Box>
+        )}
       </Box>
     </Paper>
   );
@@ -240,9 +360,39 @@ const TemplateClassic = forwardRef(({ data, theme, config }, ref) => {
       </Box>
       <Box sx={{ textAlign: 'left' }}>
         {data.sectionOrder.map(sec => {
-          if (sec === 'summary' && data.visibleSections.summary) return <Box key="sum" sx={{ mb: 3 }}><Typography variant="h6" sx={{ fontWeight: 700, textTransform: 'uppercase', borderBottom: '1px solid #ccc', mb: 1 }}>Profile</Typography><Typography variant="body2">{data.summary}</Typography></Box>;
-          if (sec === 'experience' && data.visibleSections.experience) return <Box key="exp" sx={{ mb: 3 }}><Typography variant="h6" sx={{ fontWeight: 700, textTransform: 'uppercase', borderBottom: '1px solid #ccc', mb: 2 }}>Professional Experience</Typography>{data.experience.map(exp => <Box key={exp.id} sx={{ mb: 2 }}><Box display="flex" justifyContent="space-between" alignItems="baseline"><Typography variant="h6" fontSize="1.05rem" fontWeight={700}>{exp.title}</Typography><Typography variant="body2" fontStyle="italic">{formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}</Typography></Box><Typography variant="subtitle2" fontWeight={600} gutterBottom>{exp.company}</Typography><Typography variant="body2">{exp.description}</Typography></Box>)}</Box>;
-          if (sec === 'skills' && data.visibleSections.skills) return <Box key="sk" sx={{ mb: 3 }}><Typography variant="h6" sx={{ fontWeight: 700, textTransform: 'uppercase', borderBottom: '1px solid #ccc', mb: 1 }}>Skills</Typography><Typography>{data.skills.join(' • ')}</Typography></Box>;
+          if (sec === 'summary' && data.visibleSections.summary) {
+            return (
+              <Box key="sum" sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, textTransform: 'uppercase', borderBottom: '1px solid #ccc', mb: 1 }}>Profile</Typography>
+                <Typography variant="body2">{data.summary}</Typography>
+              </Box>
+            );
+          }
+          if (sec === 'experience' && data.visibleSections.experience) {
+            return (
+              <Box key="exp" sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, textTransform: 'uppercase', borderBottom: '1px solid #ccc', mb: 2 }}>Professional Experience</Typography>
+                {data.experience.map(exp => (
+                  <Box key={exp.id} sx={{ mb: 2 }}>
+                    <Box display="flex" justifyContent="space-between" alignItems="baseline">
+                      <Typography variant="h6" fontSize="1.05rem" fontWeight={700}>{exp.title}</Typography>
+                      <Typography variant="body2" fontStyle="italic">{formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}</Typography>
+                    </Box>
+                    <Typography variant="subtitle2" fontWeight={600} gutterBottom>{exp.company}</Typography>
+                    <Typography variant="body2">{exp.description}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            );
+          }
+          if (sec === 'skills' && data.visibleSections.skills) {
+            return (
+              <Box key="sk" sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, textTransform: 'uppercase', borderBottom: '1px solid #ccc', mb: 1 }}>Skills</Typography>
+                <Typography>{data.skills.join(' • ')}</Typography>
+              </Box>
+            );
+          }
           return null;
         })}
       </Box>
@@ -272,8 +422,16 @@ const TemplatePreviewCard = ({ layoutId, colorId, fontId, onSelect }) => {
 
   return (
     <Box onClick={() => onSelect(layoutId, colorId, fontId)} sx={{ cursor: 'pointer', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0', transition: 'all 0.2s', bgcolor: 'white', '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 20px -5px rgba(0,0,0,0.1)', borderColor: color.primary } }}>
-      <Box sx={{ height: '320px', bgcolor: '#f1f5f9', overflow: 'hidden', position: 'relative' }}>
-        <Box sx={{ width: '210mm', height: '297mm', transform: 'scale(0.35)', transformOrigin: 'top left', position: 'absolute', top: 0, left: 0, bgcolor: 'white', pointerEvents: 'none' }}>
+      <Box sx={{ height: '320px', bgcolor: '#f1f5f9', overflow: 'hidden', position: 'relative', display: 'flex', justifyContent: 'center' }}>
+        {/* Centered and scaled Resume */}
+        <Box sx={{ 
+          width: '210mm', height: '297mm', 
+          transform: 'scale(0.45)', // Increased scale for clarity
+          transformOrigin: 'top center',
+          position: 'absolute', top: 0,
+          bgcolor: 'white', pointerEvents: 'none',
+          boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
+        }}>
           {renderThumbnail()}
         </Box>
       </Box>
@@ -328,13 +486,13 @@ const HomePage = ({ onStart }) => {
             <span style={{ background: brandGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>in Minutes.</span>
           </Typography>
           <Typography variant="h6" sx={{ mb: 6, color: '#64748b', fontWeight: 'normal', maxWidth: '650px', mx: 'auto' }}>
-            Select a template below to start building your ATS-friendly resume.
+            Choose from 100+ professionally designed templates. Optimized for ATS and readable by recruiters.
           </Typography>
           <Button variant="contained" size="large" onClick={() => document.getElementById('templates').scrollIntoView({ behavior: 'smooth' })} endIcon={<ArrowRight size={20} />} sx={{ py: 2, px: 5, fontSize: '1.1rem', borderRadius: '12px', background: '#0f172a', textTransform: 'none', fontWeight: 'bold' }}>Browse Templates</Button>
         </Container>
       </Box>
 
-      {/* Feature Highlight */}
+      {/* Feature Highlight (AI) */}
       <Box sx={{ py: 12 }}>
         <Container maxWidth="lg">
           <Grid container spacing={8} alignItems="center">
@@ -374,7 +532,7 @@ const HomePage = ({ onStart }) => {
               <Typography variant="h3" fontWeight="900" my={2}>Pick a template. Start Building.</Typography>
               <Typography variant="body1" color="#94a3b8" maxWidth="600px" mx="auto">All templates are ATS-friendly and fully customizable.</Typography>
            </Box>
-           <Grid container spacing={3}>{templateCombinations.map((combo, idx) => (<Grid item xs={12} sm={6} md={3} lg={2.4} key={idx}><TemplatePreviewCard layoutId={combo.layoutId} colorId={combo.colorId} fontId={combo.fontId} onSelect={onStart} /></Grid>))}</Grid>
+           <Grid container spacing={3}>{templateCombinations.map((combo, idx) => (<Grid item xs={12} md={6} lg={4} key={idx}><TemplatePreviewCard layoutId={combo.layoutId} colorId={combo.colorId} fontId={combo.fontId} onSelect={onStart} /></Grid>))}</Grid>
         </Container>
       </Box>
 
@@ -388,6 +546,11 @@ const HomePage = ({ onStart }) => {
               <Box sx={{ p: 4, bgcolor: '#0f172a', borderRadius: '24px', color: 'white', textAlign: 'left', maxWidth: '400px', mx: 'auto' }}>
                  <Typography variant="h6" fontWeight="bold" mb={1}>Premium Download</Typography>
                  <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 3 }}><Typography variant="h3" fontWeight="800">₹30</Typography><Typography variant="body2" color="#94a3b8">/ download</Typography></Box>
+                 <Stack spacing={1.5} mb={3}>
+                    {["Unlimited AI Suggestions", "PDF Export (High Quality)", "No Watermark", "ATS Optimized Layout"].map(f => (
+                      <Box key={f} display="flex" gap={1} alignItems="center"><CheckCircle2 size={16} color="#4ade80" /><Typography variant="body2">{f}</Typography></Box>
+                    ))}
+                 </Stack>
                  <Button fullWidth variant="contained" size="large" onClick={() => onStart('modern', 'blue', 'modern')} sx={{ bgcolor: '#7c3aed', color: 'white', fontWeight: 'bold' }}>Create Resume</Button>
               </Box>
            </Paper>
@@ -402,6 +565,8 @@ const HomePage = ({ onStart }) => {
             {[
               { q: "Is this resume builder really free to try?", a: "Yes! You can build your resume, try all templates, and use the AI features for free. You only pay ₹30 when you are ready to download." },
               { q: "Can I edit my resume after downloading?", a: "Since the download is a PDF file, you cannot edit the file directly. However, your data is saved in your browser, so you can come back, make edits, and download again." },
+              { q: "Is the payment secure?", a: "Absolutely. We use Razorpay, India's leading payment gateway, which uses industry-standard encryption to process your payment securely." },
+              { q: "Does it work for freshers?", a: "Yes! Our templates are designed to highlight skills and education, making them perfect for students and freshers with little work experience." }
             ].map((item, index) => (
               <Accordion key={index} elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: '12px !important', '&:before': { display: 'none' }, bgcolor: 'white' }}>
                 <AccordionSummary expandIcon={<ChevronDown color="#94a3b8" />}><Typography fontWeight="bold" color="#334155">{item.q}</Typography></AccordionSummary>
@@ -429,10 +594,6 @@ export default function App() {
   const [resumeData, setResumeData] = useState(INITIAL_DATA);
   const previewRef = useRef(null);
   const isMobile = useMediaQuery('(max-width:900px)');
-
-  const activeLayout = LAYOUTS[config.layout];
-  const activeColor = COLOR_SYSTEMS[config.color];
-  const activeFont = TYPOGRAPHY_SYSTEMS[config.font];
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -483,6 +644,9 @@ export default function App() {
   };
 
   const renderTemplate = () => {
+    const activeLayout = LAYOUTS[config.layout];
+    const activeColor = COLOR_SYSTEMS[config.color];
+    const activeFont = TYPOGRAPHY_SYSTEMS[config.font];
     const props = { data: resumeData, theme: { accentColor: activeColor.primary, fontFamily: activeFont.family }, config: config, ref: previewRef };
     switch(config.layout) {
       case 'modern': return <TemplateModern {...props} />;
