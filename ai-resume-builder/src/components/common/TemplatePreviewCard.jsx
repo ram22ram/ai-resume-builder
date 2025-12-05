@@ -6,10 +6,10 @@ import {TemplateSwiss} from '../templates/TemplateSwiss';
 import {TemplateCorporate} from '../templates/TemplateCorporate';
 import {TemplateFred} from '../templates/TemplateFred';
 import {TemplatePat} from '../templates/TemplatePat';
-import {TemplateKristy} from '../components/templates/TemplateKristy';
-import {TemplateElena} from '../components/templates/TemplateElena';
-import {TemplateEileen} from '../components/templates/TemplateEileen';
-import {TemplateHarvey} from '../components/templates/TemplateHarvey';
+import {TemplateKristy} from '../templates/TemplateKristy';
+import {TemplateElena} from '../templates/TemplateElena';
+import {TemplateEileen} from '../templates/TemplateEileen';
+import {TemplateHarvey} from '../templates/TemplateHarvey';
 
 
 const TemplatePreviewCard = ({ templateId, color = '#0B57D0' }) => {
