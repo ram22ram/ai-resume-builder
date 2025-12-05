@@ -8,7 +8,7 @@ import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
 import { 
   Download, ArrowLeft, Mail, Phone, MapPin, Linkedin, Globe, 
   Layout, Palette, Type, Maximize2, Minimize2, User, Sparkles, 
-  CheckCircle2, Star, ArrowRight, ChevronDown, Plus, Trash2, Edit3, Monitor, Upload, ShieldCheck
+  CheckCircle2, Star, ArrowRight, ChevronDown, Plus, Trash2, Edit3, Monitor, Upload, ShieldCheck, Zap
 } from 'lucide-react';
 // Loaded via CDN in useEffect
 import dayjs from 'dayjs';
@@ -170,9 +170,7 @@ const TemplateModern = forwardRef(({ data, theme, config }, ref) => {
   return (
     <Paper ref={ref} elevation={0} sx={{ p: 4, fontFamily: font, minHeight: '100%', color: '#222', borderLeft: `8px solid ${accentColor}`, bgcolor: 'white' }}>
       <Box sx={{ textAlign: 'center', mb: 3 }}>
-        {data.personalInfo.photo && (
-          <Avatar src={data.personalInfo.photo} sx={{ width: 100, height: 100, mx: 'auto', mb: 2, border: `3px solid ${accentColor}` }} />
-        )}
+        {data.personalInfo.photo && <Avatar src={data.personalInfo.photo} sx={{ width: 100, height: 100, mx: 'auto', mb: 2, border: `3px solid ${accentColor}` }} />}
         <Typography variant="h3" sx={{ fontWeight: 800, color: accentColor, letterSpacing: -0.5, mb: 0.5, fontSize: '2.5rem' }}>{data.personalInfo.fullName}</Typography>
         <Typography variant="body1" sx={{ color: '#555' }}>{data.personalInfo.address}</Typography>
         <Stack direction="row" justifyContent="center" spacing={2} sx={{ fontSize: '0.9rem' }}>
@@ -180,52 +178,10 @@ const TemplateModern = forwardRef(({ data, theme, config }, ref) => {
         </Stack>
       </Box>
       {data.sectionOrder.map(sec => {
-        if (sec === 'summary' && data.visibleSections.summary && data.summary) {
-          return (
-            <Box key="sum" sx={{ mb: spacing + 1 }}>
-              <Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Summary</Typography>
-              <Typography variant="body2">{data.summary}</Typography>
-            </Box>
-          );
-        }
-        if (sec === 'experience' && data.visibleSections.experience) {
-          return (
-            <Box key="exp" sx={{ mb: spacing + 1 }}>
-              <Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Experience</Typography>
-              {data.experience.map(exp => (
-                <Box key={exp.id} mb={spacing} pl={2} borderLeft={`2px solid ${accentColor}44`}>
-                  <Typography fontWeight={700}>{exp.title}</Typography>
-                  <Typography variant="body2" color="text.secondary">{exp.company}</Typography>
-                  <Typography variant="caption">{formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}</Typography>
-                  <Typography variant="body2" mt={0.5}>{exp.description}</Typography>
-                </Box>
-              ))}
-            </Box>
-          );
-        }
-        if (sec === 'skills' && data.visibleSections.skills) {
-          return (
-            <Box key="sk" sx={{ mb: spacing }}>
-              <Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Skills</Typography>
-              <Box display="flex" gap={1} flexWrap="wrap">
-                {data.skills.map(s => <Chip key={s} label={s} size="small" sx={{ bgcolor: `${accentColor}15`, color: accentColor, fontWeight: 600 }} />)}
-              </Box>
-            </Box>
-          );
-        }
-        if (sec === 'education' && data.visibleSections.education) {
-          return (
-            <Box key="edu" sx={{ mb: spacing }}>
-              <Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Education</Typography>
-              {data.education.map(e => (
-                <Box key={e.id} mb={1}>
-                  <Typography fontWeight={700}>{e.degree}</Typography>
-                  <Typography variant="body2">{e.school}, {e.year}</Typography>
-                </Box>
-              ))}
-            </Box>
-          );
-        }
+        if (sec === 'summary' && data.visibleSections.summary && data.summary) return <Box key="sum" sx={{ mb: spacing + 1 }}><Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Summary</Typography><Typography variant="body2">{data.summary}</Typography></Box>;
+        if (sec === 'experience' && data.visibleSections.experience) return <Box key="exp" sx={{ mb: spacing + 1 }}><Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Experience</Typography>{data.experience.map(exp => <Box key={exp.id} mb={spacing} pl={2} borderLeft={`2px solid ${accentColor}44`}><Typography fontWeight={700}>{exp.title}</Typography><Typography variant="body2" color="text.secondary">{exp.company}</Typography><Typography variant="caption">{formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}</Typography><Typography variant="body2" mt={0.5}>{exp.description}</Typography></Box>)}</Box>;
+        if (sec === 'skills' && data.visibleSections.skills) return <Box key="sk" sx={{ mb: spacing }}><Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Skills</Typography><Box display="flex" gap={1} flexWrap="wrap">{data.skills.map(s => <Chip key={s} label={s} size="small" sx={{ bgcolor: `${accentColor}15`, color: accentColor, fontWeight: 600 }} />)}</Box></Box>;
+        if (sec === 'education' && data.visibleSections.education) return <Box key="edu" sx={{ mb: spacing }}><Typography variant="h6" fontWeight={700} color={accentColor} textTransform="uppercase" mb={1}>Education</Typography>{data.education.map(e => <Box key={e.id} mb={1}><Typography fontWeight={700}>{e.degree}</Typography><Typography variant="body2">{e.school}, {e.year}</Typography></Box>)}</Box>;
         return null;
       })}
     </Paper>
@@ -246,39 +202,9 @@ const TemplateSwiss = forwardRef(({ data, theme, config }, ref) => {
       </Box>
       <Box sx={{ p: 4 }}>
         {data.sectionOrder.map(sec => {
-           if (sec === 'summary' && data.visibleSections.summary) {
-             return (
-               <Box key="sum" mb={spacing}>
-                 <Typography fontWeight={700} textTransform="uppercase" mb={1}>Profile</Typography>
-                 <Typography>{data.summary}</Typography>
-               </Box>
-             );
-           }
-           if (sec === 'experience' && data.visibleSections.experience) {
-             return (
-               <Box key="exp" mb={spacing}>
-                 <Typography fontWeight={700} textTransform="uppercase" mb={2}>Experience</Typography>
-                 {data.experience.map(exp => (
-                   <Grid container key={exp.id} spacing={2} mb={2}>
-                     <Grid item xs={3}><Typography variant="body2" fontWeight={700} color="text.secondary">{formatDate(exp.startDate)} - {exp.isPresent ? 'Now' : formatDate(exp.endDate)}</Typography></Grid>
-                     <Grid item xs={9}>
-                       <Typography variant="h6" fontSize="1.1rem" fontWeight={800}>{exp.title}</Typography>
-                       <Typography variant="subtitle2" color={accentColor}>{exp.company}</Typography>
-                       <Typography variant="body2">{exp.description}</Typography>
-                     </Grid>
-                   </Grid>
-                 ))}
-               </Box>
-             );
-           }
-           if (sec === 'skills' && data.visibleSections.skills) {
-             return (
-               <Box key="sk" mb={spacing}>
-                 <Typography fontWeight={700} textTransform="uppercase" mb={1}>Skills</Typography>
-                 <Typography fontWeight={500}>{data.skills.join(' • ')}</Typography>
-               </Box>
-             );
-           }
+           if (sec === 'summary' && data.visibleSections.summary) return <Box key="sum" mb={spacing}><Typography fontWeight={700} textTransform="uppercase" mb={1}>Profile</Typography><Typography>{data.summary}</Typography></Box>;
+           if (sec === 'experience' && data.visibleSections.experience) return <Box key="exp" mb={spacing}><Typography fontWeight={700} textTransform="uppercase" mb={2}>Experience</Typography>{data.experience.map(exp => <Grid container key={exp.id} spacing={2} mb={2}><Grid item xs={3}><Typography variant="body2" fontWeight={700} color="text.secondary">{formatDate(exp.startDate)} - {exp.isPresent ? 'Now' : formatDate(exp.endDate)}</Typography></Grid><Grid item xs={9}><Typography variant="h6" fontSize="1.1rem" fontWeight={800}>{exp.title}</Typography><Typography variant="subtitle2" color={accentColor}>{exp.company}</Typography><Typography variant="body2">{exp.description}</Typography></Grid></Grid>)}</Box>;
+           if (sec === 'skills' && data.visibleSections.skills) return <Box key="sk" mb={spacing}><Typography fontWeight={700} textTransform="uppercase" mb={1}>Skills</Typography><Typography fontWeight={500}>{data.skills.join(' • ')}</Typography></Box>;
            return null;
         })}
       </Box>
@@ -319,10 +245,7 @@ const TemplateCorporate = forwardRef(({ data, theme, config }, ref) => {
         </Box>
       </Box>
       <Box sx={{ width: '70%', p: 4 }}>
-        <Box sx={{ mb: 4, borderBottom: `2px solid ${accentColor}`, pb: 2 }}>
-          <Typography variant="h3" sx={{ fontWeight: 800, color: '#0f172a', textTransform: 'uppercase' }}>{data.personalInfo.fullName}</Typography>
-          <Typography variant="h6" color={accentColor}>{data.personalInfo.linkedin}</Typography>
-        </Box>
+        <Box sx={{ mb: 4, borderBottom: `2px solid ${accentColor}`, pb: 2 }}><Typography variant="h3" sx={{ fontWeight: 800, color: '#0f172a', textTransform: 'uppercase' }}>{data.personalInfo.fullName}</Typography><Typography variant="h6" color={accentColor}>{data.personalInfo.linkedin}</Typography></Box>
         {data.visibleSections.summary && (
           <Box mb={4}>
             <Typography variant="h6" fontWeight={700} sx={{ mb: 1, color: '#334155' }}>PROFILE</Typography>
@@ -422,11 +345,11 @@ const TemplatePreviewCard = ({ layoutId, colorId, fontId, onSelect }) => {
 
   return (
     <Box onClick={() => onSelect(layoutId, colorId, fontId)} sx={{ cursor: 'pointer', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0', transition: 'all 0.2s', bgcolor: 'white', '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 20px -5px rgba(0,0,0,0.1)', borderColor: color.primary } }}>
-      <Box sx={{ height: '320px', bgcolor: '#f1f5f9', overflow: 'hidden', position: 'relative', display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ height: '450px', bgcolor: '#f1f5f9', overflow: 'hidden', position: 'relative', display: 'flex', justifyContent: 'center' }}>
         {/* Centered and scaled Resume */}
         <Box sx={{ 
           width: '210mm', height: '297mm', 
-          transform: 'scale(0.45)', // Increased scale for clarity
+          transform: 'scale(0.65)', // Increased scale for clarity
           transformOrigin: 'top center',
           position: 'absolute', top: 0,
           bgcolor: 'white', pointerEvents: 'none',
@@ -511,13 +434,23 @@ const HomePage = ({ onStart }) => {
             </Grid>
             <Grid item xs={12} md={7}>
               <Box sx={{ position: 'relative' }}>
-                <Paper elevation={10} sx={{ p: 4, borderLeft: '4px solid #16a34a', bgcolor: 'white', borderRadius: '16px' }}>
-                  <Chip label="✨ AI Enhanced" size="small" sx={{ float: 'right', bgcolor: '#dcfce7', color: '#16a34a', fontWeight: 'bold' }} />
-                  <Typography variant="caption" fontWeight="bold" color="#16a34a" display="block" mb={1}>✅ AFTER</Typography>
-                  <Typography variant="body1" fontWeight="500" color="#0f172a" fontSize="1.1rem" lineHeight={1.6}>
-                    "Spearheaded a high-performing sales team of 15+, driving a <span style={{backgroundColor: '#dcfce7', padding: '0 4px'}}>40% increase in annual revenue</span> through strategic mentorship."
-                  </Typography>
-                </Paper>
+                {/* Visual Demo Card */}
+                <Stack spacing={2}>
+                  {/* Before Card (Restored) */}
+                  <Paper elevation={0} sx={{ p: 3, borderLeft: '4px solid #ef4444', bgcolor: '#fef2f2', borderRadius: '16px', opacity: 0.8, transform: 'scale(0.95)' }}>
+                    <Typography variant="caption" fontWeight="bold" color="#ef4444" display="flex" alignItems="center" gap={1} mb={1}>❌ BEFORE</Typography>
+                    <Typography variant="body1" color="#7f1d1d" fontFamily="monospace">"I managed a team of sales people."</Typography>
+                  </Paper>
+                  
+                  {/* After Card */}
+                  <Paper elevation={10} sx={{ p: 4, borderLeft: '4px solid #16a34a', bgcolor: 'white', borderRadius: '16px' }}>
+                    <Chip label="✨ AI Enhanced" size="small" sx={{ float: 'right', bgcolor: '#dcfce7', color: '#16a34a', fontWeight: 'bold' }} />
+                    <Typography variant="caption" fontWeight="bold" color="#16a34a" display="block" mb={1}>✅ AFTER</Typography>
+                    <Typography variant="body1" fontWeight="500" color="#0f172a" fontSize="1.1rem" lineHeight={1.6}>
+                      "Spearheaded a high-performing sales team of 15+, driving a <span style={{backgroundColor: '#dcfce7', padding: '0 4px'}}>40% increase in annual revenue</span> through strategic mentorship."
+                    </Typography>
+                  </Paper>
+                </Stack>
               </Box>
             </Grid>
           </Grid>
@@ -532,7 +465,7 @@ const HomePage = ({ onStart }) => {
               <Typography variant="h3" fontWeight="900" my={2}>Pick a template. Start Building.</Typography>
               <Typography variant="body1" color="#94a3b8" maxWidth="600px" mx="auto">All templates are ATS-friendly and fully customizable.</Typography>
            </Box>
-           <Grid container spacing={3}>{templateCombinations.slice(0, 2).map((combo, idx) => (<Grid item xs={12} md={6} lg={4} key={idx}><TemplatePreviewCard layoutId={combo.layoutId} colorId={combo.colorId} fontId={combo.fontId} onSelect={onStart} /></Grid>))}</Grid>
+           <Grid container spacing={4}>{templateCombinations.map((combo, idx) => (<Grid item xs={12} md={6} key={idx}><TemplatePreviewCard layoutId={combo.layoutId} colorId={combo.colorId} fontId={combo.fontId} onSelect={onStart} /></Grid>))}</Grid>
         </Container>
       </Box>
 
