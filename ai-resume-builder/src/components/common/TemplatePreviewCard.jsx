@@ -11,46 +11,65 @@ import TemplateElena from '../templates/TemplateElena';
 import TemplateEileen from '../templates/TemplateEileen';
 import TemplateHarvey from '../templates/TemplateHarvey';
 
-
 const TemplatePreviewCard = ({ templateId, color = '#0B57D0' }) => {
-  // Dummy data for preview
+  // Dummy data in CORRECT format for your templates
   const dummyData = {
     personalInfo: {
-      name: 'John Smith',
-      title: 'Senior Software Engineer',
+      fullName: 'John Smith',
       email: 'john.smith@example.com',
       phone: '+1 (555) 123-4567',
-      location: 'San Francisco, CA',
-      summary: 'Experienced software engineer with 8+ years in full-stack development. Passionate about creating scalable solutions and leading cross-functional teams.'
+      address: 'San Francisco, CA',
+      linkedin: 'linkedin.com/in/johnsmith',
+      portfolio: 'johnsmith.dev'
     },
-    workExperience: [
+    summary: 'Experienced software engineer with 8+ years in full-stack development. Passionate about creating scalable solutions and leading cross-functional teams.',
+    experience: [  // 👈 NOTE: 'experience' not 'workExperience'
       {
+        id: 1,
         title: 'Senior Software Engineer',
         company: 'Tech Corp Inc.',
         location: 'San Francisco, CA',
         startDate: '2020-03',
         endDate: 'Present',
+        isPresent: true,
         description: 'Lead development of scalable microservices architecture. Improved system performance by 40%. Mentored 5 junior developers.'
       },
       {
+        id: 2,
         title: 'Software Developer',
         company: 'Startup Labs',
         location: 'New York, NY',
         startDate: '2018-01',
         endDate: '2020-02',
+        isPresent: false,
         description: 'Developed and maintained React applications. Collaborated with design team on UI/UX improvements.'
       }
     ],
     education: [
       {
+        id: 1,
         degree: 'M.S. in Computer Science',
-        institution: 'Stanford University',
-        location: 'Stanford, CA',
+        school: 'Stanford University',  // 👈 NOTE: 'school' not 'institution'
+        city: 'Stanford, CA',
         year: '2017'
       }
     ],
-    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'AWS', 'Docker', 'Kubernetes', 'CI/CD']
+    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'AWS', 'Docker', 'Kubernetes', 'CI/CD'],
+    projects: [],
+    hobbies: ''
   };
+
+  // All sections visible in preview
+  const allVisibleSections = {
+    summary: true,
+    experience: true,
+    education: true,
+    skills: true,
+    projects: false,
+    hobbies: false
+  };
+
+  const defaultSectionOrder = ['summary', 'experience', 'education', 'skills'];
 
   // Template component mapping
   const templateComponents = {
@@ -108,10 +127,10 @@ const TemplatePreviewCard = ({ templateId, color = '#0B57D0' }) => {
           zIndex: 1
         }}>
           <TemplateComponent
-            personalInfo={dummyData.personalInfo}
-            workExperience={dummyData.workExperience}
-            education={dummyData.education}
-            skills={dummyData.skills}
+            data={dummyData}  // 👈 PASS AS 'data' prop
+            visibleSections={allVisibleSections}
+            sectionOrder={defaultSectionOrder}
+            theme={{ accentColor: color }}
             isPreview={true}
           />
         </Box>
