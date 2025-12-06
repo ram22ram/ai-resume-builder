@@ -261,7 +261,7 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
       >
         Check ATS Score Free
       </Button>
-
+{/* 
       <Button
         variant="text"
         sx={{
@@ -273,7 +273,7 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
         onClick={onLearnMore} // optional: props me add kar sakta hai
       >
         How does ATS check work?
-      </Button>
+      </Button> */}
     </Box>
 
     {/* Tiny reassurance line */}
