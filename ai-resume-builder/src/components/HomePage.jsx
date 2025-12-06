@@ -48,7 +48,11 @@ const HomePage = ({ onStart }) => {
         <Container maxWidth="xl">
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }} onClick={() => window.scrollTo(0, 0)}>
-              <Box sx={{ width: 32, height: 32, borderRadius: '8px', background: brandGradient }} />
+              <Box
+    component="img"
+    rel="icon" type="image/svg+xml" href="./public/favicon.svg"
+    sx={{ width: 32, height: 32, borderRadius: '8px', objectFit: 'cover' }}
+  />
               <Typography variant="h5" sx={{ fontWeight: '800', color: '#1e293b', letterSpacing: -0.5 }}>
                 Resume<span style={{ color: '#7c3aed' }}>AI</span>
               </Typography>
