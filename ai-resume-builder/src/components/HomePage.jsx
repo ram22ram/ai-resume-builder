@@ -140,29 +140,155 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
       </Box>
 
 
-<Box sx={{ py: 8, bgcolor: '#f8fafc', textAlign: 'center' }}>
-          <Container maxWidth="md">
-             <Typography variant="h4" fontWeight="900" mb={2}>
-               Already have a resume?
-             </Typography>
-             <Typography color="text.secondary" mb={4}>
-               Check if your resume passes the ATS filters with our AI scanner.
-             </Typography>
-             
-             <Button 
-               variant="outlined" 
-               size="large"
-               onClick={onAtsCheck} // 👈 Redirects to ATS Page
-               startIcon={<Search />}
-               sx={{ 
-                 borderColor: '#7c3aed', color: '#7c3aed', fontWeight: 'bold', px: 4,
-                 '&:hover': { bgcolor: '#f3e8ff', borderColor: '#7c3aed' }
-               }}
-             >
-               Check ATS Score Free
-             </Button>
-          </Container>
-       </Box>
+<Box
+  sx={{
+    py: { xs: 8, md: 10 },
+    px: 2,
+    textAlign: 'center',
+    bgcolor: '#020617',
+    backgroundImage: 'radial-gradient(circle at top, rgba(124,58,237,0.18), transparent 55%)',
+    borderTop: '1px solid rgba(148, 163, 184, 0.25)',
+  }}
+>
+  <Container maxWidth="md">
+    {/* Small label / badge */}
+    <Box
+      component="span"
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 1,
+        px: 2,
+        py: 0.5,
+        mb: 2,
+        borderRadius: '999px',
+        bgcolor: 'rgba(15,23,42,0.85)',
+        border: '1px solid rgba(148,163,184,0.4)',
+        fontSize: 12,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+        color: '#e5e7eb',
+      }}
+    >
+      <Box
+        sx={{
+          width: 8,
+          height: 8,
+          borderRadius: '999px',
+          bgcolor: '#22c55e',
+          boxShadow: '0 0 0 4px rgba(34,197,94,0.35)',
+        }}
+      />
+      Instant ATS Check
+    </Box>
+
+    {/* Main heading */}
+    <Typography
+      variant="h4"
+      fontWeight={900}
+      mb={1.5}
+      sx={{
+        color: '#f9fafb',
+        fontSize: { xs: '1.7rem', md: '2.1rem' },
+      }}
+    >
+      Already have a resume?
+    </Typography>
+
+    {/* Supporting copy */}
+    <Typography
+      mb={3}
+      sx={{
+        color: '#cbd5e1',
+        maxWidth: 480,
+        mx: 'auto',
+        fontSize: { xs: '0.95rem', md: '1rem' },
+      }}
+    >
+      Upload your existing resume and let our AI-powered ATS scanner check
+      its score, keyword match, and readability.
+    </Typography>
+
+    {/* Highlight strip */}
+    <Box
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 1.5,
+        px: 2.5,
+        py: 1,
+        mb: 3,
+        borderRadius: '999px',
+        bgcolor: 'rgba(15,23,42,0.85)',
+        border: '1px solid rgba(129,140,248,0.45)',
+        fontSize: 13,
+        color: '#e5e7eb',
+      }}
+    >
+      <Box sx={{ fontSize: 18 }}>⚡</Box>
+      <span>No login required • Free ATS score in seconds</span>
+    </Box>
+
+    {/* CTA + secondary link */}
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 2,
+      }}
+    >
+      <Button
+        variant="contained"
+        size="large"
+        onClick={onAtsCheck}
+        startIcon={<Search />}
+        sx={{
+          borderRadius: '999px',
+          px: 4,
+          py: 1.2,
+          fontWeight: 700,
+          textTransform: 'none',
+          boxShadow: '0 18px 40px rgba(88, 28, 135, 0.45)',
+          background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
+          '&:hover': {
+            background: 'linear-gradient(135deg, #6d28d9, #a855f7)',
+            boxShadow: '0 18px 40px rgba(88, 28, 135, 0.7)',
+          },
+        }}
+      >
+        Check ATS Score Free
+      </Button>
+
+      <Button
+        variant="text"
+        sx={{
+          color: '#cbd5e1',
+          textTransform: 'none',
+          fontSize: 14,
+          '&:hover': { color: '#e5e7eb', textDecoration: 'underline' },
+        }}
+        onClick={onLearnMore} // optional: props me add kar sakta hai
+      >
+        How does ATS check work?
+      </Button>
+    </Box>
+
+    {/* Tiny reassurance line */}
+    <Typography
+      mt={2.5}
+      sx={{
+        fontSize: 12,
+        color: '#64748b',
+      }}
+    >
+      We don’t store your resume. It’s processed securely for scoring only.
+    </Typography>
+  </Container>
+</Box>
+
 
 
 
