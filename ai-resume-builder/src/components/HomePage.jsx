@@ -6,7 +6,7 @@ import {
 import { 
   ArrowRight, CheckCircle2, Zap, ShieldCheck, Download, 
   Star, ChevronDown, Sparkles, FileText, MousePointerClick, Layers, 
-  PenTool, Layout
+  PenTool, Layout, Search
 } from 'lucide-react';
 
 // --- IMPORT TEMPLATE PREVIEW CARD ---
