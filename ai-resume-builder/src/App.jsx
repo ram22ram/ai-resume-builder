@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
 import { ArrowLeft } from 'lucide-react';
+import ATSChecker from './components/ATSChecker';
 
 // 'html2pdf' library
 import html2pdf from 'html2pdf.js';
@@ -594,11 +595,22 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <HomePage onStart={() => setView('builder')} 
-          onBrowse={() => setView('templates')}/>
+          onBrowse={() => setView('templates')}
+          onAtsCheck={() => setView('ats')}
+        />
       </ThemeProvider>
     );
   }
 
+  if (view === 'ats') {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <ATSChecker onBack={() => setView('home')} />
+      </ThemeProvider>
+    );
+  }
+  
   if (view === 'templates') {
     return (
       <ThemeProvider theme={theme}>

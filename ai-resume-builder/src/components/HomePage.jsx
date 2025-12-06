@@ -12,7 +12,7 @@ import {
 // --- IMPORT TEMPLATE PREVIEW CARD ---
 import TemplatePreviewCard from './common/TemplatePreviewCard';
 
-const HomePage = ({ onStart, onBrowse }) => {
+const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
   
   const brandGradient = 'linear-gradient(135deg, #6d28d9 0%, #a855f7 100%)';
   
@@ -140,6 +140,32 @@ const HomePage = ({ onStart, onBrowse }) => {
       </Box>
 
 
+<Box sx={{ py: 8, bgcolor: '#f8fafc', textAlign: 'center' }}>
+          <Container maxWidth="md">
+             <Typography variant="h4" fontWeight="900" mb={2}>
+               Already have a resume?
+             </Typography>
+             <Typography color="text.secondary" mb={4}>
+               Check if your resume passes the ATS filters with our AI scanner.
+             </Typography>
+             
+             <Button 
+               variant="outlined" 
+               size="large"
+               onClick={onAtsCheck} // 👈 Redirects to ATS Page
+               startIcon={<Search />}
+               sx={{ 
+                 borderColor: '#7c3aed', color: '#7c3aed', fontWeight: 'bold', px: 4,
+                 '&:hover': { bgcolor: '#f3e8ff', borderColor: '#7c3aed' }
+               }}
+             >
+               Check ATS Score Free
+             </Button>
+          </Container>
+       </Box>
+
+
+
       {/* === 4. HOW IT WORKS === */}
       <Box sx={{ py: 12, bgcolor: '#ffffff' }}>
         <Container maxWidth="lg">
@@ -196,6 +222,7 @@ const HomePage = ({ onStart, onBrowse }) => {
               </Button>
             </Grid>
 
+
             <Grid item xs={12} md={7}>
               <Box sx={{ position: 'relative' }}>
                 <Stack spacing={3}>
@@ -226,7 +253,6 @@ const HomePage = ({ onStart, onBrowse }) => {
         </Container>
       </Box>
 
-      {/* === 6. TEMPLATE SHOWCASE (UPDATED with Previews) === */}
   {/* === 6. TEMPLATE SHOWCASE (UPDATED with Previews) === */}
 <Box sx={{ py: 12, bgcolor: '#0f172a', color: 'white' }}>
   <Container maxWidth="lg">
