@@ -130,12 +130,12 @@ const HomePage = ({ onStart }) => {
             </Box>
           </Stack>
 
-          <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
+          {/* <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
              <Box sx={{ bgcolor: '#00b67a', px: 1, py: 0.5, borderRadius: '4px', color: 'white', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 0.5 }}>
                <Star size={16} fill="white" /> Trustpilot
              </Box>
              <Typography variant="caption" fontWeight="bold" color="text.primary">4.9/5 Rating based on 1,240+ reviews</Typography>
-          </Box>
+          </Box> */}
         </Container>
       </Box>
 
@@ -282,6 +282,21 @@ const HomePage = ({ onStart }) => {
       ))}
     </Stack>
   </Container>
+  <Button 
+               variant="outlined" 
+               size="large"
+              onClick={onBrowse}
+               sx={{ 
+                 color: '#a855f7', 
+                 borderColor: '#a855f7',
+                 px: 4, py: 1.5,
+                 borderRadius: '50px',
+                 fontWeight: 'bold',
+                 '&:hover': { bgcolor: 'rgba(168, 85, 247, 0.1)', borderColor: '#d8b4fe' }
+               }}
+             >
+               Browse All Templates
+             </Button>
 </Box>
 
 
@@ -313,7 +328,12 @@ const HomePage = ({ onStart }) => {
       <Box sx={{ py: 6, bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0', textAlign: 'center' }}>
         <Container maxWidth="lg">
            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, mb: 2 }}>
-              <Box sx={{ width: 24, height: 24, borderRadius: 1, background: brandGradient }} />
+                <Box
+  component="img"
+  src="/favicon.svg"
+  alt="Logo"
+  sx={{ width: 32, height: 32, borderRadius: '8px', objectFit: 'cover' }}
+/>
               <Typography variant="h6" sx={{ fontWeight: '800', color: '#1e293b' }}>Resume<span style={{ color: '#7c3aed' }}>AI</span></Typography>
            </Box>
            <Typography variant="body2" color="text.secondary" mb={4}>

@@ -15,6 +15,7 @@ import html2pdf from 'html2pdf.js';
 
 // Components
 import HomePage from './components/HomePage';
+import AllTemplatesPage from './components/AllTemplatesPage';
 import { PREDEFINED_SKILL_LIST } from './utils/constants';
 import { validateStep } from './utils/resumeUtils';
 import StepPersonalInfo from './components/steps/StepPersonalInfo';
@@ -44,12 +45,24 @@ const TemplateSwiss = React.lazy(() =>
 const TemplateCorporate = React.lazy(() =>
   import('./components/templates/TemplateCorporate')
 );
-const TemplateFred = React.lazy(() => import('./components/templates/TemplateFred'));
-    const TemplatePat = React.lazy(() => import('./components/templates/TemplatePat'));
-    const TemplateKristy = React.lazy(() => import('./components/templates/TemplateKristy'));
-    const TemplateElena = React.lazy(() => import('./components/templates/TemplateElena'));
-    const TemplateEileen = React.lazy(() => import('./components/templates/TemplateEileen'));
-    const TemplateHarvey = React.lazy(() => import('./components/templates/TemplateHarvey'));
+const TemplateFred = React.lazy(() =>
+  import('./components/templates/TemplateFred')
+);
+const TemplatePat = React.lazy(() =>
+  import('./components/templates/TemplatePat')
+);
+const TemplateKristy = React.lazy(() =>
+  import('./components/templates/TemplateKristy')
+);
+const TemplateElena = React.lazy(() =>
+  import('./components/templates/TemplateElena')
+);
+const TemplateEileen = React.lazy(() =>
+  import('./components/templates/TemplateEileen')
+);
+const TemplateHarvey = React.lazy(() =>
+  import('./components/templates/TemplateHarvey')
+);
 // --- Styled Back Button ---
 const BackButton = styled(Button)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -169,6 +182,12 @@ function App() {
   const [photoMode, setPhotoMode] = useState(
     () => LAYOUT_CONFIG['modern']?.defaultPhotoMode || 'auto'
   );
+
+  const handleTemplateSelectFromPage = (templateId) => {
+    setCurrentTemplate(templateId); // Template set karega
+    setView('builder');             // Direct builder par bhejega
+    setActiveStep(0);               // Optional: Start from beginning
+  };
 
   // Visibility State
   const [visibleSections, setVisibleSections] = useState({
@@ -574,11 +593,24 @@ function App() {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <HomePage onStart={() => setView('builder')} />
+        <HomePage onStart={() => setView('builder')} 
+          onBrowse={() => setView('templates')}/>
       </ThemeProvider>
     );
   }
 
+  if (view === 'templates') {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AllTemplatesPage 
+          onSelect={handleTemplateSelectFromPage} 
+          onBack={() => setView('home')} 
+        />
+      </ThemeProvider>
+    );
+  }
+  
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
