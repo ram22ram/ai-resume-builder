@@ -234,7 +234,7 @@ const HomePage = ({ onStart }) => {
            
            <Grid container spacing={4}>
              {templates.map((tpl, idx) => (
-               <Grid item xs={12}key={idx}>
+               <Grid item xs={12} lg={12} key={idx}>
                  <Box 
                    onClick={onStart}
                    sx={{ 
