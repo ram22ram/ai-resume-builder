@@ -98,21 +98,21 @@ const WizardFooter = ({ activeStep, stepsLength, handleBack, handleSave, handleN
         flexWrap: 'wrap' // Taaki mobile par break ho jaaye
       }}>
         <a 
-          href="YAHAN_PRIVACY_POLICY_KA_LINK_PASTE_KAREIN" 
+          href="/privacy" 
           target="_blank" rel="noopener noreferrer" 
           style={{color: '#666', fontSize: '12px', textDecoration: 'underline'}}
         >
           Privacy Policy
         </a>
         <a 
-          href="YAHAN_TERMS_KA_LINK_PASTE_KAREIN" 
+          href="/terms" 
           target="_blank" rel="noopener noreferrer" 
           style={{color: '#666', fontSize: '12px', textDecoration: 'underline'}}
         >
           Terms & Conditions
         </a>
         <a 
-          href="YAHAN_REFUND_POLICY_KA_LINK_PASTE_KAREIN" 
+          href="/refund" 
           target="_blank" rel="noopener noreferrer" 
           style={{color: '#666', fontSize: '12px', textDecoration: 'underline'}}
         >
