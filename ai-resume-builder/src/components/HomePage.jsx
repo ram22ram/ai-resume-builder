@@ -11,6 +11,7 @@ import {
 
 // --- IMPORT TEMPLATE PREVIEW CARD ---
 import TemplatePreviewCard from './common/TemplatePreviewCard';
+import { Helmet } from 'react-helmet-async';
 
 const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
   
@@ -41,6 +42,12 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
   ];
 
   return (
+    <>
+    <Helmet>
+        <title>Free ATS Resume Builder for Freshers India | Biodata Maker 2025</title>
+        <meta name="description" content="Create a professional resume with the best Free ATS Resume Builder for Freshers in India. Perfect resume format for TCS/Infosys. Check resume score free AI." />
+        <meta name="keywords" content="Free ATS Resume Builder for Freshers India, Resume format for TCS/Infosys, Check Resume Score Free AI, Biodata maker for job, CV maker India" />
+      </Helmet>
     <Box sx={{ minHeight: '100vh', bgcolor: '#ffffff', overflowX: 'hidden', fontFamily: '"Roboto", sans-serif' }}>
       
       {/* === 1. NAVBAR === */}
@@ -95,14 +102,14 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
             <Typography variant="caption" fontWeight="bold">Rated Excellent on Trustpilot</Typography>
           </Box>
           
-          <Typography variant="h1" sx={{ fontWeight: '900', mb: 3, lineHeight: 1.1, fontSize: { xs: '2.5rem', md: '4.2rem' }, color: '#0f172a' }}>
-            AI Resume Builder <br/>
-            <span style={{ background: brandGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Fast, Easy & Free to Use</span>
-          </Typography>
+         <Typography variant="h1" sx={{ fontWeight: '900', mb: 3, lineHeight: 1.1, fontSize: { xs: '2.5rem', md: '4.2rem' }, color: '#0f172a' }}>
+  Free ATS Resume Builder <br/>
+  <span style={{ background: brandGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>For Freshers in India</span>
+</Typography>
           
-          <Typography variant="h6" sx={{ mb: 6, color: '#475569', fontWeight: 'normal', maxWidth: '700px', mx: 'auto', lineHeight: 1.6, fontSize: { xs: '1.1rem', md: '1.25rem' } }}>
-            Land your next job with one of the best AI resume builders online. Work from your computer or phone with recruiter-approved templates.
-          </Typography>
+         <Typography variant="h6" sx={{ mb: 6, color: '#475569', fontWeight: 'normal', maxWidth: '700px', mx: 'auto', lineHeight: 1.6, fontSize: { xs: '1.1rem', md: '1.25rem' } }}>
+  Land your dream job at top MNCs. Create a resume format for TCS/Infosys or a creative CV for startups. Fast, Easy & AI-Powered.
+</Typography>
           
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center" alignItems="center">
             <Button 
@@ -289,10 +296,34 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
   </Container>
 </Box>
 
+{/* ... Hero Section Ends ... */}
 
+      {/* 👇 6. YE NAYA BLACK SECTION PASTE KAREIN */}
+      <Box sx={{ py: { xs: 8, md: 10 }, px: 2, textAlign: 'center', bgcolor: '#020617', backgroundImage: 'radial-gradient(circle at top, rgba(124,58,237,0.18), transparent 55%)', borderTop: '1px solid rgba(148, 163, 184, 0.25)' }}>
+          <Container maxWidth="md">
+            <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 2, py: 0.5, mb: 2, borderRadius: '999px', bgcolor: 'rgba(15,23,42,0.85)', border: '1px solid rgba(148,163,184,0.4)', fontSize: 12, textTransform: 'uppercase', letterSpacing: 1, color: '#e5e7eb' }}>
+              <Box sx={{ width: 8, height: 8, borderRadius: '999px', bgcolor: '#22c55e', boxShadow: '0 0 0 4px rgba(34,197,94,0.35)' }} />
+              Instant ATS Check
+            </Box>
+            <Typography variant="h4" fontWeight={900} mb={1.5} sx={{ color: '#f9fafb', fontSize: { xs: '1.7rem', md: '2.1rem' } }}>
+              Check Resume Score Free AI
+            </Typography>
+            <Typography mb={3} sx={{ color: '#cbd5e1', maxWidth: 480, mx: 'auto', fontSize: { xs: '0.95rem', md: '1rem' } }}>
+              Upload your existing resume and let our AI-powered ATS scanner check its score, keyword match, and readability against Indian job market standards.
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+              <Button 
+                variant="contained" size="large" onClick={onAtsCheck} startIcon={<Search />}
+                sx={{ borderRadius: '999px', px: 4, py: 1.2, fontWeight: 700, textTransform: 'none', boxShadow: '0 18px 40px rgba(88, 28, 135, 0.45)', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', '&:hover': { background: 'linear-gradient(135deg, #6d28d9, #a855f7)', boxShadow: '0 18px 40px rgba(88, 28, 135, 0.7)' } }}
+              >
+                Check ATS Score Free
+              </Button>
+            </Box>
+            <Typography mt={2.5} sx={{ fontSize: 12, color: '#64748b' }}>We don’t store your resume. It’s processed securely for scoring only.</Typography>
+          </Container>
+      </Box>
 
-
-      {/* === 4. HOW IT WORKS === */}
+      {/* ... How It Works Starts Here ... */}
       <Box sx={{ py: 12, bgcolor: '#ffffff' }}>
         <Container maxWidth="lg">
           <Box textAlign="center" mb={8}>
@@ -481,6 +512,37 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
         </Container>
       </Box>
 
+{/* 👇 7. YE SEO CONTENT SECTION PASTE KAREIN */}
+      <Box sx={{ py: 10, bgcolor: '#f1f5f9', borderTop: '1px solid #e2e8f0' }}>
+          <Container maxWidth="lg">
+            <Typography variant="h4" fontWeight="800" mb={4} color="#0f172a" textAlign="center">
+               Why use our Free ATS Resume Builder for Freshers in India?
+            </Typography>
+            <Grid container spacing={4}>
+               <Grid item xs={12} md={6}>
+                 <Paper elevation={0} sx={{ p: 4, height: '100%', borderRadius: '16px' }}>
+                    <Typography variant="h6" fontWeight="bold" mb={2} color="#334155" display="flex" alignItems="center" gap={1}>
+                       <CheckCircle2 size={20} color="#7c3aed" /> Perfect Resume Format for TCS, Infosys & MNCs
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" lineHeight={1.8}>
+                       Top Indian MNCs use strict ATS software to filter candidates. Our templates are designed specifically to pass these filters. Whether you need a <strong>resume format for TCS/Infosys</strong>, Wipro, or a startup, our builder ensures your skills get noticed. Avoid rejection by using our <strong>ATS compliant templates</strong>.
+                    </Typography>
+                 </Paper>
+               </Grid>
+               <Grid item xs={12} md={6}>
+                 <Paper elevation={0} sx={{ p: 4, height: '100%', borderRadius: '16px' }}>
+                    <Typography variant="h6" fontWeight="bold" mb={2} color="#334155" display="flex" alignItems="center" gap={1}>
+                       <CheckCircle2 size={20} color="#7c3aed" /> Biodata Maker for Job & Government Exams
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" lineHeight={1.8}>
+                       Looking for a traditional format? Use this tool as a <strong>Biodata maker for job</strong> applications in government sectors or traditional Indian companies. Plus, you can <strong>Check Resume Score Free AI</strong> to ensure no errors exist before you apply. It's the best <strong>CV maker India</strong> has for freshers.
+                    </Typography>
+                 </Paper>
+               </Grid>
+            </Grid>
+          </Container>
+      </Box>
+      
       {/* === 8. FOOTER === */}
       <Box sx={{ py: 6, bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0', textAlign: 'center' }}>
         <Container maxWidth="lg">
@@ -503,6 +565,7 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
       </Box>
 
     </Box>
+    </>
   );
 };
 

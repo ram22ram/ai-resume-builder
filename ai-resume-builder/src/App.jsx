@@ -154,6 +154,19 @@ const createAppTheme = (fontFamilyId) => {
 function App() {
   const [view, setView] = useState('home');
 
+  React.useEffect(() => {
+    const path = window.location.pathname; // Browser ka URL padho
+    
+    if (path === '/ats') {
+      setView('ats'); // Agar URL /ats hai to ATS page dikhao
+    } else if (path === '/templates') {
+      setView('templates');
+    } else if (path === '/builder') {
+      setView('builder');
+    }
+    // Agar kuch nahi mila to default 'home' rahega
+  }, []);
+
   const [resumeData, setResumeData] = useState(loadInitialData);
   const [errors, setErrors] = useState(initialErrors);
   const [loadingAi, setLoadingAi] = useState(false);
@@ -480,14 +493,18 @@ function App() {
   };
 
   // --- RAZORPAY INTEGRATION ---
-  const handleDownloadPDF = () => {
+const handleDownloadPDF = () => {
+    
+    // --- TRIGGER DOWNLOAD FUNCTION ---
     const triggerPdfDownload = () => {
       const element = previewRef.current;
       if (!element) {
         alert('Error: Download failed. Please try again.');
         return;
       }
-
+      
+      // ... (Aapka purana HTML2PDF code yahan aayega) ...
+      
       const fileName = resumeData.personalInfo.fullName.trim() || 'resume';
       const opt = {
         margin: 0.5,
@@ -501,39 +518,45 @@ function App() {
         html2pdf().from(element).set(opt).save();
       } catch (error) {
         console.error('html2pdf failed:', error);
-        alert('An error occurred while generating the PDF.');
       }
     };
 
-    const options = {
-      key: 'rzp_live_RhWXT9ZwKy6sUh',
-      amount: 30 * 100,
-      currency: 'INR',
-      name: 'AI Resume Builder',
-      description: 'Premium Resume Download',
-      handler: function () {
-        alert('Payment Successful! Your download will start now.');
-        triggerPdfDownload();
-      },
-      prefill: {
-        name: resumeData.personalInfo.fullName || 'User',
-        email: resumeData.personalInfo.email || '',
-        contact: resumeData.personalInfo.phone || '',
-      },
-      theme: { color: '#6d28d9' },
-    };
+    // --- LOGIC START ---
+    
+    // 1. Check karein kya user pehle download kar chuka hai?
+    const alreadyDownloaded = localStorage.getItem('hasDownloadedFree');
 
-    try {
+    if (!alreadyDownloaded) {
+      // === CASE 1: FIRST TIME USER (FREE) ===
+      if (window.confirm("🎉 First download is FREE! Do you want to download now?")) {
+        triggerPdfDownload();
+        // Flag set kar do taaki agli baar free na mile
+        localStorage.setItem('hasDownloadedFree', 'true'); 
+      }
+    } else {
+      // === CASE 2: RETURNING USER (PAY ₹30) ===
+      // Razorpay Logic
+      const options = {
+        key: 'rzp_live_RhWXT9ZwKy6sUh', // Apni Key lagayein
+        amount: 30 * 100, // ₹30
+        currency: 'INR',
+        name: 'ResumeAI Pro',
+        description: 'Premium Resume Download',
+        handler: function (response) {
+          // Payment Success hone par hi download hoga
+          triggerPdfDownload();
+          alert('Payment Successful! Downloading...');
+        },
+        prefill: {
+          name: resumeData.personalInfo.fullName,
+          email: resumeData.personalInfo.email,
+          contact: resumeData.personalInfo.phone,
+        },
+        theme: { color: '#6d28d9' },
+      };
+
       const paymentObject = new window.Razorpay(options);
-      paymentObject.on('payment.failed', function (response) {
-        alert('Payment Failed: ' + response.error.description);
-      });
       paymentObject.open();
-    } catch (e) {
-      console.error('Razorpay error:', e);
-      alert(
-        'Error: Payment gateway failed to load. Please ensure you are online.'
-      );
     }
   };
 
