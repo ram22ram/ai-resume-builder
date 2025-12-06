@@ -222,45 +222,63 @@ const HomePage = ({ onStart }) => {
       </Box>
 
       {/* === 6. TEMPLATE SHOWCASE (UPDATED with Previews) === */}
-      <Box sx={{ py: 12, bgcolor: '#0f172a', color: 'white' }}>
-        <Container maxWidth="lg">
-           <Box textAlign="center" mb={8}>
-              <Typography variant="overline" color="#a855f7" fontWeight="bold" letterSpacing={2}>RECRUITER APPROVED</Typography>
-              <Typography variant="h3" fontWeight="900" my={2}>Make a Resume That Gets Results</Typography>
-              <Typography variant="body1" color="#94a3b8">
-                Choose from a wide range of styles for every job level and type.
-              </Typography>
-           </Box>
-           
-           <Grid container spacing={4}>
-             {templates.map((tpl, idx) => (
-               <Grid item xs={12} lg={12} key={idx}>
-                 <Box 
-                   onClick={onStart}
-                   sx={{ 
-                     cursor: 'pointer',
-                     p: 2,
-                     bgcolor: 'rgba(255,255,255,0.05)',
-                     borderRadius: '16px',
-                     border: '1px solid rgba(255,255,255,0.1)',
-                     transition: 'all 0.3s',
-                     height: '100%',
-                     '&:hover': { transform: 'translateY(-8px)', borderColor: '#a855f7', bgcolor: 'rgba(255,255,255,0.08)' }
-                   }}
-                 >
-                    {/* DYNAMIC PREVIEW CARD */}
-                    <Box sx={{ height: 220, mb: 2 }}>
-                       <TemplatePreviewCard templateId={tpl.id} color={tpl.color} />
-                    </Box>
-                    
-                    <Typography variant="h6" fontWeight="bold">{tpl.title}</Typography>
-                    <Typography variant="caption" color="#94a3b8">{tpl.desc}</Typography>
-                 </Box>
-               </Grid>
-             ))}
-           </Grid>
-        </Container>
-      </Box>
+  {/* === 6. TEMPLATE SHOWCASE (UPDATED with Previews) === */}
+<Box sx={{ py: 12, bgcolor: '#0f172a', color: 'white' }}>
+  <Container maxWidth="lg">
+    <Box textAlign="center" mb={8}>
+      <Typography
+        variant="overline"
+        color="#a855f7"
+        fontWeight="bold"
+        letterSpacing={2}
+      >
+        RECRUITER APPROVED
+      </Typography>
+      <Typography variant="h3" fontWeight="900" my={2}>
+        Make a Resume That Gets Results
+      </Typography>
+      <Typography variant="body1" color="#94a3b8">
+        Choose from a wide range of styles for every job level and type.
+      </Typography>
+    </Box>
+
+    {/* 👇 Grid ki jagah Stack – ek row me ek hi card */}
+    <Stack spacing={4}>
+      {templates.map((tpl) => (
+        <Box
+          key={tpl.id}
+          onClick={() => onStart(tpl.id)}   // 👉 template id pass kar diya
+          sx={{
+            cursor: 'pointer',
+            p: 2,
+            bgcolor: 'rgba(255,255,255,0.05)',
+            borderRadius: '16px',
+            border: '1px solid rgba(255,255,255,0.1)',
+            transition: 'all 0.3s',
+            '&:hover': {
+              transform: 'translateY(-8px)',
+              borderColor: '#a855f7',
+              bgcolor: 'rgba(255,255,255,0.08)',
+            },
+          }}
+        >
+          {/* PREVIEW */}
+          <Box sx={{ height: 220, mb: 2 }}>
+            <TemplatePreviewCard templateId={tpl.id} color={tpl.color} />
+          </Box>
+
+          <Typography variant="h6" fontWeight="bold">
+            {tpl.title}
+          </Typography>
+          <Typography variant="caption" color="#94a3b8">
+            {tpl.desc}
+          </Typography>
+        </Box>
+      ))}
+    </Stack>
+  </Container>
+</Box>
+
 
       {/* === 7. FAQ === */}
       <Box sx={{ py: 12, bgcolor: '#ffffff' }}>
