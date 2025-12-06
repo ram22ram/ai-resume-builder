@@ -2,10 +2,11 @@
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Worker configure karein (Production safe URL)
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
 
 export const extractTextFromPDF = async (file) => {
   const arrayBuffer = await file.arrayBuffer();
+
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   let fullText = '';
 
