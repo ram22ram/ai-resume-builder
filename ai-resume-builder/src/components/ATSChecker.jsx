@@ -6,11 +6,9 @@ import {
 } from '@mui/material';
 import { UploadCloud, ArrowLeft, AlertTriangle, CheckCircle2, Search, FileText, Zap } from 'lucide-react';
 import { extractTextFromPDF } from '../utils/pdfUtils'; 
-import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 const ATSChecker = ({ onBack }) => {
-  const navigate = useNavigate();
   const [resumeText, setResumeText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [fileName, setFileName] = useState("");
@@ -197,7 +195,7 @@ const ATSChecker = ({ onBack }) => {
                         <Button 
                             variant="contained" 
                             fullWidth 
-                            onClick={() => navigate('/builder')} 
+                            onClick={() => window.location.href = '/builder'} 
                             sx={{ 
                             bgcolor: '#16a34a', fontWeight: 'bold',
                             '&:hover': { bgcolor: '#15803d' } 
