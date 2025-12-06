@@ -10,6 +10,9 @@ import {
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
 import { ArrowLeft } from 'lucide-react';
 import ATSChecker from './components/ATSChecker';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsConditions from './components/TermsConditions';
+import RefundPolicy from './components/RefundPolicy';
 
 // 'html2pdf' library
 import html2pdf from 'html2pdf.js';
@@ -163,6 +166,15 @@ function App() {
       setView('templates');
     } else if (path === '/builder') {
       setView('builder');
+    }
+     else if (path === '/privacy') {
+      setView('privacy');
+    } else if (path === '/terms') {
+      setView('terms');
+    } else if (path === '/refund') {
+      setView('refund');
+    } else {
+      setView('home');
     }
     // Agar kuch nahi mila to default 'home' rahega
   }, []);
@@ -646,6 +658,62 @@ const handleDownloadPDF = () => {
     );
   }
 
+  // App.js ke return se pehle kahin bhi paste kar do
+
+  // 1. Privacy Policy Page
+  if (view === 'privacy') {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <PrivacyPolicy 
+          onBack={() => {
+             window.history.pushState({}, '', '/'); // URL change to Home
+             setView('home'); // View change to Home
+          }} 
+          onNavigate={(page) => {
+             window.location.href = '/' + page; // Reloads correctly
+          }}
+        />
+      </ThemeProvider>
+    );
+  }
+
+  // 2. Terms Page
+  if (view === 'terms') {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <TermsConditions 
+          onBack={() => {
+             window.history.pushState({}, '', '/');
+             setView('home');
+          }}
+          onNavigate={(page) => {
+             window.location.href = '/' + page;
+          }}
+        />
+      </ThemeProvider>
+    );
+  }
+
+  // 3. Refund Page
+  if (view === 'refund') {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <RefundPolicy 
+          onBack={() => {
+             window.history.pushState({}, '', '/');
+             setView('home');
+          }}
+          onNavigate={(page) => {
+             window.location.href = '/' + page;
+          }}
+        />
+      </ThemeProvider>
+    );
+  }
+  
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
