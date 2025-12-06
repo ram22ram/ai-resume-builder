@@ -103,7 +103,7 @@ const ATSChecker = ({ onBack }) => {
             </Typography>
           </Box>
 
-          <Grid container spacing={4}>
+          <Grid container spacing={4} sx={{ maxWidth: 1100, mx: 'auto' }}>
             {/* === LEFT: INPUTS === */}
             <Grid item xs={12} md={5}>
               <Paper sx={{ p: 4, borderRadius: '16px', height: '100%', border: '1px solid #e2e8f0' }}>
