@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Container, Typography, Button, Paper, Stack } from '@mui/material';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
 
 const PrivacyPolicy = () => {
   return (
