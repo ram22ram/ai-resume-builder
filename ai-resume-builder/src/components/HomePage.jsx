@@ -282,21 +282,26 @@ const HomePage = ({ onStart, onBrowse }) => {
       ))}
     </Stack>
   </Container>
+<Box display="flex" justifyContent="center" mt={3}>
   <Button 
-               variant="outlined" 
-               size="large"
-              onClick={onBrowse}
-               sx={{ 
-                 color: '#a855f7', 
-                 borderColor: '#a855f7',
-                 px: 4, py: 1.5,
-                 borderRadius: '50px',
-                 fontWeight: 'bold',
-                 '&:hover': { bgcolor: 'rgba(168, 85, 247, 0.1)', borderColor: '#d8b4fe' }
-               }}
-             >
-               Browse All Templates
-             </Button>
+    variant="outlined" 
+    size="large"
+    onClick={onBrowse}
+    sx={{ 
+      color: '#a855f7', 
+      borderColor: '#a855f7',
+      px: 4, py: 1.5,
+      borderRadius: '50px',
+      fontWeight: 'bold',
+      '&:hover': { 
+        bgcolor: 'rgba(168, 85, 247, 0.1)', 
+        borderColor: '#d8b4fe' 
+      }
+    }}
+  >
+    Browse All Templates
+  </Button>
+</Box>
 </Box>
 
 
