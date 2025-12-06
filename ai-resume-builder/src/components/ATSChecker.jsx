@@ -105,7 +105,7 @@ const ATSChecker = ({ onBack }) => {
 
           <Grid container spacing={4} sx={{ maxWidth: 1100, mx: 'auto' }}>
             {/* === LEFT: INPUTS === */}
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={6}>
               <Paper sx={{ p: 4, borderRadius: '16px', height: '100%', border: '1px solid #e2e8f0' }}>
                 
                 {/* Upload Box */}
@@ -151,7 +151,7 @@ const ATSChecker = ({ onBack }) => {
             </Grid>
 
             {/* === RIGHT: RESULTS === */}
-            <Grid item xs={12} md={7}>
+            <Grid item xs={12} md={6}>
               <Paper sx={{ p: 4, borderRadius: '16px', height: '100%', minHeight: 500, display: 'flex', flexDirection: 'column', justifyContent: 'center', border: '1px solid #e2e8f0' }}>
                 {result ? (
                   <Box>
