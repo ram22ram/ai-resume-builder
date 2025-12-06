@@ -29,12 +29,14 @@ const TermsConditions = () => {
           <Paper sx={{ p: { xs: 3, md: 5 }, borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
             <Box display="flex" alignItems="center" gap={2} mb={4}>
               <ShieldCheck size={40} color="#7c3aed" />
-              </Box>
+              <Box>
             <Typography variant="h3" fontWeight="900" mb={1} color="#0f172a">Terms & Conditions</Typography>
             <Typography variant="body2" color="text.secondary" mb={4} sx={{ borderBottom: '1px solid #e2e8f0', pb: 3 }}>
               Last Updated: December 6, 2025
             </Typography>
-
+            </Box>
+            </Box>
+            
             <Stack spacing={4}>
               <Box>
                 <Typography variant="h6" fontWeight="bold" gutterBottom color="#334155">1. Acceptance of Terms</Typography>
