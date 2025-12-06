@@ -12,7 +12,7 @@ import {
 // --- IMPORT TEMPLATE PREVIEW CARD ---
 import TemplatePreviewCard from './common/TemplatePreviewCard';
 
-const HomePage = ({ onStart }) => {
+const HomePage = ({ onStart, onBrowse }) => {
   
   const brandGradient = 'linear-gradient(135deg, #6d28d9 0%, #a855f7 100%)';
   

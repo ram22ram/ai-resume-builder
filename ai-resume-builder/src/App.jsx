@@ -610,7 +610,7 @@ function App() {
       </ThemeProvider>
     );
   }
-  
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
