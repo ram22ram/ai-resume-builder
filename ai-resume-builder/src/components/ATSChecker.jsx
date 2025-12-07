@@ -9,7 +9,7 @@ import { extractTextFromPDF } from '../utils/pdfUtils';
 import { Helmet } from 'react-helmet-async';
 
 // 👇 YAHAN APNI ASLI API KEY PASTE KAREIN
-const API_URL = "AIzaSyB7CpH9If7yfctmaQ6nGsmUliEYy3dvLgY";
+const API_KEY = "AIzaSyB7CpH9If7yfctmaQ6nGsmUliEYy3dvLgY";
 
 // Helper function to clean AI response
 const cleanAIResponse = (text) => {
