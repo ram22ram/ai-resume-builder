@@ -11,6 +11,7 @@ import { Helmet } from 'react-helmet-async';
 // 👇 YAHAN APNI ASLI API KEY PASTE KAREIN
 // const API_KEY = "AIzaSyB7CpH9If7yfctmaQ6nGsmUliEYy3dvLgY";
 const GEMINI_API_KEY = "AIzaSyB7CpH9If7yfctmaQ6nGsmUliEYy3dvLgY";
+const API_KEY = GEMINI_API_KEY;
 
 // Helper function to clean AI response
 const cleanAIResponse = (text) => {
@@ -203,9 +204,9 @@ const ATSChecker = ({ onBack }) => {
       // User-friendly error messages
       let userErrorMessage = err.message;
       if (err.message.includes("quota")) {
-        userErrorMessage = "API quota exceeded. Please try again tomorrow or use a different API key.";
+        userErrorMessage = "API quota exceeded. Please try again tomorrow.";
       } else if (err.message.includes("API key")) {
-        userErrorMessage = "Invalid API key. Please check your configuration.";
+        userErrorMessage = "Invalid Input. Please check later.";
       } else if (err.message.includes("network") || err.message.includes("fetch")) {
         userErrorMessage = "Network error. Please check your internet connection.";
       }
@@ -593,12 +594,14 @@ const ATSChecker = ({ onBack }) => {
             
             {/* API Status */}
             <Box sx={{ mt: 6, p: 3, bgcolor: '#f8fafc', borderRadius: '12px', textAlign: 'center' }}>
-              {/* <Typography variant="body2" color="text.secondary">
-                Powered by Google Gemini AI • Real-time analysis • Secure processing
-              </Typography> */}
-              {/* <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                Your resume text is processed securely via Google's API and not stored on our servers
-              </Typography> */}
+              <Typography variant="body2" color="text.secondary">
+                Powered by advanced AI • Real-time analysis • Secure processing
+                </Typography>
+
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+            Your resume is processed securely using trusted cloud APIs and is never stored on our servers.
+            </Typography>
+
             </Box>
           </Container>
         </Box>
