@@ -86,8 +86,7 @@ const ATSChecker = ({ onBack }) => {
     setError("");
 
     try {
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/learnlm-2.0-flash-experimental:generateContent?key=${API_KEY}`;
-        // const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${API_KEY}`;
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${API_KEY}`;
       const prompt = `
         You are an expert ATS (Applicant Tracking System) scanner and resume reviewer.
         
