@@ -9,7 +9,7 @@ import { extractTextFromPDF } from '../utils/pdfUtils';
 import { Helmet } from 'react-helmet-async';
 
 // 👇 YAHAN APNI ASLI API KEY PASTE KAREIN
-const API_KEY = "AIzaSyCCuLh1LNtDPmQm55A-er3qRYhiXULzpqI"; 
+const API_KEY = "AIzaSyCCuLh1LNtDPmQm55A-er3qRYhiXULzpqI";
 
 const ATSChecker = ({ onBack }) => {
   // Navigation hook hata diya hai (Build error bachane ke liye)
@@ -47,7 +47,7 @@ const ATSChecker = ({ onBack }) => {
 
     try {
       // 👇 DIRECT GOOGLE API CALL (No Netlify Server)
-      const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+      const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
       
       const prompt = `
         Act as an expert Applicant Tracking System (ATS) scanner.
