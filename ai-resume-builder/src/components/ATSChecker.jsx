@@ -4,11 +4,16 @@ import {
   Box, Container, Typography, TextField, Button, Paper, Grid, 
   CircularProgress, Chip, Stack, Alert, Divider 
 } from '@mui/material';
-import { UploadCloud, ArrowLeft, AlertTriangle, CheckCircle2, Search, FileText, Zap } from 'lucide-react';
+import { UploadCloud, ArrowLeft, AlertTriangle, Search, FileText, Zap } from 'lucide-react';
 import { extractTextFromPDF } from '../utils/pdfUtils'; 
 import { Helmet } from 'react-helmet-async';
 
+// 👇 YAHAN APNI ASLI API KEY PASTE KAREIN
+const API_KEY = "AIzaSyCCuLh1LNtDPmQm55A-er3qRYhiXULzpqI"; 
+
 const ATSChecker = ({ onBack }) => {
+  // Navigation hook hata diya hai (Build error bachane ke liye)
+  
   const [resumeText, setResumeText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [fileName, setFileName] = useState("");
@@ -41,25 +46,53 @@ const ATSChecker = ({ onBack }) => {
     setError("");
 
     try {
-      const res = await fetch('/.netlify/functions/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          section: 'ats_check', 
-          resumeText, 
-          jobDescription 
-        }),
+      // 👇 DIRECT GOOGLE API CALL (No Netlify Server)
+      const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+      
+      const prompt = `
+        Act as an expert Applicant Tracking System (ATS) scanner.
+        Compare the RESUME CONTENT against the JOB DESCRIPTION (JD).
+        
+        RESUME CONTENT:
+        "${resumeText.substring(0, 10000)}"
+        
+        JOB DESCRIPTION:
+        "${jobDescription.substring(0, 5000)}"
+        
+        Output strictly in valid JSON format (no markdown, no backticks) with the following structure:
+        {
+          "score": (number between 0-100),
+          "match_status": ("High", "Medium", or "Low"),
+          "summary": (string, 1-2 sentence feedback),
+          "missing_keywords": (array of strings, top 5 missing hard skills),
+          "formatting_issues": (array of strings, list potential parsing issues)
+        }
+      `;
+
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
       });
-      
-      const data = await res.json();
-      
-      // Backend se 'content' aa raha hai, usse parse karein
-      const parsedResult = JSON.parse(data.content); 
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error.message || "AI Service Error");
+      }
+
+      // Cleanup JSON (Markdown hatana zaroori hai)
+      let cleanText = data.candidates[0].content.parts[0].text;
+      cleanText = cleanText.replace(/```json/g, '').replace(/```/g, '').trim();
+
+      const parsedResult = JSON.parse(cleanText); 
       setResult(parsedResult);
 
     } catch (err) {
-      setError("Analysis Failed. Please try again.");
       console.error(err);
+      setError("Analysis Failed: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -80,7 +113,7 @@ const ATSChecker = ({ onBack }) => {
         <Box sx={{ py: 2, position: 'sticky', top: 0, zIndex: 100, bgcolor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #f1f5f9' }}>
           <Container maxWidth="xl">
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }} onClick={onBack}>
+              <Box component="a" href="/" sx={{ display: 'flex', alignItems: 'center', gap: 1, textDecoration: 'none', cursor: 'pointer' }}>
                 <Box component="img" src="/favicon.svg" alt="Logo" sx={{ width: 32, height: 32, borderRadius: '8px' }} />
                 <Typography variant="h5" sx={{ fontWeight: '800', color: '#1e293b', letterSpacing: -0.5 }}>
                   Resume<span style={{ color: '#7c3aed' }}>AI</span>
@@ -91,7 +124,7 @@ const ATSChecker = ({ onBack }) => {
                 variant="text" 
                 startIcon={<ArrowLeft />} 
                 onClick={onBack}
-                sx={{ color: '#64748b', fontWeight: 'bold' }}
+                sx={{ color: '#64748b', fontWeight: 'bold', textTransform: 'none' }}
               >
                 Back to Home
               </Button>
