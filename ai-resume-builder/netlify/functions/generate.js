@@ -59,7 +59,7 @@ export const handler = async (event) => {
       };
     }
 
-    const model = 'gemini-2.0-flash';
+    const model = 'gemini-1.5-flash';
     const API_URL = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${process.env.GOOGLE_API_KEY}`;
     
     // 5. Dynamic Prompt Generation
