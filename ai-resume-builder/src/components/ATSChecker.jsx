@@ -48,7 +48,7 @@ const ATSChecker = ({ onBack }) => {
     try {
       // 👇 DIRECT GOOGLE API CALL (No Netlify Server)
     //   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
-      const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
+      const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
       const prompt = `
         Act as an expert Applicant Tracking System (ATS) scanner.
