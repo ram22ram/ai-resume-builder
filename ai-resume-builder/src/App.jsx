@@ -528,6 +528,13 @@ const handleDownloadPDF = () => {
 
       try {
         html2pdf().from(element).set(opt).save();
+        // 👇 YE CODE ADD KAREIN (Analytics ko signal bhejne ke liye)
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'download_resume', {
+            'event_category': 'Engagement',
+            'event_label': 'Free PDF Download'
+          });
+        }
       } catch (error) {
         console.error('html2pdf failed:', error);
       }
@@ -713,7 +720,7 @@ const handleDownloadPDF = () => {
       </ThemeProvider>
     );
   }
-  
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
