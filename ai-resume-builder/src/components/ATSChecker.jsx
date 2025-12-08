@@ -10,7 +10,7 @@ import { Helmet } from 'react-helmet-async';
 
 // 👇 YOUR NGROK URL (Local Server)
 // Jab bhi laptop restart karo, naya link yahan update kar dena
-const LOCAL_API_URL = "https://yuri-nonmagnetized-procrastinatively.ngrok-free.dev/api/generate";
+const LOCAL_NGROK_URL = "https://yuri-nonmagnetized-procrastinatively.ngrok-free.dev/api/generate";
 
 // Helper function to clean AI response
 const cleanAIResponse = (text) => {
@@ -91,32 +91,31 @@ const ATSChecker = ({ onBack }) => {
         }
       `;
 
-      console.log("Sending request to Local Server (Ngrok)...");
+      console.log("Sending request to Netlify Proxy -> Ngrok...");
       
-      // 👇 Updated Fetch Call with Ngrok Bypass Header
-      const response = await fetch(LOCAL_API_URL, {
+      // 👇 Updated: Calling Netlify Function instead of Ngrok directly to bypass CORS
+      const response = await fetch('/.netlify/functions/generate', {
         method: "POST",
         headers: { 
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "69420" // 👈 YE HEADER 403 ERROR HATATA HAI
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "llama3", // Ensure 'ollama run llama3' is running
-          prompt: prompt,
-          stream: false,
-          format: "json"
+          ngrokUrl: LOCAL_NGROK_URL, // We send the laptop URL to backend
+          model: "llama3", 
+          prompt: prompt
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Server Error: ${response.status}. Check if Ngrok is running & URL is correct.`);
-      }
-
       const data = await response.json();
+
+      if (!response.ok || data.error) {
+        throw new Error(data.error || `Server Error: ${response.status}`);
+      }
       
-      // Ollama returns result in 'response' key
+      // Ollama response is inside 'response' key
       if (!data.response) {
-        throw new Error("Invalid response from local server");
+        console.error("Raw Data:", data);
+        throw new Error("Invalid response from Laptop Server");
       }
 
       const parsedResult = cleanAIResponse(data.response);
@@ -144,7 +143,7 @@ const ATSChecker = ({ onBack }) => {
       console.error("Analysis Failed:", err);
       let msg = err.message;
       if (msg.includes("Failed to fetch")) {
-        msg = "Cannot connect to Laptop Server. Ensure Ngrok is running and URL is updated.";
+        msg = "Network Error: Cannot connect to Server.";
       }
       setError(msg);
     } finally {
@@ -161,7 +160,7 @@ const ATSChecker = ({ onBack }) => {
 
       <Box sx={{ minHeight: '100vh', bgcolor: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
         
-        {/* ================= 1. HEADER ================= */}
+        {/* ================= 1. HEADER (NAVBAR) ================= */}
         <Box sx={{ py: 2, position: 'sticky', top: 0, zIndex: 100, bgcolor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #f1f5f9' }}>
           <Container maxWidth="xl">
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -203,7 +202,7 @@ const ATSChecker = ({ onBack }) => {
 
             <Grid container spacing={4} sx={{ maxWidth: 1100, mx: 'auto' }}>
               
-              {/* LEFT: INPUTS */}
+              {/* === LEFT: INPUTS === */}
               <Grid item xs={12} md={6}>
                 <Paper sx={{ p: 4, borderRadius: '16px', height: '100%', border: '1px solid #e2e8f0' }}>
                   <Typography fontWeight="bold" mb={2}>1. Upload Resume (PDF)</Typography>
@@ -247,22 +246,23 @@ const ATSChecker = ({ onBack }) => {
                       '&:hover': { bgcolor: '#6d28d9' }
                     }}
                   >
-                    {loading ? <><CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />Processing (Acer Nitro)...</> : "Check My ATS Score"}
+                    {loading ? <><CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />Processing (Laptop)...</> : "Check My ATS Score"}
                   </Button>
                 </Paper>
               </Grid>
 
-              {/* RIGHT: RESULTS */}
+              {/* === RIGHT: RESULTS === */}
               <Grid item xs={12} md={6}>
                 <Paper sx={{ p: 4, borderRadius: '16px', height: '100%', minHeight: 500, display: 'flex', flexDirection: 'column', justifyContent: loading ? 'center' : 'flex-start', border: '1px solid #e2e8f0' }}>
                   {loading ? (
                     <Box sx={{ textAlign: 'center', py: 4 }}>
                       <CircularProgress size={60} sx={{ color: '#7c3aed', mb: 3 }} />
                       <Typography variant="h6" fontWeight="bold">Local AI is Thinking...</Typography>
-                      <Typography variant="body2" color="text.secondary">Server is Online 🟢<br/>Please wait...</Typography>
+                      <Typography variant="body2" color="text.secondary">Running on Acer Nitro 4 🚀<br/>Please wait...</Typography>
                     </Box>
                   ) : result ? (
                     <Box>
+                      {/* Score */}
                       <Box textAlign="center" mb={4}>
                         <Box sx={{ position: 'relative', display: 'inline-flex' }}>
                           <CircularProgress variant="determinate" value={result.score} size={140} thickness={4} sx={{ color: result.score > 75 ? '#16a34a' : result.score > 50 ? '#facc15' : '#ef4444' }} />
@@ -290,7 +290,7 @@ const ATSChecker = ({ onBack }) => {
                     <Box textAlign="center" color="#94a3b8" sx={{ py: 4 }}>
                       <Search size={64} style={{ opacity: 0.5 }} />
                       <Typography variant="h6" fontWeight="bold">Ready to Analyze</Typography>
-                      <Typography variant="body2">Server Status: {LOCAL_API_URL.includes('ngrok') ? '🟢 Local AI (Ngrok)' : '🔴 Check Config'}</Typography>
+                      <Typography variant="body2">Server Status: {LOCAL_NGROK_URL.includes('ngrok') ? '🟢 Local AI (Ngrok)' : '🔴 Check Config'}</Typography>
                     </Box>
                   )}
                 </Paper>

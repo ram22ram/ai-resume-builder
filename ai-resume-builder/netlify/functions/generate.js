@@ -1,4 +1,5 @@
 // netlify/functions/generate.js
+// netlify/functions/generate.js
 export const handler = async (event) => {
   // 1. CORS Headers Setup
   const headers = {
@@ -21,135 +22,148 @@ export const handler = async (event) => {
   }
 
   try {
-    // 3. Parse Inputs (Added resumeText & jobDescription)
-    const { section, promptText, resumeText, jobDescription } = JSON.parse(event.body);
+    const parsedBody = JSON.parse(event.body);
     
-    // 4. Validation Logic Update
+    // ============================================================
+    // PATH 1: LOCAL LAPTOP SERVER (NGROK / OLLAMA)
+    // ============================================================
+    // Agar frontend se 'ngrokUrl' aya hai, to Google ke paas mat jao,
+    // Seedha laptop ke paas jao. (Ye CORS issue solve karega)
+    if (parsedBody.ngrokUrl) {
+      console.log("🚀 Routing request to Local Ngrok Server:", parsedBody.ngrokUrl);
+
+      try {
+        const laptopResponse = await fetch(parsedBody.ngrokUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '69420' // 👈 Ye header Ngrok ka warning page bypass karega
+          },
+          body: JSON.stringify({
+            model: parsedBody.model || "llama3",
+            prompt: parsedBody.prompt,
+            stream: false,
+            format: "json"
+          })
+        });
+
+        if (!laptopResponse.ok) {
+          throw new Error(`Laptop Server Error: ${laptopResponse.status}`);
+        }
+
+        const laptopData = await laptopResponse.json();
+        
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify(laptopData)
+        };
+
+      } catch (proxyError) {
+        console.error("Proxy Error:", proxyError);
+        return {
+          statusCode: 502, // Bad Gateway
+          headers,
+          body: JSON.stringify({ error: "Failed to connect to Laptop Server. Is Ngrok running?" })
+        };
+      }
+    }
+
+    // ============================================================
+    // PATH 2: GOOGLE GEMINI CLOUD (Existing Logic)
+    // ============================================================
+    // Agar Ngrok nahi hai, to normal Gemini API call karo (Resume Builder ke liye)
+    
+    const { section, promptText, resumeText, jobDescription } = parsedBody;
+
+    // 4. Validation Logic
     if (!section) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Section is required' })
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Section is required' }) };
     }
 
-    // Agar ATS check nahi hai, to promptText zaroori hai
     if (section !== 'ats_check' && !promptText) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Prompt text is required for this section' })
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Prompt text is required' }) };
     }
 
-    // Agar ATS check hai, to Resume aur JD zaroori hai
     if (section === 'ats_check' && (!resumeText || !jobDescription)) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Resume text and Job Description are required for ATS check' })
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Resume and JD required' }) };
     }
 
     if (!process.env.GOOGLE_API_KEY) {
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: 'API configuration error' })
-      };
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'API configuration error' }) };
     }
 
-    const model = 'gemini-2.0-flash';
-    const API_URL = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${process.env.GOOGLE_API_KEY}`;
+    // 👇 Stable Model Use kar rahe hain
+    const model = 'gemini-1.5-flash';
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GOOGLE_API_KEY}`;
     
     // 5. Dynamic Prompt Generation
     let prompt = '';
 
     if (section === 'ats_check') {
-      // ATS Specific Prompt (Strict JSON Output)
       prompt = `
         Act as an expert Applicant Tracking System (ATS) scanner.
         Compare the RESUME CONTENT against the JOB DESCRIPTION (JD).
         
         RESUME CONTENT:
-        "${resumeText.substring(0, 5000)}"
+        "${resumeText.substring(0, 8000)}"
         
         JOB DESCRIPTION:
-        "${jobDescription.substring(0, 2000)}"
+        "${jobDescription.substring(0, 4000)}"
         
-        Output strictly in valid JSON format (no markdown, no backticks) with the following structure:
+        Output strictly in valid JSON format (no markdown) with:
         {
-          "score": (number between 0-100),
+          "score": (number 0-100),
           "match_status": ("High", "Medium", or "Low"),
-          "summary": (string, 1-2 sentence feedback),
-          "missing_keywords": (array of strings, top 5 missing hard skills),
-          "formatting_issues": (array of strings, list potential parsing issues e.g. "No email found", "Graphics detected")
+          "summary": (string),
+          "missing_keywords": (array of strings),
+          "formatting_issues": (array of strings)
         }
       `;
     } else {
-      // Existing Logic for Summary/Experience
       prompt = section === 'summary' 
-        ? `Create a professional 2-3 line resume summary for a ${promptText}. Focus on key strengths, technical skills, and career achievements. Use professional tone and action-oriented language. Return only the summary text without any explanations.`
-        : `Enhance this resume ${section} to be more professional and impactful: "${promptText}". Focus on quantifiable achievements, action verbs, and professional language. Keep it concise. Return only the enhanced text without any explanations.`;
+        ? `Create a professional resume summary for: ${promptText}. Return only text.`
+        : `Enhance this resume ${section}: "${promptText}". Focus on achievements. Return only text.`;
     }
 
-    console.log('Sending request to AI Model...');
+    console.log('Sending request to Gemini...');
     
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: section === 'ats_check' ? 0.2 : 0.7, // Lower temperature for ATS to ensure valid JSON
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 1024,
-        }
+        contents: [{ parts: [{ text: prompt }] }]
       })
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+      throw new Error(errorData.error?.message || `API Error: ${response.status}`);
     }
 
     const data = await response.json();
+    let generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
     
-    if (!data.candidates?.[0]?.content?.parts?.[0]) {
-      throw new Error('Invalid response format from AI API');
-    }
-
-    let generatedText = data.candidates[0].content.parts[0].text;
-    
-    // 6. JSON Cleanup (Very Important for ATS)
-    // Agar response ATS ka hai, to markdown code blocks remove karo taaki Frontend JSON.parse kar sake
+    // JSON Cleanup
     if (section === 'ats_check') {
       generatedText = generatedText.replace(/```json/g, '').replace(/```/g, '').trim();
     }
-
-    console.log('AI generation successful');
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({ 
-        content: generatedText, // Frontend will receive this as 'data.content'
-        section: section,
-        modelUsed: model
+        content: generatedText,
+        section: section
       })
     };
 
   } catch (error) {
-    console.error('Error in generate function:', error);
-    
+    console.error('Handler Error:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
-        error: 'Failed to generate content',
-        message: error.message
-      })
+      body: JSON.stringify({ error: error.message })
     };
   }
 };
