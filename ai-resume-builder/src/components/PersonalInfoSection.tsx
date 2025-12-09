@@ -1,12 +1,36 @@
 import React from 'react';
-import { Box, Grid, TextField, Typography, Alert } from '@mui/material';
+import { Box, TextField, Typography, Alert, TextFieldProps } from '@mui/material';
 import { Mail, Phone, MapPin, Linkedin, Globe, User } from 'lucide-react';
 
-// Helper component icon waale TextField ke liye
-const IconTextField = ({ icon: Icon, error, helperText, ...props }) => (
+// --- TYPES ---
+
+// Define prop types for the helper component
+// We extend standard TextFieldProps to allow passing ...props
+type IconTextFieldProps = TextFieldProps & {
+  icon: React.ElementType;
+  error?: boolean;
+  helperText?: string;
+};
+
+// Define structure for the data object to allow dynamic key access
+interface PersonalInfoData {
+  [key: string]: string | null | undefined;
+}
+
+// Define props for the main component
+interface PersonalInfoSectionProps {
+  data: PersonalInfoData;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors?: Record<string, string>;
+}
+
+// --- COMPONENTS ---
+
+// Helper component for text fields with icons
+const IconTextField: React.FC<IconTextFieldProps> = ({ icon: Icon, error, helperText, ...props }) => (
   <TextField
     {...props}
-    error={error} 
+    error={!!error} 
     helperText={helperText} 
     InputProps={{
       startAdornment: (
@@ -25,7 +49,7 @@ const IconTextField = ({ icon: Icon, error, helperText, ...props }) => (
           borderColor: error ? '#d32f2f' : '#3b82f6' 
         },
       },
-      // FIX: Layout shift hone se rokega
+      // Keep layout stable when errors appear
       '& .MuiFormHelperText-root': {
         minHeight: '1.25em', 
         marginLeft: '4px'
@@ -34,12 +58,12 @@ const IconTextField = ({ icon: Icon, error, helperText, ...props }) => (
   />
 );
 
-function PersonalInfoSection({ data, onChange, errors = {} }) {
+const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({ data, onChange, errors = {} }) => {
   const fields = [
     { name: 'fullName', label: 'Full Name', placeholder: 'John Doe', icon: User, fullWidth: true },
     { name: 'email', label: 'Email Address', placeholder: 'john.doe@email.com', icon: Mail, type: 'email' },
     { name: 'phone', label: 'Phone Number', placeholder: '+1 (555) 123-4567', icon: Phone, type: 'tel' },
-    { name: 'address', label: 'Location', placeholder: 'New York, NY', icon: MapPin }, // Address ab 'address' hai
+    { name: 'address', label: 'Location', placeholder: 'New York, NY', icon: MapPin },
     { name: 'linkedin', label: 'LinkedIn Profile', placeholder: 'linkedin.com/in/johndoe', icon: Linkedin, type: 'url' },
     { name: 'portfolio', label: 'Portfolio Website', placeholder: 'www.johndoe.com', icon: Globe, type: 'url' }
   ];
@@ -50,23 +74,38 @@ function PersonalInfoSection({ data, onChange, errors = {} }) {
         Let's start with your basic information. This will appear at the top of your resume.
       </Typography>
       
-      <Grid container spacing={2}>
+      {/* Replaced Grid with Box CSS Grid to fix MUI TS overload errors.
+         Layout behavior remains exactly 12-column logic: 
+         - xs (mobile): 1 column (1fr)
+         - sm (tablet+): 2 columns (1fr 1fr)
+      */}
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, 
+        gap: 2 
+      }}>
         {fields.map((field) => (
-          <Grid key={field.name} xs={12} sm={field.fullWidth ? 12 : 6}>
+          <Box 
+            key={field.name} 
+            sx={{ 
+              // Replicates 'xs={12} sm={12}' for full width items, otherwise 'span 1'
+              gridColumn: field.fullWidth ? { xs: '1 / -1', sm: '1 / -1' } : 'auto' 
+            }}
+          >
             <IconTextField
               label={field.label}
               name={field.name}
               placeholder={field.placeholder}
               icon={field.icon}
               type={field.type || 'text'}
-              value={data[field.name]}
+              value={data[field.name] || ''} // Ensure controlled component
               onChange={onChange}
               error={!!errors[field.name]}
-              helperText={errors[field.name] || ' '} // ' ' khaali space deta hai
+              helperText={errors[field.name] || ' '} 
             />
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
       
       <Alert severity="info" icon="✨" sx={{ mt: 3, borderRadius: '8px', bgcolor: '#dbeafe', color: '#1e40af' }}>
         Pro Tip: Add your LinkedIn and portfolio to stand out from other candidates!

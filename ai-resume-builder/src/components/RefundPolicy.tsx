@@ -1,10 +1,14 @@
-// src/components/RefundPolicy.jsx
 import React from 'react';
-import { Box, Container, Typography, Paper, Button, Divider, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Container, Typography, Paper, Button, Divider, List, ListItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import { ArrowLeft, ShieldCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 
-const RefundPolicy = ({ onBack }) => {
+interface RefundPolicyProps {
+  onBack?: () => void;
+  onNavigate?: (page: string) => void;
+}
+
+const RefundPolicy: React.FC<RefundPolicyProps> = ({ onBack }) => {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
       <Helmet>
@@ -17,7 +21,7 @@ const RefundPolicy = ({ onBack }) => {
         <Container maxWidth="xl">
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {/* Logo Click -> Home */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }} onClick={onBack}>
+            <Box component="a" href="/" sx={{ display: 'flex', alignItems: 'center', gap: 1, textDecoration: 'none', cursor: 'pointer' }}>
               <Box component="img" src="/favicon.svg" alt="Logo" sx={{ width: 32, height: 32, borderRadius: '8px' }} />
               <Typography variant="h5" sx={{ fontWeight: '800', color: '#1e293b', letterSpacing: -0.5 }}>
                 Resume<span style={{ color: '#7c3aed' }}>AI</span>
@@ -25,10 +29,7 @@ const RefundPolicy = ({ onBack }) => {
             </Box>
             
             <Button 
-              variant="text" 
-              startIcon={<ArrowLeft />} 
-              onClick={onBack}
-              sx={{ color: '#64748b', fontWeight: 'bold' }}
+              component="a" href="/" variant="text" startIcon={<ArrowLeft />} sx={{ color: '#64748b', fontWeight: 'bold', textTransform: 'none' }}
             >
               Back to Home
             </Button>
@@ -121,16 +122,12 @@ const RefundPolicy = ({ onBack }) => {
       {/* ================= 3. FOOTER ================= */}
       <Box sx={{ py: 6, bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0', textAlign: 'center' }}>
         <Container maxWidth="lg">
-           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, mb: 2 }}>
-             <Box component="img" src="/favicon.svg" alt="Logo" sx={{ width: 32, height: 32, borderRadius: '8px' }} />
-             <Typography variant="h6" sx={{ fontWeight: '800', color: '#1e293b' }}>Resume<span style={{ color: '#7c3aed' }}>AI</span></Typography>
-           </Box>
-           <Typography variant="body2" color="text.secondary" mb={4}>
-             Build a professional resume in minutes. Fast, Easy, and Effective.
-           </Typography>
-           <Typography variant="caption" color="text.secondary">
-             © 2025 ResumeAI Builder. All rights reserved.
-           </Typography>
+           <Stack direction="row" spacing={3} justifyContent="center" mb={3}>
+              <a href="/privacy" style={{ textDecoration: 'none', color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>Privacy Policy</a>
+              <a href="/terms" style={{ textDecoration: 'none', color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>Terms & Conditions</a>
+              <a href="/refund" style={{ textDecoration: 'none', color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>Refund Policy</a>
+           </Stack>
+           <Typography variant="caption" color="text.secondary">© 2025 ResumeAI Builder. All rights reserved.</Typography>
         </Container>
       </Box>
 

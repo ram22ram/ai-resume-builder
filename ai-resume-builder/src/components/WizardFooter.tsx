@@ -3,9 +3,16 @@ import { Box, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ArrowLeft, Save, Download } from 'lucide-react';
 
+interface WizardFooterProps {
+  activeStep: number;
+  stepsLength: number;
+  handleBack: () => void;
+  handleSave: () => void;
+  handleNext: () => void;
+  handleDownloadPDF: () => void;
+}
 
-// --- Styled Buttons (Aapke original styled components) ---
-
+// --- Styled Buttons ---
 const BackButton = styled(Button)(({ theme }) => ({
   color: theme.palette.primary.main,
   fontWeight: 'bold',
@@ -30,7 +37,7 @@ const SaveButton = styled(Button)(({ theme }) => ({
 const DownloadButton = styled(Button)(({ theme }) => ({
   color: 'white',
   fontWeight: 'bold',
-  background: 'linear-gradient(to right, #16a34a, #15803d)', // Green gradient
+  background: 'linear-gradient(to right, #16a34a, #15803d)',
   borderRadius: '8px',
   textTransform: 'none',
   padding: '10px 16px',
@@ -39,11 +46,10 @@ const DownloadButton = styled(Button)(({ theme }) => ({
   }
 }));
 
-// --- Footer Component ---
-
-const WizardFooter = ({ activeStep, stepsLength, handleBack, handleSave, handleNext, handleDownloadPDF }) => {
+const WizardFooter: React.FC<WizardFooterProps> = ({ 
+  activeStep, stepsLength, handleBack, handleSave, handleNext, handleDownloadPDF 
+}) => {
   return (
-    // FIX 1: Ek Fragment (khaali tag) istemaal karein taaki 2 Box return kar sakein
     <>
       <Box 
         sx={{ 
@@ -79,46 +85,28 @@ const WizardFooter = ({ activeStep, stepsLength, handleBack, handleSave, handleN
             Download PDF (₹30) 
           </DownloadButton>
         ) : (
-          <SaveButton 
-            onClick={handleNext}
-          >
+          <SaveButton onClick={handleNext}>
             Next Step
           </SaveButton>
         )}
       </Box>
 
-      {/* --- FIX 2: Policy links ko yahaan add karein --- */}
+      {/* --- Legal Links Section --- */}
       <Box sx={{ 
         textAlign: 'center', 
-        pb: 2, // Padding bottom
-        px: 2, // Padding sides
-        background: '#f8fafc', // Footer ke background se match karein
+        pb: 2, 
+        px: 2, 
+        background: '#f8fafc',
         display: 'flex',
-        gap: { xs: 1, sm: 2 }, // Mobile par thoda kam gap
+        gap: { xs: 1, sm: 2 },
         justifyContent: 'center',
-        flexWrap: 'wrap' // Taaki mobile par break ho jaaye
+        flexWrap: 'wrap',
+        borderTop: '1px dashed #e2e8f0',
+        pt: 1
       }}>
-        <a 
-          href="/privacy" 
-          target="_blank" rel="noopener noreferrer" 
-          style={{color: '#666', fontSize: '12px', textDecoration: 'underline'}}
-        >
-          Privacy Policy
-        </a>
-        <a 
-          href="/terms" 
-          target="_blank" rel="noopener noreferrer" 
-          style={{color: '#666', fontSize: '12px', textDecoration: 'underline'}}
-        >
-          Terms & Conditions
-        </a>
-        <a 
-          href="/refund" 
-          target="_blank" rel="noopener noreferrer" 
-          style={{color: '#666', fontSize: '12px', textDecoration: 'underline'}}
-        >
-          Refund Policy
-        </a>
+        <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{color: '#666', fontSize: '12px', textDecoration: 'underline'}}>Privacy Policy</a>
+        <a href="/terms" target="_blank" rel="noopener noreferrer" style={{color: '#666', fontSize: '12px', textDecoration: 'underline'}}>Terms & Conditions</a>
+        <a href="/refund" target="_blank" rel="noopener noreferrer" style={{color: '#666', fontSize: '12px', textDecoration: 'underline'}}>Refund Policy</a>
       </Box>
     </>
   );

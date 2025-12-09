@@ -8,6 +8,7 @@ module.exports = {
 };
 */
 
+// @ts-ignore
 import { calculateScoreAndTips } from './resumeUtils';
 
 const mockData = {

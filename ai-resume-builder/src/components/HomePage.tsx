@@ -1,40 +1,36 @@
 import React from 'react';
 import { 
-  Box, Typography, Button, Container, Grid, Paper, 
-  Accordion, AccordionSummary, AccordionDetails, Chip, Stack, Divider, Avatar 
+  Box, Typography, Button, Container, Paper, 
+  Accordion, AccordionSummary, AccordionDetails, Chip, Stack 
 } from '@mui/material';
 import { 
-  ArrowRight, CheckCircle2, Zap, ShieldCheck, Download, 
-  Star, ChevronDown, Sparkles, FileText, MousePointerClick, Layers, 
-  PenTool, Layout, Search
+  ArrowRight, CheckCircle2, Zap, Download, 
+  Star, ChevronDown, Sparkles, 
+  Layout, Search
 } from 'lucide-react';
 
-// --- IMPORT TEMPLATE PREVIEW CARD ---
+// @ts-ignore
 import TemplatePreviewCard from './common/TemplatePreviewCard';
 import { Helmet } from 'react-helmet-async';
 
-const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
+interface HomePageProps {
+  onStart: (templateId?: string) => void;
+  onBrowse: () => void;
+  onAtsCheck: () => void;
+}
+
+interface Template {
+  id: string;
+  title: string;
+  desc: string;
+  color: string;
+}
+
+const HomePage: React.FC<HomePageProps> = ({ onStart, onBrowse, onAtsCheck }) => {
   
   const brandGradient = 'linear-gradient(135deg, #6d28d9 0%, #a855f7 100%)';
   
-  const CompanyLogo = ({ name }) => (
-    <Typography 
-      variant="h6" 
-      sx={{ 
-        fontWeight: '900', 
-        color: '#cbd5e1', 
-        textTransform: 'uppercase', 
-        letterSpacing: 1.5,
-        fontSize: '1.2rem',
-        userSelect: 'none'
-      }}
-    >
-      {name}
-    </Typography>
-  );
-
-  // Template Data with ID and Colors for Preview
-  const templates = [
+  const templates: Template[] = [
     { id: 'modern', title: 'Modern', desc: 'Clean & minimalist. Best for tech.', color: '#0B57D0' },
     { id: 'classic', title: 'Classic', desc: 'Traditional & elegant. Best for finance.', color: '#000000' },
     { id: 'swiss', title: 'Swiss', desc: 'Strong sidebar. Best for creatives.', color: '#2d3748' },
@@ -56,11 +52,11 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }} onClick={() => window.scrollTo(0, 0)}>
             <Box
-  component="img"
-  src="/favicon.svg"
-  alt="Logo"
-  sx={{ width: 32, height: 32, borderRadius: '8px', objectFit: 'cover' }}
-/>
+              component="img"
+              src="/favicon.svg"
+              alt="Logo"
+              sx={{ width: 32, height: 32, borderRadius: '8px', objectFit: 'cover' }}
+            />
               <Typography variant="h5" sx={{ fontWeight: '800', color: '#1e293b', letterSpacing: -0.5 }}>
                 Resume<span style={{ color: '#7c3aed' }}>AI</span>
               </Typography>
@@ -68,7 +64,7 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
             <Stack direction="row" spacing={{ xs: 1, md: 2 }}>
                <Button 
                 variant="contained" 
-                onClick={onStart}
+                onClick={() => onStart()}
                 sx={{ 
                   bgcolor: '#7c3aed', 
                   borderRadius: '50px', 
@@ -115,7 +111,7 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
             <Button 
               variant="contained" 
               size="large" 
-              onClick={onStart}
+              onClick={() => onStart()}
               endIcon={<ArrowRight size={20} />}
               sx={{ 
                 py: 2, px: 6, 
@@ -136,22 +132,10 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
               <Typography variant="body2" fontWeight="600">No Sign-up Required</Typography>
             </Box>
           </Stack>
-
-          {/* <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
-             <Box sx={{ bgcolor: '#00b67a', px: 1, py: 0.5, borderRadius: '4px', color: 'white', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 0.5 }}>
-               <Star size={16} fill="white" /> Trustpilot
-             </Box>
-             <Typography variant="caption" fontWeight="bold" color="text.primary">4.9/5 Rating based on 1,240+ reviews</Typography>
-          </Box> */}
         </Container>
       </Box>
 
-
-
-
-{/* ... Hero Section Ends ... */}
-
-      {/* 👇 6. YE NAYA BLACK SECTION PASTE KAREIN */}
+      {/* === ATS BANNER === */}
       <Box sx={{ py: { xs: 8, md: 10 }, px: 2, textAlign: 'center', bgcolor: '#020617', backgroundImage: 'radial-gradient(circle at top, rgba(124,58,237,0.18), transparent 55%)', borderTop: '1px solid rgba(148, 163, 184, 0.25)' }}>
           <Container maxWidth="md">
             <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 2, py: 0.5, mb: 2, borderRadius: '999px', bgcolor: 'rgba(15,23,42,0.85)', border: '1px solid rgba(148,163,184,0.4)', fontSize: 12, textTransform: 'uppercase', letterSpacing: 1, color: '#e5e7eb' }}>
@@ -176,7 +160,7 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
           </Container>
       </Box>
 
-      {/* ... How It Works Starts Here ... */}
+      {/* === HOW IT WORKS (Replaced Grid with Box for TS compatibility) === */}
       <Box sx={{ py: 12, bgcolor: '#ffffff' }}>
         <Container maxWidth="lg">
           <Box textAlign="center" mb={8}>
@@ -184,13 +168,14 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
              <Typography variant="body1" color="text.secondary">Build a job-winning resume in 3 simple steps.</Typography>
           </Box>
 
-          <Grid container spacing={4}>
+          {/* FIXED LAYOUT */}
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 4 }}>
              {[
                { icon: <Layout size={32} />, title: "1. Choose a Template", desc: "Select from our recruiter-approved, ATS-friendly designs." },
                { icon: <Sparkles size={32} />, title: "2. Add Smart Content", desc: "Use our AI to auto-fill professional summaries and bullet points." },
                { icon: <Download size={32} />, title: "3. Download & Apply", desc: "Export as a high-quality PDF and start applying instantly." }
              ].map((step, idx) => (
-               <Grid item xs={12} md={4} key={idx}>
+               <Box key={idx}>
                  <Paper elevation={0} sx={{ 
                    p: 4, 
                    textAlign: 'center', 
@@ -209,17 +194,17 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
                     <Typography variant="h5" fontWeight="bold" mb={2} color="#1e293b">{step.title}</Typography>
                     <Typography variant="body1" color="text.secondary" lineHeight={1.6}>{step.desc}</Typography>
                  </Paper>
-               </Grid>
+               </Box>
              ))}
-          </Grid>
+          </Box>
         </Container>
       </Box>
 
       {/* === 5. AI DEMO === */}
       <Box sx={{ py: 12, bgcolor: '#f8fafc' }}>
         <Container maxWidth="lg">
-          <Grid container spacing={8} alignItems="center">
-            <Grid item xs={12} md={5}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '5fr 7fr' }, gap: 8, alignItems: 'center' }}>
+            <Box>
               <Chip icon={<Zap size={14} fill="currentColor" />} label="Smart AI Features" sx={{ bgcolor: '#0f172a', color: 'white', fontWeight: 'bold', mb: 2 }} />
               <Typography variant="h3" fontWeight="800" mb={3} color="#0f172a" lineHeight={1.2}>
                 Let AI do the work!
@@ -227,14 +212,12 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
               <Typography variant="body1" color="text.secondary" mb={4} fontSize="1.1rem" lineHeight={1.7}>
                 Describe your role in a few words, and we'll generate tailored content for your work experience section. No more writer's block.
               </Typography>
-              <Button variant="contained" onClick={onStart} size="large" sx={{ bgcolor: '#7c3aed', borderRadius: '8px', fontWeight: 'bold', textTransform: 'none', px: 4 }}>
+              <Button variant="contained" onClick={() => onStart()} size="large" sx={{ bgcolor: '#7c3aed', borderRadius: '8px', fontWeight: 'bold', textTransform: 'none', px: 4 }}>
                 Try AI Writer
               </Button>
-            </Grid>
+            </Box>
 
-
-            <Grid item xs={12} md={7}>
-              <Box sx={{ position: 'relative' }}>
+            <Box sx={{ position: 'relative' }}>
                 <Stack spacing={3}>
                   <Paper elevation={0} sx={{ p: 3, borderLeft: '4px solid #94a3b8', bgcolor: '#e2e8f0', borderRadius: '12px' }}>
                     <Typography variant="caption" fontWeight="bold" color="#64748b" display="flex" alignItems="center" gap={1} mb={1}>ORIGINAL</Typography>
@@ -257,89 +240,80 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
                     </Typography>
                   </Paper>
                 </Stack>
-              </Box>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Container>
       </Box>
 
-  {/* === 6. TEMPLATE SHOWCASE (UPDATED with Previews) === */}
-<Box sx={{ py: 12, bgcolor: '#0f172a', color: 'white' }}>
-  <Container maxWidth="lg">
-    <Box textAlign="center" mb={8}>
-      <Typography
-        variant="overline"
-        color="#a855f7"
-        fontWeight="bold"
-        letterSpacing={2}
-      >
-        RECRUITER APPROVED
-      </Typography>
-      <Typography variant="h3" fontWeight="900" my={2}>
-        Make a Resume That Gets Results
-      </Typography>
-      <Typography variant="body1" color="#94a3b8">
-        Choose from a wide range of styles for every job level and type.
-      </Typography>
-    </Box>
-
-    {/* 👇 Grid ki jagah Stack – ek row me ek hi card */}
-    <Stack spacing={4}>
-      {templates.map((tpl) => (
-        <Box
-          key={tpl.id}
-          onClick={() => onStart(tpl.id)}   // 👉 template id pass kar diya
-          sx={{
-            cursor: 'pointer',
-            p: 2,
-            bgcolor: 'rgba(255,255,255,0.05)',
-            borderRadius: '16px',
-            border: '1px solid rgba(255,255,255,0.1)',
-            transition: 'all 0.3s',
-            '&:hover': {
-              transform: 'translateY(-8px)',
-              borderColor: '#a855f7',
-              bgcolor: 'rgba(255,255,255,0.08)',
-            },
-          }}
-        >
-          {/* PREVIEW */}
-          <Box sx={{ height: 220, mb: 2 }}>
-            <TemplatePreviewCard templateId={tpl.id} color={tpl.color} />
+      {/* === 6. TEMPLATE SHOWCASE === */}
+      <Box sx={{ py: 12, bgcolor: '#0f172a', color: 'white' }}>
+        <Container maxWidth="lg">
+          <Box textAlign="center" mb={8}>
+            <Typography variant="overline" color="#a855f7" fontWeight="bold" letterSpacing={2}>
+              RECRUITER APPROVED
+            </Typography>
+            <Typography variant="h3" fontWeight="900" my={2}>
+              Make a Resume That Gets Results
+            </Typography>
+            <Typography variant="body1" color="#94a3b8">
+              Choose from a wide range of styles including <strong>resume format for TCS/Infosys</strong>.
+            </Typography>
           </Box>
 
-          <Typography variant="h6" fontWeight="bold">
-            {tpl.title}
-          </Typography>
-          <Typography variant="caption" color="#94a3b8">
-            {tpl.desc}
-          </Typography>
-        </Box>
-      ))}
-    </Stack>
-  </Container>
-<Box display="flex" justifyContent="center" mt={3}>
-  <Button 
-    variant="outlined" 
-    size="large"
-    onClick={onBrowse}
-    sx={{ 
-      color: '#a855f7', 
-      borderColor: '#a855f7',
-      px: 4, py: 1.5,
-      borderRadius: '50px',
-      fontWeight: 'bold',
-      '&:hover': { 
-        bgcolor: 'rgba(168, 85, 247, 0.1)', 
-        borderColor: '#d8b4fe' 
-      }
-    }}
-  >
-    Browse All Templates
-  </Button>
-</Box>
-</Box>
+          <Stack spacing={4}>
+            {templates.map((tpl) => (
+              <Box
+                key={tpl.id}
+                onClick={() => onStart(tpl.id)}
+                sx={{
+                  cursor: 'pointer',
+                  p: 2,
+                  bgcolor: 'rgba(255,255,255,0.05)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  transition: 'all 0.3s',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    borderColor: '#a855f7',
+                    bgcolor: 'rgba(255,255,255,0.08)',
+                  },
+                }}
+              >
+                <Box sx={{ height: 220, mb: 2 }}>
+                  <TemplatePreviewCard templateId={tpl.id} color={tpl.color} />
+                </Box>
 
+                <Typography variant="h6" fontWeight="bold">
+                  {tpl.title}
+                </Typography>
+                <Typography variant="caption" color="#94a3b8">
+                  {tpl.desc}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
+          <Box display="flex" justifyContent="center" mt={3}>
+            <Button 
+              variant="outlined" 
+              size="large"
+              onClick={onBrowse}
+              sx={{ 
+                color: '#a855f7', 
+                borderColor: '#a855f7',
+                px: 4, py: 1.5,
+                borderRadius: '50px',
+                fontWeight: 'bold',
+                '&:hover': { 
+                  bgcolor: 'rgba(168, 85, 247, 0.1)', 
+                  borderColor: '#d8b4fe' 
+                }
+              }}
+            >
+              Browse All Templates
+            </Button>
+          </Box>
+        </Container>
+      </Box>
 
       {/* === 7. FAQ === */}
       <Box sx={{ py: 12, bgcolor: '#ffffff' }}>
@@ -347,7 +321,7 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
           <Typography variant="h3" fontWeight="800" textAlign="center" mb={6} color="#0f172a">Resume Now FAQ</Typography>
           <Stack spacing={2}>
             {[
-              { q: "Is this AI Resume Builder free to use?", a: "Yes! You can build your resume, try all templates, and use the AI features for free. You only pay ₹30 when you are ready to download the final PDF." },
+              { q: "Is this Free ATS Resume Builder for Freshers in India?", a: "Yes! It is specifically designed for the Indian job market, including formats suitable for MNCs like TCS, Wipro, and Infosys." },
               { q: "Can AI really write my resume?", a: "Yes! Our AI suggests bullet points based on your job title. You can then edit them to fit your specific experience." },
               { q: "Is my data secure?", a: "Absolutely. We use Razorpay for secure payments and do not store your credit card details." },
               { q: "Are the templates ATS-friendly?", a: "Yes, all our templates are designed to be easily readable by Applicant Tracking Systems (ATS) used by employers." }
@@ -365,14 +339,16 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
         </Container>
       </Box>
 
-{/* 👇 7. YE SEO CONTENT SECTION PASTE KAREIN */}
+      {/* === 7.5 SEO CONTENT SECTION === */}
       <Box sx={{ py: 10, bgcolor: '#f1f5f9', borderTop: '1px solid #e2e8f0' }}>
           <Container maxWidth="lg">
             <Typography variant="h4" fontWeight="800" mb={4} color="#0f172a" textAlign="center">
                Why use our Free ATS Resume Builder for Freshers in India?
             </Typography>
-            <Grid container spacing={4}>
-               <Grid item xs={12} md={6}>
+
+            {/* FIXED LAYOUT */}
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 4 }}>
+               <Box>
                  <Paper elevation={0} sx={{ p: 4, height: '100%', borderRadius: '16px' }}>
                     <Typography variant="h6" fontWeight="bold" mb={2} color="#334155" display="flex" alignItems="center" gap={1}>
                        <CheckCircle2 size={20} color="#7c3aed" /> Perfect Resume Format for TCS, Infosys & MNCs
@@ -381,8 +357,9 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
                        Top Indian MNCs use strict ATS software to filter candidates. Our templates are designed specifically to pass these filters. Whether you need a <strong>resume format for TCS/Infosys</strong>, Wipro, or a startup, our builder ensures your skills get noticed. Avoid rejection by using our <strong>ATS compliant templates</strong>.
                     </Typography>
                  </Paper>
-               </Grid>
-               <Grid item xs={12} md={6}>
+               </Box>
+
+               <Box>
                  <Paper elevation={0} sx={{ p: 4, height: '100%', borderRadius: '16px' }}>
                     <Typography variant="h6" fontWeight="bold" mb={2} color="#334155" display="flex" alignItems="center" gap={1}>
                        <CheckCircle2 size={20} color="#7c3aed" /> Biodata Maker for Job & Government Exams
@@ -391,8 +368,8 @@ const HomePage = ({ onStart, onBrowse, onAtsCheck }) => {
                        Looking for a traditional format? Use this tool as a <strong>Biodata maker for job</strong> applications in government sectors or traditional Indian companies. Plus, you can <strong>Check Resume Score Free AI</strong> to ensure no errors exist before you apply. It's the best <strong>CV maker India</strong> has for freshers.
                     </Typography>
                  </Paper>
-               </Grid>
-            </Grid>
+               </Box>
+            </Box>
           </Container>
       </Box>
 

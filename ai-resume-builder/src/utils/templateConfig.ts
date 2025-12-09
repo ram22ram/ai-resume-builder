@@ -1,13 +1,36 @@
+// src/utils/templateConfig.ts
+
+export interface ConfigItem {
+  id: string;
+  label: string;
+  value: string;
+}
+
+export interface LayoutConfigItem {
+  allowedColors: string[];
+  allowedFonts: string[];
+  defaultColorId: string;
+  defaultFontId: string;
+  defaultDensity: string;
+  defaultPhotoMode: string;
+}
+
 // MASTER LAYOUTS
 export const LAYOUTS = [
   { id: 'modern', label: 'Modern', description: 'Clean & Professional' },
   { id: 'classic', label: 'Classic', description: 'Traditional & Elegant' },
   { id: 'swiss', label: 'Swiss', description: 'Bold Minimalist' },
   { id: 'corporate', label: 'Corporate', description: 'Sidebar & Business' },
+  { id: 'fred', label: 'Fred', description: 'Creative & Bold' },
+  { id: 'pat', label: 'Pat', description: 'Modern & IT' },
+  { id: 'kristy', label: 'Kristy', description: 'Soft & Fresh' },
+  { id: 'elena', label: 'Elena', description: 'Professional' },
+  { id: 'eileen', label: 'Eileen', description: 'Elegant' },
+  { id: 'harvey', label: 'Harvey', description: 'Executive' },
 ];
 
-// COLOR PALETTES (10 Options)
-export const COLORS = [
+// COLOR PALETTES
+export const COLORS: ConfigItem[] = [
   { id: 'blue', label: 'Executive Blue', value: '#0B57D0' },
   { id: 'emerald', label: 'Emerald Green', value: '#059669' },
   { id: 'crimson', label: 'Crimson Red', value: '#dc2626' },
@@ -20,8 +43,8 @@ export const COLORS = [
   { id: 'indigo', label: 'Deep Indigo', value: '#4338ca' },
 ];
 
-// FONTS (5 Options)
-export const FONTS = [
+// FONTS
+export const FONTS: ConfigItem[] = [
   { id: 'roboto', label: 'Roboto (Clean)', value: '"Roboto", sans-serif' },
   { id: 'playfair', label: 'Playfair (Serif)', value: '"Playfair Display", serif' },
   { id: 'montserrat', label: 'Montserrat (Modern)', value: '"Montserrat", sans-serif' },
@@ -29,31 +52,29 @@ export const FONTS = [
   { id: 'merriweather', label: 'Merriweather (Readable)', value: '"Merriweather", serif' },
 ];
 
-// 🔹 Density options – design tight vs spacious
 export const DENSITIES = [
   { id: 'compact', label: 'Compact (More Content)' },
   { id: 'spacious', label: 'Spacious (More White Space)' },
 ];
 
-// 🔹 Photo mode – design variants: with / without photo
 export const PHOTO_MODES = [
   { id: 'auto', label: 'Auto (show if uploaded)' },
   { id: 'hidden', label: 'No Photo Layout' },
 ];
 
-// 🔹 Quick maps for easy lookup
+// Maps
 export const COLOR_MAP = COLORS.reduce((acc, c) => {
   acc[c.id] = c;
   return acc;
-}, {});
+}, {} as Record<string, ConfigItem>);
 
 export const FONT_MAP = FONTS.reduce((acc, f) => {
   acc[f.id] = f;
   return acc;
-}, {});
+}, {} as Record<string, ConfigItem>);
 
-// 🔹 Layout-wise curated configuration
-export const LAYOUT_CONFIG = {
+// Layout Config
+export const LAYOUT_CONFIG: Record<string, LayoutConfigItem> = {
   modern: {
     allowedColors: ['blue', 'emerald', 'teal', 'violet', 'indigo'],
     allowedFonts: ['roboto', 'montserrat', 'lato'],
@@ -86,7 +107,52 @@ export const LAYOUT_CONFIG = {
     defaultDensity: 'compact',
     defaultPhotoMode: 'auto',
   },
+  fred: {
+    allowedColors: ['crimson', 'orange', 'black'],
+    allowedFonts: ['montserrat', 'roboto'],
+    defaultColorId: 'crimson',
+    defaultFontId: 'montserrat',
+    defaultDensity: 'compact',
+    defaultPhotoMode: 'auto',
+  },
+  pat: {
+    allowedColors: ['teal', 'blue', 'slate'],
+    allowedFonts: ['lato', 'roboto'],
+    defaultColorId: 'teal',
+    defaultFontId: 'lato',
+    defaultDensity: 'compact',
+    defaultPhotoMode: 'auto',
+  },
+  kristy: {
+    allowedColors: ['pink', 'violet', 'emerald'],
+    allowedFonts: ['playfair', 'lato'],
+    defaultColorId: 'pink',
+    defaultFontId: 'lato',
+    defaultDensity: 'spacious',
+    defaultPhotoMode: 'auto',
+  },
+  elena: {
+    allowedColors: ['emerald', 'slate', 'blue'],
+    allowedFonts: ['merriweather', 'roboto'],
+    defaultColorId: 'emerald',
+    defaultFontId: 'merriweather',
+    defaultDensity: 'compact',
+    defaultPhotoMode: 'auto',
+  },
+  eileen: {
+    allowedColors: ['violet', 'indigo', 'black'],
+    allowedFonts: ['playfair', 'montserrat'],
+    defaultColorId: 'violet',
+    defaultFontId: 'playfair',
+    defaultDensity: 'compact',
+    defaultPhotoMode: 'auto',
+  },
+  harvey: {
+    allowedColors: ['black', 'slate', 'blue'],
+    allowedFonts: ['roboto', 'lato'],
+    defaultColorId: 'black',
+    defaultFontId: 'roboto',
+    defaultDensity: 'compact',
+    defaultPhotoMode: 'auto',
+  },
 };
-
-// Formula example (per layout):
-// 5 curated colors * 5 curated fonts * 2 densities * 2 photo modes = 100+ combos overall across layouts.
