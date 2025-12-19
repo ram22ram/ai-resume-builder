@@ -39,12 +39,11 @@ const PROFESSIONS = [
 
 // Replaced local paths with placeholders or CDNs for stability in this demo.
 const COMPANIES = [
-  { name: 'Tata', color: '#FFF' },
-  { name: 'Google', color: '#FFF' },
-  { name: 'Microsoft', color: '#FFF' },
-  { name: 'Amazon', color: '#FFF' },
-  { name: 'Deloitte', color: '#FFF' },
-  { name: 'Goldman Sachs', color: '#FFF' },
+  { logo: '/Zomato_Logo.svg' }, // पक्का करें कि public में नाम यही है
+  { logo: '/mahendra.png' },
+  { logo: '/Tata_logo.svg' },
+  { logo: '/deloitte.png' },
+  { logo: '/HDFC_Bank_Logo.svg' },
 ];
 
 const HomePage: React.FC = () => {
@@ -187,7 +186,7 @@ const HomePage: React.FC = () => {
           <Container maxWidth="lg" sx={{ pt: { xs: 15, md: 22 }, pb: 10, textAlign: 'center' }}>
             {/* Status Badge */}
             <Chip 
-              label="✨ V2.0 Now Live: AI Mock Interviewer"
+              label="✨ Now Live: AI Mock Interviewer— Practice. Improve. Get Hired."
               sx={{ 
                 bgcolor: 'rgba(34, 197, 94, 0.1)', 
                 color: '#4ade80', 
@@ -303,24 +302,24 @@ const HomePage: React.FC = () => {
               <div className="logo-slider">
                 <div className="logo-track">
                   {[...COMPANIES, ...COMPANIES, ...COMPANIES].map((company, index) => (
-                    <div key={index} style={{ 
-                      margin: '0 40px', 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center' 
-                    }}>
-                      <Typography variant="h6" sx={{ 
-                        color: 'rgba(255,255,255,0.4)', 
-                        fontWeight: 700, 
-                        fontFamily: 'Inter, sans-serif',
-                        whiteSpace: 'nowrap',
-                        cursor: 'default',
-                        transition: '0.3s',
-                        '&:hover': { color: 'white' }
-                      }}>
+                   <Box key={index} sx={{ mx: 6, display: 'flex', alignItems: 'center', gap: 2 }}>
+                      {/* ✅ IMAGE LOGO ADDED HERE */}
+                      <img 
+                        src={company.logo} 
+                        // alt={company.name} 
+                        style={{ 
+                          height: '40px', 
+                          filter: 'grayscale(100%) brightness(200%)', // Logos को सफ़ेद लुक देने के लिए
+                          opacity: 0.7,
+                          transition: '0.3s'
+                        }} 
+                        onMouseOver={(e) => (e.currentTarget.style.filter = 'none')}
+                        onMouseOut={(e) => (e.currentTarget.style.filter = 'grayscale(100%) brightness(200%)')}
+                      />
+                      {/* <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.4)', fontWeight: 700 }}>
                         {company.name}
-                      </Typography>
-                    </div>
+                      </Typography> */}
+                    </Box>
                   ))}
                 </div>
               </div>
@@ -498,7 +497,7 @@ const HomePage: React.FC = () => {
                   size="large"
                   onClick={() => handleStart('/builder')}
                   sx={{ 
-                    py: 2.5, px: 8, fontSize: '1.2rem', borderRadius: '50px', fontWeight: 'bold',
+                    py: 1.5, px: 4, fontSize: '1.2rem', borderRadius: '50px', fontWeight: 'bold',
                     bgcolor: 'white', color: COLORS.bg,
                     '&:hover': { bgcolor: '#f1f5f9', transform: 'scale(1.05)' }
                   }}

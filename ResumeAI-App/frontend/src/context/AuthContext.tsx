@@ -1,11 +1,18 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { googleLogout } from '@react-oauth/google';
 
+// ✅ Step 1: User Interface में नई फील्ड्स ऐड करो
 interface User {
   name: string;
   email: string;
   picture: string;
   _id: string;
+  // नई वर्कबल फील्ड्स (Optional '?' के साथ ताकि पुराना डेटा न फटे)
+  resumeCreated?: boolean;
+  resumesCreated?: number;
+  applicationsCount?: number;
+  atsScore?: number | string;
+  nextInterview?: string;
 }
 
 interface AuthContextType {
@@ -19,11 +26,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  // Important: Default loading true rakho taaki check hone tak purana UI na dikhe
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // App start hote hi check karo: Kya user pehle se saved hai?
     const checkLoggedIn = () => {
       try {
         const storedUser = localStorage.getItem('resume_user');

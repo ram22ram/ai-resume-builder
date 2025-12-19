@@ -47,4 +47,6 @@ const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`🌍 Serving Frontend directly from Backend`);
+  console.log(process.env.MONGO_URI);
+
 });
