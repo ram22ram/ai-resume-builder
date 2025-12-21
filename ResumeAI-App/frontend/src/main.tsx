@@ -40,6 +40,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 
+// console.log("Google Client ID:", (import.meta as any).env.VITE_GOOGLE_CLIENT_ID);
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HelmetProvider>
