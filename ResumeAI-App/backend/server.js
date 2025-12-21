@@ -17,6 +17,14 @@ app.use(cors({
   credentials: true
 }));
 
+// ✅ 1.5 FIX: Google Popup & COOP Headers (YE NAYA HAI)
+// Ye middleware browser ko batayega ki Google Popup allowed hai
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  next();
+});
+
 // ✅ 2. Database Connect
 connectDB();
 
@@ -28,15 +36,9 @@ app.use('/api/resume', resumeRoutes);
 // 👇👇 FRONTEND SERVING MAGIC 👇👇
 // ==========================================
 
-// Frontend Build Folder ka path
 const buildPath = path.join(__dirname, '../frontend/dist');
-
-// Static files serve karo
 app.use(express.static(buildPath));
 
-// 🚨 YAHAN ERROR THA - AB FIX HAI 🚨
-// Pehle: app.get('*', ...)  <-- Ye crash kar raha tha
-// Abhi:  app.get(/.*/, ...)  <-- Ye Regex hai, ye kabhi crash nahi karega
 app.get(/.*/, (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
@@ -47,6 +49,4 @@ const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`🌍 Serving Frontend directly from Backend`);
-  console.log(process.env.MONGO_URI);
-
 });
