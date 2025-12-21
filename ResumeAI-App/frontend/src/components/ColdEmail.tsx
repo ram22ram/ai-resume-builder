@@ -13,6 +13,7 @@ import {
 // @ts-ignore
 import { generateContent } from '../utils/aiService';
 import Layout from './Layout';
+import { SEO } from './SEO';
 
 const ColdEmail = () => {
   const [jd, setJd] = useState('');
@@ -85,6 +86,11 @@ const ColdEmail = () => {
 
   return (
     <Layout>
+      <SEO 
+  title="AI Cold Email Generator for Jobs" 
+  description="Generate professional cold emails for recruiters. Get more replies and job interviews with AI-written templates."
+  keywords="cold email generator, job application email, email templates for recruiters"
+/>
       {/* Global Styles */}
       <style>{`
         @keyframes fadeIn {

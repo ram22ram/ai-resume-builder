@@ -13,6 +13,7 @@ import Layout from './Layout';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import { SEO } from './SEO';
 
 const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -62,6 +63,11 @@ const GithubConverter = () => {
 
   return (
     <Layout>
+      <SEO 
+  title="Convert GitHub Profile to Resume" 
+  description="Turn your GitHub profile and repositories into a professional resume instantly using AI."
+  keywords="github to resume, developer resume, coding cv, github portfolio"
+/>
       <style>{`
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeIn 0.5s ease-out; }

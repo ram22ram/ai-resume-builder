@@ -19,6 +19,7 @@ import InterviewSimulator from './components/InterviewSimulator';
 import GithubConverter from './components/GithubConverter';
 import ColdEmail from './components/ColdEmail';
 import Dashboard from './components/Dashboard';
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
   const theme = useMemo(() => createTheme({ 
@@ -27,7 +28,8 @@ function App() {
   }), []);
 
   return (
-    <ThemeProvider theme={theme}>
+    <HelmetProvider>
+      <ThemeProvider theme={theme}>
       <CssBaseline />
       <Routes>
           {/* Main Pages */}
@@ -60,6 +62,8 @@ function App() {
           <Route path="/refund" element={<RefundPolicy onBack={() => window.location.href='/'} />} />
         </Routes>
     </ThemeProvider>
+    </HelmetProvider>
+    
   );
 }
 

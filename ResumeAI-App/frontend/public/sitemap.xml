@@ -4,13 +4,55 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
-
 
 <url>
   <loc>https://resume-ai.co.in/</loc>
-  <lastmod>2025-12-17T01:20:49+00:00</lastmod>
+  <priority>1.00</priority>
 </url>
 
+<url>
+  <loc>https://resume-ai.co.in/builder</loc>
+  <priority>0.90</priority>
+</url>
+
+<url>
+  <loc>https://resume-ai.co.in/ats</loc>
+  <priority>0.85</priority>
+</url>
+
+<url>
+  <loc>https://resume-ai.co.in/interview</loc>
+  <priority>0.80</priority>
+</url>
+
+<url>
+  <loc>https://resume-ai.co.in/github</loc>
+  <priority>0.80</priority>
+</url>
+
+<url>
+  <loc>https://resume-ai.co.in/email</loc>
+  <priority>0.80</priority>
+</url>
+
+<url>
+  <loc>https://resume-ai.co.in/templates</loc>
+  <priority>0.70</priority>
+</url>
+
+<url>
+  <loc>https://resume-ai.co.in/privacy</loc>
+  <priority>0.50</priority>
+</url>
+
+<url>
+  <loc>https://resume-ai.co.in/terms</loc>
+  <priority>0.50</priority>
+</url>
+
+<url>
+  <loc>https://resume-ai.co.in/refund</loc>
+  <priority>0.50</priority>
+</url>
 
 </urlset>

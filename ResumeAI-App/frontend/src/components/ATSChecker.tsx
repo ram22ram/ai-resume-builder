@@ -14,6 +14,7 @@ import Layout from './Layout';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import { SEO } from './SEO';
 
 const LOCAL_NGROK_URL = "https://yuri-nonmagnetized-procrastinatively.ngrok-free.dev/api/generate";
 const GROQ_API_KEY = (import.meta as any).env?.VITE_GROQ_API_KEY || '';
@@ -190,6 +191,11 @@ const ATSChecker: React.FC = () => {
 
   return (
     <Layout>
+      <SEO 
+  title="Free ATS Resume Checker & Score" 
+  description="Check your resume score instantly. Our AI scanner finds mistakes and helps you beat the ATS bot for free."
+  keywords="ats checker, resume scanner, cv score, free resume review"
+/>
       <Helmet>
         <title>ATS Resume Checker | ResumeAI</title>
       </Helmet>

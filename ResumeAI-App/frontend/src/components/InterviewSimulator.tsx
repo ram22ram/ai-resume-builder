@@ -12,6 +12,7 @@ import Layout from './Layout';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import { SEO } from './SEO';
 
 const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -109,6 +110,11 @@ const InterviewSimulator = () => {
 
   return (
     <Layout>
+      <SEO 
+  title="AI Mock Interview Practice" 
+  description="Practice for your job interview with our AI Simulator. Get real-time feedback and improve your answers."
+  keywords="mock interview, ai interview practice, interview preparation, interview questions"
+/>
       <style>{`
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }

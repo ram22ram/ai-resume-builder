@@ -20,6 +20,7 @@ import TemplateSelector from './templates/TemplateSelector';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { GoogleLogin } from '@react-oauth/google';
+import { SEO } from './SEO';
 
 const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -206,6 +207,11 @@ const ResumeBuilder = () => {
 
   return (
     <Layout>
+        <SEO 
+      title="Create Free AI Resume" 
+      description="Build a professional, ATS-friendly resume in minutes using our advanced AI engine. Download PDF for free." 
+      keywords="resume builder, ai cv maker, free resume, job cv"
+    />
       <Box sx={{ minHeight: '100vh', pt: 4, pb: 8 }}>
         <Container maxWidth="xl">
           <Snackbar open={saveSuccess} autoHideDuration={3000} onClose={() => setSaveSuccess(false)}>
