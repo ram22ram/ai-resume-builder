@@ -47,7 +47,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <HelmetProvider>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline />
-        <GoogleOAuthProvider clientId="477197921927-0i9qbknfecrfo82o28daf0o36sp0cv2d.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId={(import.meta as any).env.VITE_GOOGLE_CLIENT_ID}>
           <BrowserRouter>
     <AuthProvider>
        <App />
