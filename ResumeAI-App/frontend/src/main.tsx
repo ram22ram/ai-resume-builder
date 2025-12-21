@@ -42,12 +42,15 @@ import { BrowserRouter } from 'react-router-dom';
 
 // console.log("Google Client ID:", (import.meta as any).env.VITE_GOOGLE_CLIENT_ID);
 
+
+const GOOGLE_CLIENT_ID = "477197921927-0i9qbknfecrfo82o28daf0o36sp0cv2d.apps.googleusercontent.com"
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HelmetProvider>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline />
-        <GoogleOAuthProvider clientId={(import.meta as any).env.VITE_GOOGLE_CLIENT_ID}>
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
           <BrowserRouter>
     <AuthProvider>
        <App />
