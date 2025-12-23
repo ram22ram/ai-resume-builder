@@ -1,13 +1,1 @@
-
-/*
- 
-/sitemap.xml  /sitemap.xml  200
-/robots.txt   /robots.txt   200
-
-
-# Yahan 'https://resume-ai-backend.onrender.com' jaisa apna real link dalo
-/api/* https://APNA_REAL_BACKEND_URL_YAHAN_DALO/api/:splat  200
-
-
 /* /index.html  200
-*/

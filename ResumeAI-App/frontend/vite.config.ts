@@ -1,4 +1,4 @@
-// frontend/vite.config.ts
+// frontend/vite.config.ts (Updated)
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 // @ts-ignore
@@ -10,31 +10,36 @@ export default defineConfig({
     Sitemap({
       hostname: 'https://resume-ai.co.in',
       dynamicRoutes: [
-        '/builder', '/ats', '/templates', '/interview', 
-        '/github', '/email', '/privacy', '/terms', '/refund'
+        '/builder',
+        '/ats',
+        '/templates',
+        '/interview',
+        '/github',
+        '/email',
+        '/privacy',
+        '/terms',
+        '/refund'
       ],
       generateRobotsTxt: true,
-      // Isko default rehne do, Netlify dist folder handle kar leta hai
+      outDir: 'dist', 
+      changefreq: 'weekly',
+      priority: 0.8,
     }),
   ],
   server: {
-    // Ye local development ke liye hai
     proxy: {
+      '/.netlify': {
+        target: 'http://localhost:8888',
+        changeOrigin: true,
+        secure: false,
+      },
+      // Keep the API proxy. It works with the backend's cors() middleware.
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },
     },
-    // ✅ GOOGLE LOGIN FIX: Ye headers wapas chahiye warna login popup block hoga
-    headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-    },
+    // REMOVE the 'headers' section that sets COOP/COEP policies.
   },
-  // ✅ PRODUCTION FIX: Build ke waqt base URL sahi rakho
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-  }
 })
