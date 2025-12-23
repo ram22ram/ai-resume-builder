@@ -57,7 +57,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     console.log("🔹 Sending Token to Backend...");
 
     const res = await axios.post(
-      `http://localhost:5001/api/auth/google`, 
+      `/api/auth/google`, 
       { 
         token: credentialResponse.credential 
       },

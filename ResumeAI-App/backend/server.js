@@ -21,7 +21,8 @@ app.use(cors({
 // Ye middleware popup communication ko allow karega
 app.use((req, res, next) => {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  // COEP ko 'unsafe-none' rakho taaki Google images/scripts load ho sakein
+  res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none"); 
   next();
 });
 
