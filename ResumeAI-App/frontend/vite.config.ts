@@ -21,9 +21,6 @@ export default defineConfig({
         '/refund'
       ],
       generateRobotsTxt: true,
-      outDir: 'dist', 
-      changefreq: 'weekly',
-      priority: 0.8,
     }),
   ],
   server: {
