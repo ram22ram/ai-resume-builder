@@ -27,6 +27,10 @@ export default defineConfig({
     }),
   ],
     server: {
+      headers: {
+  'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+  'Cross-Origin-Embedder-Policy': 'require-corp',
+},
       proxy: {
         '/.netlify': {
           target: 'http://localhost:8888',
@@ -35,7 +39,7 @@ export default defineConfig({
         },
         // Keep the API proxy. It works with the backend's cors() middleware.
         '/api': {
-          target: 'http://localhost:5000',
+          target: 'http://localhost:5001',
           changeOrigin: true,
           secure: false,
         },
