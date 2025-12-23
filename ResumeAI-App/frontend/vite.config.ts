@@ -21,22 +21,25 @@ export default defineConfig({
         '/refund'
       ],
       generateRobotsTxt: true,
+
+
+
     }),
   ],
-  server: {
-    proxy: {
-      '/.netlify': {
-        target: 'http://localhost:8888',
-        changeOrigin: true,
-        secure: false,
+    server: {
+      proxy: {
+        '/.netlify': {
+          target: 'http://localhost:8888',
+          changeOrigin: true,
+          secure: false,
+        },
+        // Keep the API proxy. It works with the backend's cors() middleware.
+        '/api': {
+          target: 'http://localhost:5000',
+          changeOrigin: true,
+          secure: false,
+        },
       },
-      // Keep the API proxy. It works with the backend's cors() middleware.
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-    // REMOVE the 'headers' section that sets COOP/COEP policies.
-  },
-})
+      // REMOVE the 'headers' section that sets COOP/COEP policies.
+    }
+  });
