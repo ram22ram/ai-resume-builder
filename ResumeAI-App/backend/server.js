@@ -11,17 +11,16 @@ const app = express();
 
 app.use(express.json());
 
-// ✅ 1. Allow CORS
+// ✅ 1. Allow CORS (Production ready)
 app.use(cors({
-  origin: true,
+  origin: ["https://resume-ai.co.in", "http://localhost:5173"], 
   credentials: true
 }));
 
-// ✅ 2. Google Popup & COOP Headers (Login Fix)
-// Ye middleware popup communication ko allow karega
+// ✅ 2. Google Popup & COOP Headers (CRITICAL FOR LOGIN)
 app.use((req, res, next) => {
+  // Iske bina window.postMessage block ho jayega
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-  // COEP ko 'unsafe-none' rakho taaki Google images/scripts load ho sakein
   res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none"); 
   next();
 });
@@ -39,8 +38,7 @@ app.use('/api/resume', resumeRoutes);
 
 const buildPath = path.join(__dirname, '../frontend/dist');
 
-// ✅ FIX: Sitemap aur Robots ko pehle check karo (React Router se pehle)
-// Isse Google Search Console mein "Sitemap is HTML" error khatam ho jayega
+// ✅ FIX: Sitemap/Robots check before React Wildcard
 app.get('/sitemap.xml', (req, res) => {
   res.sendFile(path.join(buildPath, 'sitemap.xml'));
 });
@@ -49,10 +47,10 @@ app.get('/robots.txt', (req, res) => {
   res.sendFile(path.join(buildPath, 'robots.txt'));
 });
 
-// Static files serve karo
+// Static files (JS, CSS, Images) serve karo
 app.use(express.static(buildPath));
 
-// ✅ Fallback: Sirf un paths ke liye jo file nahi hain, index.html bhejenge
+// ✅ Fallback: React Router handle karega baaki sab
 app.get(/.*/, (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
