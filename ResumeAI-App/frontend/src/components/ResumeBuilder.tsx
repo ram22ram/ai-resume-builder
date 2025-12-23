@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Box, Paper, Container, Stack, Snackbar, Alert, Button, Dialog, DialogTitle, DialogContent, Typography } from '@mui/material';
 import Layout from '../components/Layout'; 
 import html2pdf from 'html2pdf.js';
@@ -49,9 +50,11 @@ const initialData: ResumeData = {
 };
 
 const steps = ['Personal Info', 'Summary', 'Experience', 'Education', 'Projects', 'Skills', 'Settings'];
-
 const ResumeBuilder = () => {
   const { user, login } = useAuth();
+
+  // useLocation to safely read router state; cast to any for simple access to selectedTemplate
+  const location = useLocation() as any;
   
   const [saveError, setSaveError] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -61,7 +64,7 @@ const ResumeBuilder = () => {
   const [resumeData, setResumeData] = useState<ResumeData>(initialData);
   const [activeStep, setActiveStep] = useState(0);
   
-  const [currentTemplate, setCurrentTemplate] = useState('modern');
+  const [currentTemplate, setCurrentTemplate] = useState(location?.state?.selectedTemplate || 'modern');
   const [accentColor, setAccentColor] = useState('#3b82f6');
   const [fontFamily, setFontFamily] = useState('inter');
   const [density, setDensity] = useState('compact');
@@ -230,7 +233,14 @@ const ResumeBuilder = () => {
 
           <Stack direction={{ xs: 'column', lg: 'row' }} spacing={4} alignItems="stretch">
             <Paper sx={{ width: { xs: '100%', lg: '45%' }, background: 'rgba(30, 41, 59, 0.6)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}><WizardHeader steps={steps} activeStep={activeStep} /></Box>
+              <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <WizardHeader 
+                  steps={steps} 
+                  activeStep={activeStep} 
+                  onStepClick={(index: number) => setActiveStep(index)} // Ye naya prop add karein
+                />
+              </Box>
+  {/* <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}><WizardHeader steps={steps} activeStep={activeStep} /></Box> */}
                 <Box sx={{ p: 4, flex: 1, color: 'white' }}>{renderStep()}</Box>
                 <Box sx={{ p: 3, borderTop: '1px solid rgba(255,255,255,0.1)', bgcolor: 'rgba(0,0,0,0.2)' }}>
                    <WizardFooter activeStep={activeStep} stepsLength={steps.length} handleBack={handleBack} handleSave={handleManualSave} handleNext={handleNext} handleDownloadPDF={handleDownloadPDF} />

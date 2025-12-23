@@ -16,6 +16,7 @@ import Layout from './Layout';
 import { useAuth } from '../context/AuthContext'; // ✅ AUTH IMPORT ADDED
 import { useNavigate } from 'react-router-dom';   // ✅ NAVIGATE IMPORT ADDED
 import Dashboard from './Dashboard';
+import TemplateGallery from './TemplateGallery';
 
 // === CONFIGURATION ===
 const COLORS = {
@@ -418,6 +419,9 @@ const HomePage: React.FC = () => {
               ))}
             </Grid>
           </Container>
+
+              {/* ✅ NAYA SECTION ADDED HERE */}
+          <TemplateGallery />
 
           {/* ================= FEATURES ================= */}
           <Box sx={{ bgcolor: 'rgba(255,255,255,0.02)', py: 15 }}>
