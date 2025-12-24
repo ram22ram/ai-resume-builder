@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 // @ts-ignore
 import { extractTextFromPDF } from '../utils/pdfUtils'; 
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from "react-helmet-async";
 import Layout from './Layout';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
