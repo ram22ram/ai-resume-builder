@@ -8,7 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const resumeRoutes = require('./routes/resumeRoutes');
 
 const app = express();
-
+app.set('trust proxy', 1);
 app.use(express.json());
 
 // ✅ 1. Allow CORS (Production ready)
@@ -38,7 +38,7 @@ app.use('/api/resume', resumeRoutes);
 // 👇👇 FRONTEND SERVING MAGIC (FIXED ORDER) 👇👇
 // ==========================================
 
-// const buildPath = path.join(__dirname, '../frontend/dist');
+const buildPath = path.join(__dirname, '../frontend/dist');
 
 // ✅ FIX: Sitemap/Robots check before React Wildcard
 app.get('/sitemap.xml', (req, res) => {
@@ -49,6 +49,7 @@ app.get('/robots.txt', (req, res) => {
   res.sendFile(path.join(buildPath, 'robots.txt'));
 });
 
+app.get('/api/health', (req, res) => res.status(200).send('OK'));
 // Static files (JS, CSS, Images) serve karo
 // app.use(express.static(buildPath));
 
