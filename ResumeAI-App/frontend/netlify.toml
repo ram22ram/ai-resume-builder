@@ -14,3 +14,5 @@
     # Google Login Fix
     Cross-Origin-Opener-Policy = "same-origin-allow-popups"
     Cross-Origin-Embedder-Policy = "unsafe-none"
+    Permissions-Policy = "interest-cohort=()"
+    X-Frame-Options = "ALLOW-FROM https://accounts.google.com"

@@ -20,6 +20,8 @@ app.use(cors({
 // ✅ 2. Google Popup & COOP Headers (CRITICAL FOR LOGIN)
 app.use((req, res, next) => {
   // Iske bina window.postMessage block ho jayega
+  req.setTimeout(60000); // 60 seconds
+    res.setTimeout(60000);
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
   res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none"); 
   next();
@@ -36,7 +38,7 @@ app.use('/api/resume', resumeRoutes);
 // 👇👇 FRONTEND SERVING MAGIC (FIXED ORDER) 👇👇
 // ==========================================
 
-const buildPath = path.join(__dirname, '../frontend/dist');
+// const buildPath = path.join(__dirname, '../frontend/dist');
 
 // ✅ FIX: Sitemap/Robots check before React Wildcard
 app.get('/sitemap.xml', (req, res) => {
@@ -48,12 +50,12 @@ app.get('/robots.txt', (req, res) => {
 });
 
 // Static files (JS, CSS, Images) serve karo
-app.use(express.static(buildPath));
+// app.use(express.static(buildPath));
 
 // ✅ Fallback: React Router handle karega baaki sab
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(buildPath, 'index.html'));
-});
+// app.get(/.*/, (req, res) => {
+//   res.sendFile(path.join(buildPath, 'index.html'));
+// });
 
 // ==========================================
 
