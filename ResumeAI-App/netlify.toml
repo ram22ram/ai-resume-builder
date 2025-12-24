@@ -1,6 +1,6 @@
 [build]
   # ✅ FIX: Frontend folder mein ja kar build karega
-  command = "cd frontend && npm install && npm run build"
+ command = "cd frontend && npm install --legacy-peer-deps && npm run build"
   publish = "frontend/dist"
 
 [[headers]]
