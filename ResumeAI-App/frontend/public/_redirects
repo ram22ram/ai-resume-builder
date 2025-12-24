@@ -1,4 +1,14 @@
+# Sitemap and Robots
 /sitemap.xml  /sitemap.xml  200
 /robots.txt   /robots.txt   200
+
+# API Proxy
 /api/* https://resumeai-backend.onrender.com/api/:splat  200
+
+# React Router Fallback
 /* /index.html  200
+
+# ✅ FIX: Injected Headers for Google Login
+/*
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Cross-Origin-Embedder-Policy: unsafe-none
