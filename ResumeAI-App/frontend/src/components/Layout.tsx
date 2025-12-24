@@ -191,14 +191,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       </Box>
                     ) : (
                       // Logged Out View (Google Button)
+                      // <GoogleLogin
+                      //   useOneTap={false}
+                      //   onSuccess={handleGoogleSuccess}
+                      //   onError={() => console.log('Login Failed')}
+                      //   theme="filled_black"
+                      //   shape="pill"
+                      //   text="signin_with"
+                      // />
                       <GoogleLogin
-                        useOneTap={false}
-                        onSuccess={handleGoogleSuccess}
-                        onError={() => console.log('Login Failed')}
-                        theme="filled_black"
-                        shape="pill"
-                        text="signin_with"
-                      />
+                            onSuccess={handleGoogleSuccess}
+                            onError={() => console.log('Login Failed')}
+                            useOneTap={false} // ✅ Ye COOP block ko avoid karega
+                            theme="filled_black"
+                            shape="pill"
+                            text="signin_with"/>
                     )}
                   </Box>
 
@@ -282,13 +289,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               ) : (
                 // Mobile Logged Out
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <GoogleLogin
+                  {/* <GoogleLogin
                     useOneTap={false}
+                    flow="implicit"
                     onSuccess={handleGoogleSuccess}
                     onError={() => console.log('Login Failed')}
                     theme="filled_black"
                     width="230"
-                  />
+                  /> */}
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => console.log('Login Failed')}
+                    useOneTap={false} // ✅ Ye COOP block ko avoid karega
+                    theme="filled_black"
+                    shape="pill"
+                    text="signin_with"/>
                 </Box>
               )}
             </Box>

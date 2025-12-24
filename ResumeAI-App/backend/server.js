@@ -13,9 +13,15 @@ app.use(express.json());
 
 // ✅ 1. Allow CORS (Production ready)
 app.use(cors({
-  origin: ["https://resume-ai.co.in", "http://localhost:5173"], 
-  credentials: true
+  origin: ["https://resume-ai.co.in", "http://localhost:5173", "https://resume-ai.netlify.app"], 
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+// app.use(cors({
+//   origin: ["https://resume-ai.co.in", "http://localhost:5173"], 
+//   credentials: true
+// }));
 
 // ✅ 2. Google Popup & COOP Headers (CRITICAL FOR LOGIN)
 app.use((req, res, next) => {
