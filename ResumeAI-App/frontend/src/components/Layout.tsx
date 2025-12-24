@@ -192,6 +192,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     ) : (
                       // Logged Out View (Google Button)
                       <GoogleLogin
+                        useOneTap={false}
                         onSuccess={handleGoogleSuccess}
                         onError={() => console.log('Login Failed')}
                         theme="filled_black"
@@ -282,6 +283,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 // Mobile Logged Out
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <GoogleLogin
+                    useOneTap={false}
                     onSuccess={handleGoogleSuccess}
                     onError={() => console.log('Login Failed')}
                     theme="filled_black"
