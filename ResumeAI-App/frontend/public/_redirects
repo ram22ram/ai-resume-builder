@@ -1,10 +1,4 @@
-/*
 /sitemap.xml  /sitemap.xml  200
 /robots.txt   /robots.txt   200
-
-# 2. API requests ko backend par bhejo (Yahan apna sahi backend URL dalo)
-/api/* https://APNA-BACKEND-URL.onrender.com/api/:splat  200
-
-# 3. Baaki sab React Router handle karega
+/api/* https://resumeai-backend.onrender.com/api/:splat  200
 /* /index.html  200
-*/
