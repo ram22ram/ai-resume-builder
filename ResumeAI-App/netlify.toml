@@ -1,0 +1,11 @@
+[build]
+  # ✅ FIX: Frontend folder mein ja kar build karega
+  command = "cd frontend && npm install && npm run build"
+  publish = "frontend/dist"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # ✅ FIX: Google Login headers
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    Cross-Origin-Embedder-Policy = "unsafe-none"
