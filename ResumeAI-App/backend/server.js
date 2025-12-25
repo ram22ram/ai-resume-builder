@@ -8,6 +8,10 @@ const authRoutes = require('./routes/authRoutes');
 const resumeRoutes = require('./routes/resumeRoutes');
 
 const app = express();
+
+app.use(cors({
+  origin: ["https://resume-ai.co.in", "http://localhost:5173", "https://localhost:5173", "https://resume-ai.netlify.app"],
+}));
 app.set('trust proxy', 1);
 app.use(express.json());
 
