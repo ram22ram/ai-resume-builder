@@ -5,27 +5,40 @@ module.exports = (passport) => {
   passport.use(new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback" 
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://resumeai-backend.onrender.com/api/auth/google/callback",
+      proxy: true, // ✅ Render.com ke liye required
+      passReqToCallback: true
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (req, accessToken, refreshToken, profile, done) => {
       try {
+        console.log('Google Profile Received:', profile.id);
+        
         let user = await User.findOne({ googleId: profile.id });
+        
         if (user) {
+          console.log('Existing user found:', user.email);
+          user.lastLogin = new Date();
           user.isLoggedIn = true;
           await user.save();
           return done(null, user);
         } else {
+          console.log('Creating new user:', profile.emails[0].value);
           const newUser = new User({
             googleId: profile.id,
             name: profile.displayName,
             email: profile.emails[0].value,
-            avatar: profile.photos[0].value,
-            isLoggedIn: true
+            avatar: profile.photos?.[0]?.value || '',
+            isLoggedIn: true,
+            lastLogin: new Date()
           });
+          
           await newUser.save();
           return done(null, newUser);
         }
-      } catch (err) { return done(err, null); }
+      } catch (err) { 
+        console.error('Passport Google Strategy Error:', err);
+        return done(err, null); 
+      }
     }
   ));
 
@@ -33,12 +46,12 @@ module.exports = (passport) => {
     done(null, user.id);
   });
 
-  // ✅ FIXED: Modern Async/Await style for Mongoose
   passport.deserializeUser(async (id, done) => {
     try {
-      const user = await User.findById(id);
+      const user = await User.findById(id).exec();
       done(null, user);
     } catch (err) {
+      console.error('Deserialize Error:', err);
       done(err, null);
     }
   });
