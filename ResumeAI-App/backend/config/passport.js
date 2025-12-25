@@ -5,7 +5,7 @@ module.exports = (passport) => {
   passport.use(new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback" // ✅ Ye URL Google Console mein add karna
+      callbackURL: "/api/auth/google/callback" 
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -28,6 +28,18 @@ module.exports = (passport) => {
       } catch (err) { return done(err, null); }
     }
   ));
-  passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser((id, done) => User.findById(id, (err, user) => done(err, user)));
+
+  passport.serializeUser((user, done) => {
+    done(null, user.id);
+  });
+
+  // ✅ FIXED: Modern Async/Await style for Mongoose
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await User.findById(id);
+      done(null, user);
+    } catch (err) {
+      done(err, null);
+    }
+  });
 };

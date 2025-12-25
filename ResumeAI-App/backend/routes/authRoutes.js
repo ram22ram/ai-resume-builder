@@ -26,7 +26,7 @@ router.get('/google/callback',
     const userData = encodeURIComponent(JSON.stringify(req.user));
     
     // ✅ Frontend (Netlify) par wapas bhejo token ke saath
-    res.redirect(`https://resume-ai.netlify.app/auth-success?token=${token}&user=${userData}`);
+    res.redirect(`https://resume-ai.co.in/auth-success?token=${token}&user=${userData}`);
   }
 );
 

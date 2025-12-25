@@ -17,8 +17,8 @@ const app = express();
 
 // ✅ 1. CORS Setup (Netlify aur Localhost allowed)
 app.use(cors({
-  origin: ["https://resume-ai.co.in", "http://localhost:5173", "https://resume-ai.netlify.app"],
-  credentials: true // Cookies aur Sessions ke liye zaroori hai
+  origin: ["https://resume-ai.co.in", "https://www.resume-ai.co.in", "https://resume-ai.netlify.app"],
+  credentials: true 
 }));
 
 app.set('trust proxy', 1);
