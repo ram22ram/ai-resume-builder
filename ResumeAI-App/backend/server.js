@@ -13,7 +13,7 @@ app.use(express.json());
 
 // ✅ 1. Allow CORS (Production ready)
 app.use(cors({
-  origin: ["https://resume-ai.co.in", "http://localhost:5173", "https://resume-ai.netlify.app"], 
+  origin: ["https://resume-ai.co.in", "http://localhost:5173", "https://localhost:5173", "https://resume-ai.netlify.app"], 
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
@@ -68,6 +68,6 @@ app.get('/api/health', (req, res) => res.status(200).send('OK'));
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on https://localhost:${PORT}`);
   console.log(`🌍 Serving Frontend directly from Backend`);
 });
