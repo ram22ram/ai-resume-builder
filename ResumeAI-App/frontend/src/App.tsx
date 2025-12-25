@@ -2,6 +2,7 @@ import React,{ useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import  AuthSuccess  from './pages/AuthSuccess'; 
 
 // Existing Components
 import ATSChecker from './components/ATSChecker';
@@ -35,6 +36,7 @@ function App() {
           {/* Main Pages */}
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/auth-success" element={<AuthSuccess />} />
           <Route path="/builder" element={<ResumeBuilder />} />
           
           {/* Note: ATSChecker updated code doesn't need props */}

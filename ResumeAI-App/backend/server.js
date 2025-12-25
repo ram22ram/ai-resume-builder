@@ -3,76 +3,76 @@ const express = require('express');
 const connectDB = require('./config/db');
 const path = require('path'); 
 const cors = require('cors');
+const passport = require('passport');
+const session = require('express-session');
 
+// ✅ Configs aur Routes import karo
 const authRoutes = require('./routes/authRoutes');
 const resumeRoutes = require('./routes/resumeRoutes');
 
+// ✅ Passport Strategy Initialize (Video 1 logic)
+require('./config/passport')(passport);
+
 const app = express();
 
+// ✅ 1. CORS Setup (Netlify aur Localhost allowed)
 app.use(cors({
-  origin: ["https://resume-ai.co.in", "http://localhost:5173", "https://localhost:5173", "https://resume-ai.netlify.app"],
+  origin: ["https://resume-ai.co.in", "http://localhost:5173", "https://resume-ai.netlify.app"],
+  credentials: true // Cookies aur Sessions ke liye zaroori hai
 }));
 
 app.set('trust proxy', 1);
 app.use(express.json());
 
-// ✅ 1. Allow CORS (Production ready)
-app.use(cors({
-  origin: ["https://resume-ai.co.in", "http://localhost:5173", "https://localhost:5173", "https://resume-ai.netlify.app"], 
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+// ✅ 2. Session Setup (Passport Google Auth ke liye compulsory hai)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'resume_ai_secret_key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // Production mein true rakhein
+    sameSite: 'lax'
+  }
 }));
-// app.use(cors({
-//   origin: ["https://resume-ai.co.in", "http://localhost:5173"], 
-//   credentials: true
-// }));
 
-// ✅ 2. Google Popup & COOP Headers (CRITICAL FOR LOGIN)
+// ✅ 3. Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// ✅ 4. Security Headers (COOP Fix)
 app.use((req, res, next) => {
-  // Iske bina window.postMessage block ho jayega
-  req.setTimeout(60000); // 60 seconds
-    res.setTimeout(60000);
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
   res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none"); 
   next();
 });
 
-// ✅ 3. Database Connect
+// ✅ 5. Database Connect
 connectDB();
 
-// ✅ 4. API Routes
+// ✅ 6. API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/resume', resumeRoutes);
 
 // ==========================================
-// 👇👇 FRONTEND SERVING MAGIC (FIXED ORDER) 👇👇
+// 👇👇 FRONTEND SERVING MAGIC 👇👇
 // ==========================================
 
 const buildPath = path.join(__dirname, '../frontend/dist');
 
-// ✅ FIX: Sitemap/Robots check before React Wildcard
-app.get('/sitemap.xml', (req, res) => {
-  res.sendFile(path.join(buildPath, 'sitemap.xml'));
-});
-
-app.get('/robots.txt', (req, res) => {
-  res.sendFile(path.join(buildPath, 'robots.txt'));
-});
-
 app.get('/api/health', (req, res) => res.status(200).send('OK'));
-// Static files (JS, CSS, Images) serve karo
-// app.use(express.static(buildPath));
 
-// ✅ Fallback: React Router handle karega baaki sab
-// app.get(/.*/, (req, res) => {
-//   res.sendFile(path.join(buildPath, 'index.html'));
-// });
+// Static files (JS, CSS, Images) serve karo
+app.use(express.static(buildPath));
+
+// Fallback: React Router handle karega baaki sab (e.g., /auth-success)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'));
+});
 
 // ==========================================
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on https://localhost:${PORT}`);
-  console.log(`🌍 Serving Frontend directly from Backend`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🌍 Frontend and Backend linked via Passport Redirect Mode`);
 });

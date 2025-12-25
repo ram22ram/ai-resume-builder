@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const AuthSuccess = () => {
+export const AuthSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -19,3 +19,5 @@ const AuthSuccess = () => {
 
   return <div>Logging you in... Please wait.</div>;
 };
+
+export default AuthSuccess;
