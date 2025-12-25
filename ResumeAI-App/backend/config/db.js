@@ -2,13 +2,17 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
+    // Strict query mode is default in Mongoose 7+, but safe to keep
     mongoose.set('strictQuery', true);
     
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 30000, // 30 seconds timeout
-      socketTimeoutMS: 45000,
+      // REMOVE these deprecated options:
+      // useNewUrlParser: true,    // ❌ Delete this line
+      // useUnifiedTopology: true, // ❌ Delete this line
+      
+      // Keep these timeout settings:
+      serverSelectionTimeoutMS: 30000, // 30 seconds to find a server
+      socketTimeoutMS: 45000,          // 45 seconds for socket operations
     });
     
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
