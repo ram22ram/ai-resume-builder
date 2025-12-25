@@ -1,3 +1,5 @@
+const generateJWTToken = require('../utils/jwtGenerator');
+
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
