@@ -5,7 +5,7 @@ module.exports = (passport) => {
   passport.use(new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://resumeai-backend.onrender.com/api/auth/google/callback",
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://resumeai-backend-v2.onrender.com/api/auth/google/callback",
       proxy: true, // ✅ Render.com ke liye required
       passReqToCallback: true
     },

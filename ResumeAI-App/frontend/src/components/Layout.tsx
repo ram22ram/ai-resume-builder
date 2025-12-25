@@ -21,7 +21,7 @@ import { useAuth } from '../context/AuthContext';
 // ✅ API URL CONSTANT
  const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://localhost:5000/api';
   // const API_URL = import.meta.env.VITE_API_URL;
-// const API_URL = 'https://resumeai-backend.onrender.com/api';
+// const API_URL = 'https://resumeai-backend-v2.onrender.com/api';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -165,7 +165,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       </Box>
                     ) : (
                       <Button 
-                      onClick={() => window.location.href = 'https://resumeai-backend.onrender.com/api/auth/google'}
+                      onClick={() => window.location.href = 'https://resumeai-backend-v2.onrender.com/api/auth/google'}
                       sx={{
                         bgcolor: 'white', color: 'black', fontWeight: 'bold',
                         '&:hover': { bgcolor: '#f1f1f1' }
@@ -257,7 +257,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 // Mobile Logged Out
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Button 
-                  onClick={() => window.location.href = 'https://resumeai-backend.onrender.com/api/auth/google'}
+                  onClick={() => window.location.href = 'https://resumeai-backend-v2.onrender.com/api/auth/google'}
                   sx={{
                     bgcolor: 'white', color: 'black', fontWeight: 'bold',
                     '&:hover': { bgcolor: '#f1f1f1' }
