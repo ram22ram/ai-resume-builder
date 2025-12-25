@@ -7,45 +7,20 @@ const router = express.Router();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // POST /api/auth/google
-router.post('/google', async (req, res) => {
-  const { token } = req.body;
+// Google login trigger
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-  try {
-    // 1. Google se Token Verify karo
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
+// Google callback handling
+router.get('/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req, res) => {
+    // Yahan hum JWT token generate karenge aur frontend par redirect karenge
+    const token = generateToken(req.user); 
+    const userData = encodeURIComponent(JSON.stringify(req.user));
     
-    const { name, email, picture, sub } = ticket.getPayload();
-
-    // 2. Check karo user DB mein hai ya naya hai
-    let user = await User.findOne({ email });
-
-    if (!user) {
-      user = new User({ 
-        name, 
-        email, 
-        picture, 
-        googleId: sub 
-      });
-      await user.save();
-      console.log("🎉 New User Signup:", email);
-    }
-
-    // 3. Apna JWT Token banao (Session maintain karne ke liye)
-    const sessionToken = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '30d' } // 30 din tak login rahega
-    );
-
-    res.json({ success: true, token: sessionToken, user });
-
-  } catch (error) {
-    console.error("Auth Error:", error);
-    res.status(401).json({ success: false, message: "Invalid Google Token" });
+    // ✅ Frontend (Netlify) par wapas bhejo token ke saath
+    res.redirect(`https://resume-ai.netlify.app/auth-success?token=${token}&user=${userData}`);
   }
-});
+);
 
 module.exports = router;

@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './context/AuthContext';
 // @ts-ignore
 import App from './App.tsx';
@@ -51,13 +50,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <HelmetProvider>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline />
-        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
           <BrowserRouter>
     <AuthProvider>
        <App />
     </AuthProvider>
      </BrowserRouter>
-        </GoogleOAuthProvider>
       </LocalizationProvider>
     </HelmetProvider>
   </React.StrictMode>

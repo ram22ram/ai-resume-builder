@@ -15,7 +15,7 @@ import { ReactLenis } from 'lenis/react';
 // import { SEO } from './SEO'; 
 
 // ✅ AUTH IMPORTS
-import { GoogleLogin } from '@react-oauth/google';
+
 import { useAuth } from '../context/AuthContext';
 
 // ✅ API URL CONSTANT
@@ -52,34 +52,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     setMobileOpen(false);
   };
 
-  // ✅ HANDLER: LOGIN & REDIRECT
- const handleGoogleSuccess = async (credentialResponse: any) => {
-  try {
-    console.log("🔹 Sending Token to Backend...");
 
-    const res = await axios.post(
-      `${API_URL}/auth/google`, 
-      { 
-        token: credentialResponse.credential 
-      },
-      // 👇👇 YE LINE ADD KARNA SABSE ZAROORI HAI 👇👇
-      { 
-        // withCredentials: true,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
-
-    if (res.data.success) {
-      login(res.data.user, res.data.token);
-      console.log("✅ Login Success:", res.data.user.name);
-      navigate('/dashboard');
-    }
-  } catch (err) {
-    console.error("❌ Login Failed", err);
-    // User ko dikhao ki error aaya
-    alert("Login failed. Check console for details.");
-  }
-};
 
   // ✅ HANDLER: LOGOUT & REDIRECT
   const handleLogout = () => {
@@ -191,22 +164,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         </IconButton>
                       </Box>
                     ) : (
-                      // Logged Out View (Google Button)
-                      // <GoogleLogin
-                      //   useOneTap={false}
-                      //   onSuccess={handleGoogleSuccess}
-                      //   onError={() => console.log('Login Failed')}
-                      //   theme="filled_black"
-                      //   shape="pill"
-                      //   text="signin_with"
-                      // />
-                      <GoogleLogin
-                            onSuccess={handleGoogleSuccess}
-                            onError={() => console.log('Login Failed')}
-                            useOneTap={false} // ✅ Ye COOP block ko avoid karega
-                            theme="filled_black"
-                            shape="pill"
-                            text="signin_with"/>
+                      <Button 
+                      onClick={() => window.location.href = 'https://resumeai-backend.onrender.com/api/auth/google'}
+                      sx={{
+                        bgcolor: 'white', color: 'black', fontWeight: 'bold',
+                        '&:hover': { bgcolor: '#f1f1f1' }
+                      }}
+                    >
+                      Login with Google
+                    </Button>
                     )}
                   </Box>
 
@@ -290,21 +256,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               ) : (
                 // Mobile Logged Out
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  {/* <GoogleLogin
-                    useOneTap={false}
-                    flow="implicit"
-                    onSuccess={handleGoogleSuccess}
-                    onError={() => console.log('Login Failed')}
-                    theme="filled_black"
-                    width="230"
-                  /> */}
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={() => console.log('Login Failed')}
-                    useOneTap={false} // ✅ Ye COOP block ko avoid karega
-                    theme="filled_black"
-                    shape="pill"
-                    text="signin_with"/>
+                  <Button 
+                  onClick={() => window.location.href = 'https://resumeai-backend.onrender.com/api/auth/google'}
+                  sx={{
+                    bgcolor: 'white', color: 'black', fontWeight: 'bold',
+                    '&:hover': { bgcolor: '#f1f1f1' }
+                  }}
+                >
+                  Login with Google
+                </Button>
                 </Box>
               )}
             </Box>
