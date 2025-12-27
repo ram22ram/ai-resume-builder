@@ -5,6 +5,9 @@ import react from '@vitejs/plugin-react'
 import Sitemap from 'vite-plugin-sitemap'
 
 export default defineConfig({
+  build: {
+    emptyOutDir: false,  // ← Ye line add karo
+  },
   assetsInclude: ['**/*.lottie'],
   plugins: [
     react(),
