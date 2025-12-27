@@ -24,7 +24,7 @@ export default defineConfig({
         '/terms',
         '/refund'
       ],
-      generateRobotsTxt: true,
+      // generateRobotsTxt: true,
 
 
 
