@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   // FIX 1: 'Box' ko yahaan import list mein add kiya gaya hai
   Box, Button, Menu, MenuItem, CircularProgress, 
@@ -6,14 +6,27 @@ import {
 } from '@mui/material';
 import { Sparkles, Brain } from 'lucide-react';
 
-const SuggestBullets = ({ title, contextData, onSelectBullet }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [suggestions, setSuggestions] = useState([]);
+interface SuggestBulletsProps {
+  title?: string;
+  contextData: unknown;
+  onSelectBullet: (bullet: string) => void;
+}
+
+const SuggestBullets = ({
+  title,
+  contextData,
+  onSelectBullet,
+}: SuggestBulletsProps) => {
+
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const open = Boolean(anchorEl);
 
-  const handleClick = async (event) => {
+    const handleClick = async (
+      event: React.MouseEvent<HTMLButtonElement>
+    ) => {
     setAnchorEl(event.currentTarget);
     if (suggestions.length > 0) return; // Don't re-fetch
 
@@ -37,13 +50,16 @@ const SuggestBullets = ({ title, contextData, onSelectBullet }) => {
         throw new Error(errData.error || 'Failed to fetch suggestions');
       }
 
-      const data = await response.json();
-      setSuggestions(data.bullets || []);
+      const data: { bullets?: string[] } = await response.json();
+      setSuggestions(data.bullets ?? []);
 
     } catch (err) {
-      setError(err.message);
-      console.error(err);
-    } finally {
+  if (err instanceof Error) {
+    setError(err.message);
+  } else {
+    setError('Something went wrong');
+  }
+}finally {
       setLoading(false);
     }
   };
@@ -52,7 +68,7 @@ const SuggestBullets = ({ title, contextData, onSelectBullet }) => {
     setAnchorEl(null);
   };
 
-  const handleSelect = (bullet) => {
+  const handleSelect = (bullet: string) => {
     onSelectBullet(bullet);
     handleClose();
   };

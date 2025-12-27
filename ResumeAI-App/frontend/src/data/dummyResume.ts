@@ -1,11 +1,11 @@
 export const DUMMY_RESUME_DATA = {
   personalInfo: {
-    fullName: 'Ramendra Singh',
+    fullName: 'John Smith',
     jobTitle: 'Senior Full Stack Engineer | M.Tech (CS)',
-    email: 'ramendra.singh@resume-ai.co.in',
+    email: 'john.smith@resume-ai.co.in',
     phone: '+91 70000 12345',
-    address: 'Jabalpur, Madhya Pradesh',
-    linkedin: 'linkedin.com/in/ramendra-ai',
+    address: 'New York, USA',
+    linkedin: 'linkedin.com/in/john-smith-ai',
     portfolio: 'resume-ai.co.in',
     photo: null
   },

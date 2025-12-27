@@ -1,26 +1,38 @@
 import React, { useState, useCallback } from 'react';
-import Cropper from 'react-easy-crop';
 import { Box, Button, Slider, Typography, Dialog, DialogContent, DialogActions, Avatar } from '@mui/material';
 import getCroppedImg from '../../utils/cropImage';
 import { Upload, Trash2 } from 'lucide-react';
+import Cropper, { Area } from 'react-easy-crop';
 
-const ImageUpload = ({ image, onImageSave, onImageRemove }) => {
+interface ImageUploadProps {
+  image: string | null;
+  onImageSave: (image: string) => void;
+  onImageRemove: () => void;
+}
+
+const ImageUpload = ({ 
+  image, 
+  onImageSave, 
+  onImageRemove 
+}: ImageUploadProps) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
-  const [tempImage, setTempImage] = useState(null);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [tempImage, setTempImage] = useState<string | null>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+  const onCropComplete = useCallback((_croppedArea: Area, croppedAreaPixels: Area,) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.addEventListener('load', () => {
-        setTempImage(reader.result);
+        if (typeof reader.result === 'string') {
+  setTempImage(reader.result);
+}
         setModalOpen(true);
       });
       reader.readAsDataURL(file);
@@ -29,8 +41,15 @@ const ImageUpload = ({ image, onImageSave, onImageRemove }) => {
 
   const handleSave = async () => {
     try {
-      const croppedImage = await getCroppedImg(tempImage, croppedAreaPixels);
-      onImageSave(croppedImage);
+      if (!tempImage || !croppedAreaPixels) {
+        // no image or crop area to process
+        return;
+      }
+      const result = await getCroppedImg(tempImage, croppedAreaPixels);
+      const croppedImage = result as unknown as string;
+      if (croppedImage) {
+        onImageSave(croppedImage);
+      }
       setModalOpen(false);
     } catch (e) {
       console.error(e);
@@ -40,7 +59,7 @@ const ImageUpload = ({ image, onImageSave, onImageRemove }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
       <Avatar 
-        src={image} 
+        src={image || undefined} 
         sx={{ width: 80, height: 80, border: '2px solid #e2e8f0' }}
       />
       
@@ -92,7 +111,7 @@ const ImageUpload = ({ image, onImageSave, onImageRemove }) => {
               min={1}
               max={3}
               step={0.1}
-              onChange={(e, zoom) => setZoom(zoom)}
+              onChange={(_, zoom) => setZoom(zoom as number)}
             />
         </Box>
         <DialogActions>

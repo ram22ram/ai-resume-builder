@@ -11,10 +11,13 @@ module.exports = {
 // @ts-ignore
 import { calculateScoreAndTips } from './resumeUtils';
 
+
 const mockData = {
   personalInfo: { fullName: 'John Doe', email: 'john@doe.com' },
   summary: '',
   experience: [],
+  education: [],
+  projects: [],
   skills: [],
   hobbies: '',
 };

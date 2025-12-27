@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './context/AuthContext';
 // @ts-ignore
 import App from './App.tsx';
@@ -39,22 +40,18 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 
-// console.log("Google Client ID:", (import.meta as any).env.VITE_GOOGLE_CLIENT_ID);
-
-
-const GOOGLE_CLIENT_ID = "477197921927-0i9qbknfecrfo82o28daf0o36sp0cv2d.apps.googleusercontent.com"
-
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HelmetProvider>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline />
+        <GoogleOAuthProvider clientId={(import.meta as any).env.VITE_GOOGLE_CLIENT_ID}>
           <BrowserRouter>
     <AuthProvider>
        <App />
     </AuthProvider>
      </BrowserRouter>
+        </GoogleOAuthProvider>
       </LocalizationProvider>
     </HelmetProvider>
   </React.StrictMode>
