@@ -11,24 +11,21 @@ export default defineConfig({
   assetsInclude: ['**/*.lottie'],
   plugins: [
     react(),
-    Sitemap({
-      hostname: 'https://resume-ai.co.in',
-      dynamicRoutes: [
-        '/builder',
-        '/ats',
-        '/templates',
-        '/interview',
-        '/github',
-        '/email',
-        '/privacy',
-        '/terms',
-        '/refund'
-      ],
-      // generateRobotsTxt: true,
-
-
-
-    }),
+    // Sitemap({
+    //   hostname: 'https://resume-ai.co.in',
+    //   dynamicRoutes: [
+    //     '/builder',
+    //     '/ats',
+    //     '/templates',
+    //     '/interview',
+    //     '/github',
+    //     '/email',
+    //     '/privacy',
+    //     '/terms',
+    //     '/refund'
+    //   ],
+    //   // generateRobotsTxt: true,
+    // }),
   ],
     server: {
       headers: {
