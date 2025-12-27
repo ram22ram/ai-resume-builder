@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Box, TextField, Typography, Button, IconButton, Divider } from '@mui/material';
 import { Plus, Trash2, GraduationCap, GripVertical } from 'lucide-react';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';

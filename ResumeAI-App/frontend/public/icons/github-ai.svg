@@ -1,0 +1,23 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="64" fill="#0D1117"/>
+  <!-- GitHub Octocat -->
+  <path d="M256 160C256 160 220 144 196 156C172 168 160 192 160 224C160 256 176 272 208 280C208 280 192 320 224 320C256 320 272 304 272 304C272 304 288 320 320 320C352 320 336 280 336 280C368 272 384 256 384 224C384 192 372 168 348 156C324 144 288 160 288 160L256 160Z" fill="#F0F6FC"/>
+  <path d="M208 280C208 280 224 296 256 296C288 296 304 280 304 280" stroke="#7C3AED" stroke-width="8" stroke-linecap="round"/>
+  <!-- Graph Lines -->
+  <path d="M128 384L192 320L256 352L320 288L384 352" stroke="#7C3AED" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M128 384L192 320" stroke="#10B981" stroke-width="12" stroke-linecap="round"/>
+  <!-- Data Points -->
+  <circle cx="128" cy="384" r="12" fill="#8B5CF6"/>
+  <circle cx="192" cy="320" r="12" fill="#10B981"/>
+  <circle cx="256" cy="352" r="12" fill="#7C3AED"/>
+  <circle cx="320" cy="288" r="12" fill="#F59E0B"/>
+  <circle cx="384" cy="352" r="12" fill="#EF4444"/>
+  <!-- Code Brackets -->
+  <text x="256" y="420" text-anchor="middle" fill="#58A6FF" font-family="monospace" font-size="32" font-weight="bold">{ }</text>
+  <!-- Stars -->
+  <g fill="#FBBF24" opacity="0.6">
+    <path d="M96 128L104 144L120 144L108 156L112 172L96 164L80 172L84 156L72 144L88 144L96 128Z"/>
+    <path d="M416 96L424 112L440 112L428 124L432 140L416 132L400 140L404 124L392 112L408 112L416 96Z" transform="rotate(45 416 96)"/>
+    <path d="M80 448L88 464L104 464L92 476L96 492L80 484L64 492L68 476L56 464L72 464L80 448Z" transform="rotate(30 80 448)"/>
+  </g>
+</svg>

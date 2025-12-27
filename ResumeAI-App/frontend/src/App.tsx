@@ -1,8 +1,7 @@
-import React,{ useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import  AuthSuccess  from './pages/AuthSuccess'; 
 
 // Existing Components
 import ATSChecker from './components/ATSChecker';
@@ -20,7 +19,7 @@ import InterviewSimulator from './components/InterviewSimulator';
 import GithubConverter from './components/GithubConverter';
 import ColdEmail from './components/ColdEmail';
 import Dashboard from './components/Dashboard';
-import { HelmetProvider } from 'react-helmet-async';
+import MarketingPage from './pages/MarketingPage';
 
 function App() {
   const theme = useMemo(() => createTheme({ 
@@ -29,14 +28,12 @@ function App() {
   }), []);
 
   return (
-    <HelmetProvider>
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Routes>
           {/* Main Pages */}
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/auth-success" element={<AuthSuccess />} />
           <Route path="/builder" element={<ResumeBuilder />} />
           
           {/* Note: ATSChecker updated code doesn't need props */}
@@ -52,7 +49,7 @@ function App() {
               />
             } 
           />
-          
+          <Route path="/start" element={<MarketingPage />} />
           {/* AI Tools */}
           <Route path="/interview" element={<InterviewSimulator />} />
           <Route path="/github" element={<GithubConverter />} />
@@ -64,8 +61,6 @@ function App() {
           <Route path="/refund" element={<RefundPolicy onBack={() => window.location.href='/'} />} />
         </Routes>
     </ThemeProvider>
-    </HelmetProvider>
-    
   );
 }
 

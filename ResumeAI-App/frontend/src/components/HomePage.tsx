@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Box, Typography, Button, Container, Paper, 
-  Grid, Stack, Chip, useTheme, useMediaQuery,
-  Avatar
+  Grid, Stack, Chip, useTheme, useMediaQuery
 } from '@mui/material'; 
 
 import { 
   Layout as LayoutIcon, Mic, Github, Mail, 
   CheckCircle2, XCircle, Code, Zap, Target,
-  FileCheck, Users, Award, Globe, Clock, BarChart,
-  ArrowRight, Sparkles, TrendingUp
+  ArrowRight, Sparkles
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import Layout from './Layout'; 
@@ -351,9 +349,9 @@ const HomePage: React.FC = () => {
                     <span style={{ color: COLORS.success }}>Fixed.</span>
                   </Typography>
                 </Grid>
-                <Grid size={{ xs: 12, md:4 }} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
+                {/* <Grid size={{ xs: 12, md:4 }} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
                   <Typography color="#94a3b8">Hover over the cards to see the fix.</Typography>
-                </Grid>
+                </Grid> */}
               </Grid>
             </Box>
 

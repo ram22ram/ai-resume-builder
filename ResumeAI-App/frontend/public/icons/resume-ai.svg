@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="64" fill="#0F172A"/>
+  <rect x="96" y="128" width="320" height="256" rx="24" fill="#1E293B" stroke="#475569" stroke-width="4"/>
+  <path d="M160 192H352M160 224H352M160 256H288M160 288H256" stroke="#CBD5E1" stroke-width="6" stroke-linecap="round"/>
+  <path d="M256 160L272 144L288 160L304 144L320 160L336 144L352 160" stroke="#7C3AED" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="256" cy="320" r="48" fill="url(#brainGradient)" stroke="#A855F7" stroke-width="3"/>
+  <path d="M240 304C240 304 248 296 256 296C264 296 272 304 272 304M240 312C240 312 248 320 256 320C264 320 272 312 272 312M248 328C248 328 256 336 256 336C256 336 264 328 264 328" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <g opacity="0.8">
+    <circle cx="128" cy="192" r="12" fill="#C4B5FD" transform="rotate(0 128 192)">
+      <animate attributeName="cy" values="192;176;192" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="384" cy="256" r="10" fill="#A78BFA" transform="rotate(0 384 256)">
+      <animate attributeName="cy" values="256;272;256" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="160" cy="384" r="8" fill="#8B5CF6" transform="rotate(0 160 384)">
+      <animate attributeName="cx" values="160;176;160" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  <defs>
+    <linearGradient id="brainGradient" x1="208" y1="272" x2="304" y2="368" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#A855F7"/>
+    </linearGradient>
+  </defs>
+</svg>

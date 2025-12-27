@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+declare module "*.lottie"; 
 
 interface ImportMetaEnv {
   readonly VITE_API_URL: string;

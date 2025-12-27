@@ -1,4 +1,4 @@
-export const createImage = (url) =>
+export const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const image = new Image();
     image.addEventListener('load', () => resolve(image));
@@ -7,7 +7,10 @@ export const createImage = (url) =>
     image.src = url;
   });
 
-export default async function getCroppedImg(imageSrc, pixelCrop) {
+export default async function getCroppedImg(
+  imageSrc: string,
+  pixelCrop: { x: number; y: number; width: number; height: number }
+): Promise<string | null> {
   const image = await createImage(imageSrc);
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -16,7 +19,7 @@ export default async function getCroppedImg(imageSrc, pixelCrop) {
     return null;
   }
 
-  // set width/height to double to avoid blurring on retina screens
+  // set width/height to match the crop
   canvas.width = pixelCrop.width;
   canvas.height = pixelCrop.height;
 
@@ -34,6 +37,10 @@ export default async function getCroppedImg(imageSrc, pixelCrop) {
 
   return new Promise((resolve) => {
     canvas.toBlob((file) => {
+      if (!file) {
+        resolve(null);
+        return;
+      }
       resolve(URL.createObjectURL(file));
     }, 'image/jpeg');
   });
