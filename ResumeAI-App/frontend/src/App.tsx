@@ -20,6 +20,7 @@ import GithubConverter from './components/GithubConverter';
 import ColdEmail from './components/ColdEmail';
 import Dashboard from './components/Dashboard';
 import MarketingPage from './pages/MarketingPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const theme = useMemo(() => createTheme({ 
@@ -33,7 +34,11 @@ function App() {
       <Routes>
           {/* Main Pages */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={
+             <ProtectedRoute>
+              <Dashboard />
+              </ProtectedRoute>
+            }/>
           <Route path="/builder" element={<ResumeBuilder />} />
           
           {/* Note: ATSChecker updated code doesn't need props */}
