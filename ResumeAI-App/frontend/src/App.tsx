@@ -11,6 +11,8 @@ import RefundPolicy from './components/RefundPolicy';
 import HomePage from './components/HomePage';
 import AllTemplatesPage from './components/AllTemplatesPage';
 
+import AuthSuccess from './pages/AuthSuccess';
+
 // Main Resume Builder Component
 import ResumeBuilder from './components/ResumeBuilder';
 
@@ -34,6 +36,7 @@ function App() {
       <Routes>
           {/* Main Pages */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/auth-success" element={<AuthSuccess />} />
           <Route path="/dashboard" element={
              <ProtectedRoute>
               <Dashboard />
