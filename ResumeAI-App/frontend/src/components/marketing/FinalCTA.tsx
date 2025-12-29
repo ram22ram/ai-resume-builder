@@ -19,7 +19,7 @@ const FinalCTA: React.FC = () => {
         sx={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: `url('/images/final-cta.jpg')`,
+          backgroundImage: `url('/images/final-cta.webp')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           zIndex: 0,

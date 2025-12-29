@@ -39,9 +39,9 @@ const PROFESSIONS = [
 // Replaced local paths with placeholders or CDNs for stability in this demo.
 const COMPANIES = [
   { logo: '/Zomato_Logo.svg' }, // पक्का करें कि public में नाम यही है
-  { logo: '/mahendra.png' },
+  { logo: '/mahendra.webp' },
   { logo: '/Tata_logo.svg' },
-  { logo: '/deloitte.png' },
+  { logo: '/deloitte.webp' },
   { logo: '/HDFC_Bank_Logo.svg' },
 ];
 

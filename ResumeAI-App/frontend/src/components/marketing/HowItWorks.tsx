@@ -13,19 +13,19 @@ const steps: Step[] = [
     num: 1,
     title: 'Sign Up',
     desc: 'Login instantly using Google. No forms, no friction.',
-    image: '/images/Sign Up.jpg',
+    image: '/images/Sign Up.webp',
   },
   {
     num: 2,
     title: 'Optimize',
     desc: 'Use AI-powered tools to optimize your resume for ATS.',
-    image: '/images/Optimize.jpg',
+    image: '/images/Optimize.webp',
   },
   {
     num: 3,
     title: 'Download',
     desc: 'Pay only when you download your final resume.',
-    image: '/images/Download.jpg',
+    image: '/images/Download.webp',
   },
 ];
 

@@ -11,7 +11,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const slides = [
   {
-    image: '/images/hero-1.jpg',
+    image: '/images/hero-1.webp',
     title: 'AI-Powered Resume Builder',
     subtitle: 'Create ATS-optimized resumes in minutes',
     features: ['95% ATS Success Rate', 'AI Content Suggestions', 'Professional Templates'],
@@ -20,7 +20,7 @@ const slides = [
     color: '#7C3AED'
   },
   {
-    image: '/images/hero-2.jpg',
+    image: '/images/hero-2.webp',
     title: 'AI Interviews',
     subtitle: 'Practice with AI interview coach',
     features: ['Real-time Feedback', '100+ Industry Questions', 'Confidence Score'],
@@ -29,7 +29,7 @@ const slides = [
     color: '#10B981'
   },
   {
-    image: '/images/hero-3.jpg',
+    image: '/images/hero-3.webp',
     title: 'GitHub Project Enhancer',
     subtitle: 'Transform project data into impressive resume points',
     features: ['Smart Bullet Generation', 'Impact Quantification', 'Technical Skills Highlight'],
@@ -38,7 +38,7 @@ const slides = [
     color: '#3B82F6'
   },
 //   {
-//     image: '/images/hero-4.jpg',
+//     image: '/images/hero-4.webp',
 //     title: 'Team Collaboration',
 //     subtitle: 'Perfect for startups & career coaches',
 //     features: ['Team Management', 'Bulk Processing', 'Analytics Dashboard'],
@@ -47,7 +47,7 @@ const slides = [
 //     color: '#F59E0B'
 //   },
   {
-    image: '/images/hero-5.jpg',
+    image: '/images/hero-5.webp',
     title: 'ATS Optimization',
     subtitle: 'Beat the resume screening bots',
     features: ['Keyword Optimization', 'Formatting Check', 'Score Improvement'],

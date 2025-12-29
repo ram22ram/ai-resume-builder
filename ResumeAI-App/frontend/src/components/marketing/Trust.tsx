@@ -16,25 +16,25 @@ const trustItems = [
   { 
     title: 'Zero Data Storage', 
     desc: 'We do not store your resume data.',
-    icon: '/images/Trust-1.png',
+    icon: '/images/Trust-1.webp',
     color: '#10B981' // Green for data privacy
   },
   { 
     title: 'No Tracking', 
     desc: 'No cookies or analytics tracking.',
-    icon: '/images/Trust-2.png',
+    icon: '/images/Trust-2.webp',
     color: '#EF4444' // Red for prohibition
   },
   { 
     title: 'Google OAuth', 
     desc: 'Secure login using Google.',
-    icon: '/images/Trust-3.png',
+    icon: '/images/Trust-3.webp',
     color: '#4285F4' // Google blue
   },
   { 
     title: 'Secure Payments', 
     desc: 'Razorpay protected with guarantee.',
-    icon: '/images/Trust-4.png',
+    icon: '/images/Trust-4.webp',
     color: '#7C3AED' // Brand purple
   },
 ];
