@@ -6,7 +6,8 @@ import {
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FileText, Mic, Github, Mail, Menu as MenuIcon, X, LogOut, LayoutDashboard } from 'lucide-react';
-import axios from 'axios'; 
+import axios from 'axios';
+import { Helmet } from 'react-helmet-async'; 
 
 // ✅ CORRECT IMPORT (From 'lenis' package)
 import { ReactLenis } from 'lenis/react';
@@ -63,6 +64,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
+      <Helmet>
+      {/* Search Result Title & Description */}
+      <title>Free ATS Resume Builder | Get Hired Faster with AI</title>
+      <meta name="description" content="Build an ATS-optimized resume in minutes. Features: Mock Interviews, GitHub to CV, and Cold Email generation. Start for free at resume-ai.co.in" />
+      
+      {/* Marketing & Branding Tags */}
+      <meta property="og:title" content="Next-Gen Career Intelligence Platform" />
+      <meta property="og:description" content="Transform your career with our AI-powered toolset. 100% Free ATS check & resume building." />
+      <meta property="og:image" content="https://resume-ai.co.in/og-image.png" /> {/* Agar banner hai to link daalein */}
+      
+      {/* Robots setting taaki sitemap raw na dikhe */}
+      <meta name="robots" content="index, follow" />
+    </Helmet>
       
       {/* Global Styles */}
       <style>{`
