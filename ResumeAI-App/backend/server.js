@@ -21,7 +21,7 @@ app.use(cors({
 }));
 
 // 2. Handle Preflight OPTIONS (Zaroori hai ERR_NETWORK fix karne ke liye)
-app.options('*', cors()); 
+app.options(/(.*)/, cors()); 
 
 app.set('trust proxy', 1);
 app.use(express.json());
