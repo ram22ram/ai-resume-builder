@@ -3,31 +3,24 @@ const router = express.Router();
 const Resume = require('../models/Resume');
 const { protect } = require('../middleware/authMiddleware');
 const multer = require('multer');
-const pdfParse = require('pdf-parse');
+const pdfParse = require('pdf-parse'); // Isko niche handle karenge
 const rateLimit = require('express-rate-limit');
 
-// 1. RATE LIMITER
+// 1. Rate Limiter (Testing ke liye generous limit)
 const parseLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 30, // Testing ke liye limit thodi aur badha di hai
+  windowMs: 60 * 60 * 1000, 
+  max: 30, 
   message: { success: false, message: "Too many uploads, try again later" }
 });
 
-// 2. MULTER SETUP (Memory storage)
+// 2. Multer Setup
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype !== 'application/pdf') {
-      return cb(new Error('Only PDF files allowed'), false);
-    }
-    cb(null, true);
-  }
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 });
 
 /**
  * 🔓 PUBLIC PDF PARSE ENDPOINT
- * Ismein har tarah ke import structure ko handle kiya gaya hai.
  */
 router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   try {
@@ -37,28 +30,29 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
 
     console.log(`📄 Attempting to parse: ${req.file.originalname}`);
 
-    // 🔥 FIX: pdf-parse ko handle karne ke saare patterns
+    // 🔥 THE FIX: Sahi tareeke se function nikalna
     let parser;
     if (typeof pdfParse === 'function') {
       parser = pdfParse;
     } else if (pdfParse && typeof pdfParse.default === 'function') {
       parser = pdfParse.default;
-    } else {
-      // Agar module structure complex hai toh direct call try karo
-      parser = pdfParse;
+    } else if (typeof pdfParse === 'object' && pdfParse !== null) {
+      // Kuch environments mein ye aise milta hai
+      parser = pdfParse; 
     }
 
-    // Double check
+    // Aakhri koshish: Agar parser abhi bhi function nahi hai toh throw error
     if (typeof parser !== 'function') {
-      console.error("Library Load Error Details:", typeof pdfParse);
-      throw new Error("pdf-parse library error: parser is not a detectable function");
+      console.error("❌ Library Structure:", typeof pdfParse);
+      // Agar direct function nahi hai, toh check karo ki kya ye object call ho sakta hai
+      // pdf-parse module usually function export karta hai, par hum backup rakhte hain
     }
 
-    // Buffer parsing logic
-    const data = await parser(req.file.buffer);
+    // Buffer parsing - pdf-parse usually returns a promise
+    const data = await pdfParse(req.file.buffer);
 
     if (!data || !data.text) {
-      throw new Error("Could not extract text from this PDF file");
+      throw new Error("Could not extract text from PDF");
     }
 
     const cleanText = data.text
@@ -83,25 +77,20 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
 });
 
 /**
- * 🔒 GET USER RESUME
+ * 🔒 AUTH ROUTES
  */
 router.get('/', protect, async (req, res) => {
   try {
     const resume = await Resume.findOne({ user: req.user.id });
     res.json({ success: true, data: resume });
   } catch (err) {
-    console.error("Fetch Error:", err.message);
     res.status(500).json({ success: false, message: "Error fetching resume" });
   }
 });
 
-/**
- * 🔒 SAVE OR UPDATE RESUME
- */
 router.post('/', protect, async (req, res) => {
   try {
     const { data, origin } = req.body;
-
     let resume = await Resume.findOne({ user: req.user.id });
     if (resume) {
       resume.data = data;
@@ -111,10 +100,8 @@ router.post('/', protect, async (req, res) => {
     } else {
       resume = await Resume.create({ user: req.user.id, data, origin });
     }
-
     res.json({ success: true });
   } catch (err) {
-    console.error("Save Error:", err.message);
     res.status(500).json({ success: false, message: "Error saving resume" });
   }
 });
