@@ -3,20 +3,20 @@ const router = express.Router();
 const Resume = require('../models/Resume');
 const { protect } = require('../middleware/authMiddleware');
 const multer = require('multer');
-const pdfParse = require('pdf-parse'); // Isko niche handle karenge
+const PDFParser = require("pdf2json"); 
 const rateLimit = require('express-rate-limit');
 
-// 1. Rate Limiter (Testing ke liye generous limit)
+// 1. Rate Limiter
 const parseLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, 
-  max: 30, 
+  windowMs: 60 * 60 * 1000,
+  max: 30,
   message: { success: false, message: "Too many uploads, try again later" }
 });
 
 // 2. Multer Setup
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 /**
@@ -28,63 +28,46 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
       return res.status(400).json({ success: false, message: 'No file received' });
     }
 
-    console.log(`📄 Attempting to parse: ${req.file.originalname}`);
+    const pdfParser = new PDFParser(null, 1);
 
-    // 🔥 THE FIX: Sahi tareeke se function nikalna
-    let parser;
-    if (typeof pdfParse === 'function') {
-      parser = pdfParse;
-    } else if (pdfParse && typeof pdfParse.default === 'function') {
-      parser = pdfParse.default;
-    } else if (typeof pdfParse === 'object' && pdfParse !== null) {
-      // Kuch environments mein ye aise milta hai
-      parser = pdfParse; 
-    }
-
-    // Aakhri koshish: Agar parser abhi bhi function nahi hai toh throw error
-    if (typeof parser !== 'function') {
-      console.error("❌ Library Structure:", typeof pdfParse);
-      // Agar direct function nahi hai, toh check karo ki kya ye object call ho sakta hai
-      // pdf-parse module usually function export karta hai, par hum backup rakhte hain
-    }
-
-    // Buffer parsing - pdf-parse usually returns a promise
-    const data = await pdfParse(req.file.buffer);
-
-    if (!data || !data.text) {
-      throw new Error("Could not extract text from PDF");
-    }
-
-    const cleanText = data.text
-      .replace(/\r\n/g, '\n')
-      .replace(/\n{2,}/g, '\n\n')
-      .trim();
-
-    console.log("✅ Successfully parsed PDF");
-
-    res.json({
-      success: true,
-      rawText: cleanText,
+    pdfParser.on("pdfParser_dataError", errData => {
+      console.error("❌ PDF Parser Error:", errData.parserError);
+      if (!res.headersSent) {
+        res.status(500).json({ success: false, message: "Parsing failed" });
+      }
     });
+
+    pdfParser.on("pdfParser_dataReady", pdfData => {
+      const rawText = pdfParser.getRawTextContent();
+      // Decode URI format strings jo pdf2json deta hai
+      const cleanText = decodeURIComponent(rawText).replace(/\r\n/g, '\n').trim();
+      
+      console.log("✅ Parsing Successful");
+      if (!res.headersSent) {
+        res.json({ success: true, rawText: cleanText });
+      }
+    });
+
+    // Buffer se load karo
+    pdfParser.parseBuffer(req.file.buffer);
 
   } catch (err) {
-    console.error('❌ PDF Parse Error:', err.message);
-    res.status(500).json({
-      success: false,
-      message: `Server Error: ${err.message}`
-    });
+    console.error('❌ Server Error:', err.message);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, message: err.message });
+    }
   }
 });
 
 /**
- * 🔒 AUTH ROUTES
+ * 🔒 USER ROUTES
  */
 router.get('/', protect, async (req, res) => {
   try {
     const resume = await Resume.findOne({ user: req.user.id });
     res.json({ success: true, data: resume });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Error fetching resume" });
+    res.status(500).json({ success: false, message: "Error fetching" });
   }
 });
 
@@ -102,7 +85,7 @@ router.post('/', protect, async (req, res) => {
     }
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Error saving resume" });
+    res.status(500).json({ success: false, message: "Error saving" });
   }
 });
 
