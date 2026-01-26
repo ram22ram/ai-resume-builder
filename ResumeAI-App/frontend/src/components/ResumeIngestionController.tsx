@@ -22,7 +22,8 @@ export const useResumeIngestionController = () => {
       formData.append('file', file);
 
       // ✅ FIX 3: Longer timeout + explicit headers
-      const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
+      // const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
+      const response = await axios.post(`${API_URL}/resume/parse`, formData, {
         timeout: 60000, // 1 minute (Render cold start protection)
         headers: { 'Content-Type': 'multipart/form-data' }
       });
