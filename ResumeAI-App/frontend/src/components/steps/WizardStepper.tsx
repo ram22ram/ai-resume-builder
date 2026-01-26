@@ -1,7 +1,8 @@
+// src/components/WizardStepper.tsx
 import React, { useState } from 'react';
 import { 
   Box, Stepper, Step, StepLabel, Button, 
-  Typography, Paper, Alert 
+  Paper, Alert 
 } from '@mui/material';
 import { Save } from 'lucide-react';
 
@@ -10,12 +11,27 @@ import { validateStep } from '../../utils/resumeUtils';
 import StepPersonalInfo from './StepPersonalInfo';
 import StepSummary from './StepSummary';
 import StepExperience from './StepExperience';
-import EducationSection from '../EducationSection'; // <-- FIX: Import EducationSection (Parent folder se)
+import EducationSection from '../EducationSection';
 import StepProjects from './StepProjects';
 import StepSkills from './StepSkills';
 import StepSettingsDownload from './StepSettingsDownload';
 
-// --- FIX: Added 'Education' to steps ---
+// Define proper types
+interface WizardStepperProps {
+  resumeData: any;
+  setResumeData: React.Dispatch<React.SetStateAction<any>>;
+  errors: any;
+  loadingAi: boolean;
+  handlers: any;
+  visibleSections: string[];
+  currentTemplate: string;
+  accentColor: string;
+  fontFamily: string;
+  customizationHandlers: any;
+  previewRef: React.RefObject<HTMLDivElement>;
+  handleDownloadPDF: (previewRef: React.RefObject<HTMLDivElement>, resumeData: any, currentTemplate: string) => void;
+}
+
 const steps = [
   'Personal Info', 
   'Summary', 
@@ -26,15 +42,23 @@ const steps = [
   'Settings & Download'
 ];
 
-const WizardStepper = (props) => {
+const WizardStepper = (props: WizardStepperProps) => {
   const { 
-    resumeData, setResumeData, errors, loadingAi, handlers,
-    visibleSections, currentTemplate, accentColor, fontFamily,
-    customizationHandlers, previewRef, handleDownloadPDF
+    resumeData,
+    errors,
+    loadingAi,
+    handlers,
+    visibleSections,
+    currentTemplate,
+    accentColor,
+    fontFamily,
+    customizationHandlers,
+    previewRef,
+    handleDownloadPDF
   } = props;
 
-  const [activeStep, setActiveStep] = useState(0);
-  const [validationError, setValidationError] = useState(null);
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleNext = () => {
     const { isValid, error } = validateStep(activeStep, resumeData);
@@ -56,8 +80,9 @@ const WizardStepper = (props) => {
     alert('Your progress has been saved to this browser.');
   };
 
-  const getStepContent = (step) => {
+  const getStepContent = (step: number) => {
     const stepProps = { resumeData, errors, handlers, loadingAi };
+    
     switch (step) {
       case 0:
         return <StepPersonalInfo {...stepProps} />;
@@ -65,33 +90,38 @@ const WizardStepper = (props) => {
         return <StepSummary {...stepProps} />;
       case 2:
         return <StepExperience {...stepProps} />;
-      // --- FIX: Added Education Case ---
       case 3:
         return (
           <EducationSection 
-             data={resumeData.education}
-             onChange={(id, e) => handlers.handleListChange('education', id, e)}
-             onDateChange={handlers.handleDateChange} // Ensure handleDateChange is passed in handlers from App.js
-             onAdd={() => handlers.addListItem('education')}
-             onDelete={(id) => handlers.deleteListItem('education', id)}
-             errors={errors.education}
+            data={resumeData.education || []}
+            onChange={(id: string | number, e: React.ChangeEvent<HTMLInputElement>) => 
+              handlers.handleListChange('education', id, e)}
+            onDateChange={handlers.handleDateChange}
+            onAdd={() => handlers.addListItem('education')}
+            onDelete={(id: string | number) => handlers.deleteListItem('education', id)}
+            errors={errors?.education || []}
           />
         );
       case 4:
         return <StepProjects {...stepProps} />;
       case 5:
-        return <StepSkills {...stepProps} PREDEFINED_SKILL_LIST={[]} />;
+        return <StepSkills {...stepProps} />;
       case 6:
-        return <StepSettingsDownload
-          visibleSections={visibleSections}
-          currentTemplate={currentTemplate}
-          accentColor={accentColor}
-          fontFamily={fontFamily}
-          handlers={customizationHandlers}
-          previewRef={previewRef}
-          resumeData={resumeData}
-          handleDownloadPDF={() => handleDownloadPDF(previewRef, resumeData, currentTemplate)}
-        />;
+        return (
+          <StepSettingsDownload
+            currentTemplate={currentTemplate}
+            accentColor={accentColor}
+            fontFamily={fontFamily}
+            density={customizationHandlers.density}
+            photoMode={customizationHandlers.photoMode}
+            sections={visibleSections}
+            handlers={customizationHandlers}
+            resumeData={resumeData}
+            handleDownloadPDF={() =>
+                handleDownloadPDF(previewRef, resumeData, currentTemplate)
+              }
+            />
+        );
       default:
         return 'Unknown step';
     }
@@ -133,7 +163,6 @@ const WizardStepper = (props) => {
           Save
         </Button>
 
-        {/* Next button logic updated for new length */}
         {activeStep < steps.length - 1 && (
           <Button variant="contained" onClick={handleNext}>
             Next

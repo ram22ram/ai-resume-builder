@@ -15,24 +15,19 @@ const TemplateSwiss = React.lazy(() => import('./TemplateSwiss'));
 
 interface TemplateSelectorProps {
   templateName: string;
-  data: any;
+  data: any; // Now contains { sections: [], theme: {} }
   theme: any;
-  visibleSections: any;
-  sectionOrder: any;
   isPreview?: boolean;
+  scale?: number;
 }
 
 const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   templateName,
   data,
   theme,
-  visibleSections,
-  sectionOrder,
   isPreview = false
 }) => {
   
-  // Note: Fonts are now loaded globally via main.tsx using @fontsource packages
-
   const getTemplateComponent = () => {
     const templateLower = templateName?.toLowerCase() || 'modern';
     
@@ -54,17 +49,18 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
   return (
     <ThemeWrapper theme={theme}>
-      {(processedTheme) => (
+      {() => (
         <Suspense fallback={
           <Box display="flex" justifyContent="center" alignItems="center" height="100%" minHeight="400px">
-            <CircularProgress />
+            <CircularProgress color="primary" />
           </Box>
         }>
+          {/* LEGO FIX: Humne visibleSections aur sectionOrder props ko remove kar diya hai 
+              kyunki TemplateModern ab seedha 'data.sections' array ko map karta hai.
+          */}
           <SelectedTemplate
             data={data}
             theme={theme}
-            visibleSections={visibleSections}
-            sectionOrder={sectionOrder}
             isPreview={isPreview}
           />
         </Suspense>

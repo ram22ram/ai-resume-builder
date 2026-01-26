@@ -11,8 +11,10 @@ const ThemeWrapper: React.FC<ThemeWrapperProps> = ({ theme, children }) => {
   const {
     accentColor = '#0B57D0',
     fontFamily = 'inter',
+    textColor = '#111827',
     density = 'comfortable',
-    photoMode = 'visible'
+    photoMode = 'visible',
+    mode = 'builder',
   } = theme || {};
 
   const processedTheme = {
@@ -20,6 +22,9 @@ const ThemeWrapper: React.FC<ThemeWrapperProps> = ({ theme, children }) => {
     fontFamily: getFontFamily(fontFamily),
     density,
     photoMode,
+    mode, 
+      /* 🔥 PREVIEW READABILITY GUARANTEE */
+  textColor: mode === 'preview' ? '#0f172a' : textColor,
     
     // Helper functions
     getFontSize: (base: number, isPreview: boolean = false) => 

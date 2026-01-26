@@ -1,28 +1,23 @@
+// Layout.tsx - UPDATE SAVE ICON SECTIONS
 import React, { useState } from 'react';
 import { 
   AppBar, Toolbar, Typography, Button, Box, Container, Stack, 
   IconButton, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, 
-  useTheme, useMediaQuery, Avatar, Divider
+  useTheme, useMediaQuery, Avatar
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FileText, Mic, Github, Mail, Menu as MenuIcon, X, LogOut, LayoutDashboard } from 'lucide-react';
-import axios from 'axios';
 import { Helmet } from 'react-helmet-async'; 
+
+// ✅ IMPORT RESUME CONTEXT
+
+
 
 // ✅ CORRECT IMPORT (From 'lenis' package)
 import { ReactLenis } from 'lenis/react';
 
-// ✅ IMPORT SEO COMPONENT (Ensure this file exists or remove if not)
-// import { SEO } from './SEO'; 
-
 // ✅ AUTH IMPORTS
-
 import { useAuth } from '../context/AuthContext';
-
-// ✅ API URL CONSTANT
-//  const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://localhost:5000/api';
-  const API_URL = import.meta.env.VITE_API_URL;
-// const API_URL = 'https://resumeai-backend-v2.onrender.com/api';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -44,7 +39,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // ✅ AUTH HOOK
-  const { user, login, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -53,36 +48,29 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     setMobileOpen(false);
   };
 
-
-
-  // ✅ HANDLER: LOGOUT & REDIRECT
   const handleLogout = () => {
     logout();
     navigate('/');
     setMobileOpen(false);
   };
 
+
+
   return (
     <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
       <Helmet>
-      {/* Search Result Title & Description */}
-      <title>Free ATS Resume Builder | Get Hired Faster with AI</title>
-      <meta name="description" content="Build an ATS-optimized resume in minutes. Features: Mock Interviews, GitHub to CV, and Cold Email generation. Start for free at resume-ai.co.in" />
+        <title>Free ATS Resume Builder | Get Hired Faster with AI</title>
+        <meta name="description" content="Build an ATS-optimized resume in minutes. Features: Mock Interviews, GitHub to CV, and Cold Email generation. Start for free at resume-ai.co.in" />
+        <meta property="og:title" content="Next-Gen Career Intelligence Platform" />
+        <meta property="og:description" content="Transform your career with our AI-powered toolset. 100% Free ATS check & resume building." />
+        <meta property="og:image" content="https://resume-ai.co.in/og-image.png" />
+        <meta name="robots" content="index, follow" />
+      </Helmet>
       
-      {/* Marketing & Branding Tags */}
-      <meta property="og:title" content="Next-Gen Career Intelligence Platform" />
-      <meta property="og:description" content="Transform your career with our AI-powered toolset. 100% Free ATS check & resume building." />
-      <meta property="og:image" content="https://resume-ai.co.in/og-image.png" /> {/* Agar banner hai to link daalein */}
-      
-      {/* Robots setting taaki sitemap raw na dikhe */}
-      <meta name="robots" content="index, follow" />
-    </Helmet>
-      
-      {/* Global Styles */}
       <style>{`
         html.lenis, html.lenis body { height: auto; }
         .lenis.lenis-smooth { scroll-behavior: auto !important; }
-        .lenis.lenis-smooth [data-lenis-prevent] { oversceoll-behavior: contain; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
         .lenis.lenis-stopped { overflow: hidden; }
         .lenis.lenis-scrolling iframe { pointer-events: none; }
         body { font-family: 'Outfit', sans-serif; background-color: #020617; }
@@ -118,7 +106,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <Stack direction="row" spacing={1} sx={{ bgcolor: 'rgba(255,255,255,0.03)', p: 0.5, borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
                     {/* Add Dashboard Link if Logged In */}
                     {user && (
-                        <Button
+                      <Button
                         onClick={() => handleNav('/dashboard')}
                         startIcon={<LayoutDashboard size={18} />}
                         sx={{
@@ -152,8 +140,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     ))}
                   </Stack>
 
-                  {/* ✅ DESKTOP AUTH SECTION */}
-                  <Box sx={{ ml: 1 }}>
+                  {/* ✅ DESKTOP AUTH SECTION WITH SAVE BUTTON */}
+                  <Box sx={{ ml: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+                    {/* Save Button - Only on Resume Builder Page */}
+                    
                     {user ? (
                       // Logged In View
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, bgcolor: 'rgba(255,255,255,0.05)', p: 1, pr: 2, borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -179,14 +169,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       </Box>
                     ) : (
                       <Button 
-                      onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
-                      sx={{
-                        bgcolor: 'white', color: 'black', fontWeight: 'bold',
-                        '&:hover': { bgcolor: '#f1f1f1' }
-                      }}
-                    >
-                      Login with Google
-                    </Button>
+                        onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
+                        sx={{
+                          bgcolor: 'white', color: 'black', fontWeight: 'bold',
+                          '&:hover': { bgcolor: '#f1f1f1' }
+                        }}
+                      >
+                        Login with Google
+                      </Button>
                     )}
                   </Box>
 
@@ -219,12 +209,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <List sx={{ flexGrow: 1 }}>
               {/* Mobile Dashboard Link */}
               {user && (
-                 <ListItem disablePadding>
-                    <ListItemButton onClick={() => handleNav('/dashboard')} sx={{ borderRadius: 3, mb: 1, py: 1.5, color: isActive('/dashboard') ? '#60a5fa' : 'white' }}>
-                        <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}><LayoutDashboard size={18}/></ListItemIcon>
-                        <ListItemText primary="Dashboard" />
-                    </ListItemButton>
-                 </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleNav('/dashboard')} sx={{ borderRadius: 3, mb: 1, py: 1.5, color: isActive('/dashboard') ? '#60a5fa' : 'white' }}>
+                    <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}><LayoutDashboard size={18}/></ListItemIcon>
+                    <ListItemText primary="Dashboard" />
+                  </ListItemButton>
+                </ListItem>
               )}
 
               {navItems.map((item) => (
@@ -243,6 +233,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </ListItemButton>
                 </ListItem>
               ))}
+              
+              {/* Mobile Save Option - Only on Resume Builder */}
+              {/* {location.pathname === '/builder' && (
+                <ListItem disablePadding>
+                  <ListItemButton 
+                    onClick={handleSave}
+                    sx={{ 
+                      borderRadius: 3, 
+                      mb: 1, 
+                      py: 1.5,
+                      color: '#60a5fa',
+                      bgcolor: 'rgba(59, 130, 246, 0.1)',
+                      border: '1px solid rgba(59, 130, 246, 0.3)'
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>💾</ListItemIcon>
+                    <ListItemText primary="Save Resume" primaryTypographyProps={{ fontWeight: 600 }} />
+                  </ListItemButton>
+                </ListItem>
+              )} */}
             </List>
 
             {/* ✅ MOBILE AUTH SECTION */}
@@ -250,35 +260,35 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {user ? (
                 // Mobile Logged In
                 <Stack spacing={2}>
-                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Avatar src={user.picture} sx={{ width: 40, height: 40 }} />
-                      <Box>
-                        <Typography variant="subtitle2" fontWeight="bold">{user.name}</Typography>
-                        <Typography variant="caption" sx={{ color: '#94a3b8' }}>{user.email}</Typography>
-                      </Box>
-                   </Box>
-                   <Button 
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Avatar src={user.picture} sx={{ width: 40, height: 40 }} />
+                    <Box>
+                      <Typography variant="subtitle2" fontWeight="bold">{user.name}</Typography>
+                      <Typography variant="caption" sx={{ color: '#94a3b8' }}>{user.email}</Typography>
+                    </Box>
+                  </Box>
+                  <Button 
                     variant="outlined" 
                     color="error" 
                     fullWidth 
                     startIcon={<LogOut size={18} />}
                     onClick={handleLogout}
-                   >
-                     Logout
-                   </Button>
+                  >
+                    Logout
+                  </Button>
                 </Stack>
               ) : (
                 // Mobile Logged Out
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Button 
-                  onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
-                  sx={{
-                    bgcolor: 'white', color: 'black', fontWeight: 'bold',
-                    '&:hover': { bgcolor: '#f1f1f1' }
-                  }}
-                >
-                  Login with Google
-                </Button>
+                    onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
+                    sx={{
+                      bgcolor: 'white', color: 'black', fontWeight: 'bold',
+                      '&:hover': { bgcolor: '#f1f1f1' }
+                    }}
+                  >
+                    Login with Google
+                  </Button>
                 </Box>
               )}
             </Box>
@@ -296,10 +306,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <Box sx={{ position: 'absolute', top: '-50%', left: '50%', width: '60%', height: '200px', bgcolor: '#3b82f6', filter: 'blur(100px)', opacity: 0.1, transform: 'translateX(-50%)', borderRadius: '50%' }} />
           <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                 <Box component="img" src="/favicon.svg" alt="Logo" sx={{ width: 32, height: 32, borderRadius: '8px', objectFit: 'cover' }} />
-                <Typography variant="h5" sx={{ fontWeight: '800', color: 'white' }}>
-                  Resume<span style={{ color: '#60a5fa' }}>AI</span>
-                </Typography>
+              <Box component="img" src="/favicon.svg" alt="Logo" sx={{ width: 32, height: 32, borderRadius: '8px', objectFit: 'cover' }} />
+              <Typography variant="h5" sx={{ fontWeight: '800', color: 'white' }}>
+                Resume<span style={{ color: '#60a5fa' }}>AI</span>
+              </Typography>
             </Box>
             <Typography variant="body1" sx={{ color: '#94a3b8', mb: 5, maxWidth: '500px', mx: 'auto' }}>
               We build tools for career growth. Stop guessing, start getting hired with AI-powered insights.

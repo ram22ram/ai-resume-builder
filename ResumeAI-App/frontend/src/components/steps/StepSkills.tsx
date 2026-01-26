@@ -4,7 +4,8 @@ import { PREDEFINED_SKILL_LIST } from '../../utils/constants';
 import { Plus, X } from 'lucide-react';
 
 const StepSkills = ({ resumeData, handlers, errors = {} }: any) => {
-  const { skills } = resumeData;
+  // ✅ Skills array check
+  const skills = Array.isArray(resumeData) ? resumeData : (resumeData?.skills || []);
   // ✅ MATCHED HANDLERS
   const { handleAddSkill, handleDeleteSkill } = handlers; 
   const [inputValue, setInputValue] = useState('');

@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Box,
   Container,
   Paper,
   Typography,
   Button,
-  Grid
+  IconButton,
+  useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import TemplateSelector from './templates/TemplateSelector';
 import { DUMMY_RESUME_DATA } from '../data/dummyResume';
 
 /* ---------------- TEMPLATE LIST ---------------- */
-// Aapki saari templates yahan list hain
 const GALLERY_TEMPLATES = [
   { id: 'modern', name: 'Modern Pro', desc: 'Clean & Tech-focused' },
   { id: 'classic', name: 'Executive Classic', desc: 'Traditional & Professional' },
@@ -25,116 +27,156 @@ const GALLERY_TEMPLATES = [
   { id: 'harvey', name: 'The Harvey', desc: 'Elegant & Sophisticated' },
 ];
 
+const CARD_WIDTH = 360;
+const CARD_GAP = 24;
+const SCROLL_AMOUNT = CARD_WIDTH + CARD_GAP;
+
 /* ---------------- MAIN COMPONENT ---------------- */
 
 const TemplateGallery: React.FC = () => {
   const navigate = useNavigate();
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const scrollLeft = () => {
+    carouselRef.current?.scrollBy({
+      left: -SCROLL_AMOUNT,
+      behavior: 'smooth',
+    });
+  };
+
+  const scrollRight = () => {
+    carouselRef.current?.scrollBy({
+      left: SCROLL_AMOUNT,
+      behavior: 'smooth',
+    });
+  };
 
   return (
-    <Box sx={{ backgroundColor: '#020617', py: 8 }} id="templates">
-      <Container maxWidth="lg">
-        {/* Header Section */}
+    <Box sx={{ backgroundColor: '#020617', py: 10 }} id="templates">
+      <Container maxWidth="xl">
+
+        {/* ---------- HEADER ---------- */}
         <Box sx={{ mb: 8, textAlign: 'center' }}>
-          <Typography
-            variant="h3"
-            fontWeight={800}
-            sx={{ mb: 2, color: '#ffffff' }}
-          >
+          <Typography variant="h3" fontWeight={800} sx={{ mb: 2, color: 'white' }}>
             Pick a <span style={{ color: '#7c3aed' }}>CV template</span>
           </Typography>
-          <Typography color="text.secondary" variant="h6">
+          <Typography variant="h6" sx={{ color: '#94a3b8' }}>
             AI-enhanced templates, recruiter-approved.
           </Typography>
         </Box>
 
-        <Grid container spacing={4} justifyContent="center">
-          {GALLERY_TEMPLATES.map((tpl) => (
-            <Grid key={tpl.id} size={{ xs: 12, sm:6, md: 4 }}>
-              
-              {/* ---------- MAIN CARD WRAPPER ---------- */}
+        {/* ---------- CAROUSEL WRAPPER ---------- */}
+        <Box sx={{ position: 'relative' }}>
+
+          {/* LEFT BUTTON */}
+          {!isMobile && (
+            <IconButton
+              onClick={scrollLeft}
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: -24,
+                transform: 'translateY(-50%)',
+                zIndex: 10,
+                bgcolor: '#020617',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'white',
+                '&:hover': { bgcolor: '#0f172a' },
+              }}
+            >
+              <ChevronLeft />
+            </IconButton>
+          )}
+
+          {/* RIGHT BUTTON */}
+          {!isMobile && (
+            <IconButton
+              onClick={scrollRight}
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                right: -24,
+                transform: 'translateY(-50%)',
+                zIndex: 10,
+                bgcolor: '#020617',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'white',
+                '&:hover': { bgcolor: '#0f172a' },
+              }}
+            >
+              <ChevronRight />
+            </IconButton>
+          )}
+
+          {/* ---------- CAROUSEL ---------- */}
+          <Box
+            ref={carouselRef}
+            sx={{
+              display: 'flex',
+              gap: `${CARD_GAP}px`,
+              overflowX: 'auto',
+              scrollBehavior: 'smooth',
+              pb: 4,
+              px: 2,
+              '&::-webkit-scrollbar': { display: 'none' },
+            }}
+          >
+            {GALLERY_TEMPLATES.map((tpl) => (
               <Paper
+                key={tpl.id}
                 elevation={0}
                 sx={{
+                  minWidth: CARD_WIDTH,
                   borderRadius: 4,
                   overflow: 'hidden',
-                  background: 'rgba(15, 23, 42, 0.6)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  transition: 'transform 0.3s ease-in-out',
+                  background: 'rgba(15,23,42,0.7)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  transition: 'transform 0.35s ease, box-shadow 0.35s ease',
+                  transformOrigin: 'center center',
+
+                  /* ✅ HOVER SCALE + SIZE JUMP */
                   '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)'
-                  }
+                    transform: 'scale(1.06)',
+                    boxShadow: '0 40px 80px rgba(124,58,237,0.35)',
+                    zIndex: 5,
+                  },
                 }}
               >
-                {/* ---------- PREVIEW VIEWPORT (The Gray Box) ---------- */}
+                {/* PREVIEW */}
                 <Box
                   sx={{
-                    height: 520, // Card height
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
+                    height: 520,
+                    backgroundColor: '#ffffff',
+                    p: 2,
                     overflow: 'hidden',
-                    backgroundColor: '#f1f5f9', // Light gray background
-                    position: 'relative',
-                    pt: 4, // Top spacing for the paper look
                   }}
                 >
-                  {/* ---------- FIXED A4 CANVAS ---------- */}
-                  {/* RCA Fix: Is container ko force kiya gaya hai A4 size lene ke liye */}
-                  <Box
-                    sx={{
-                      width: '794px',         // Standard A4 Width
-                      minHeight: '1123px',   // Standard A4 Height
-                      backgroundColor: '#020617',
-                      boxShadow: '0 10px 30px rgba(0,0,0,0.15)', // Resume shadow
-                      transform: 'scale(0.9)', // Scaling to fit 380px grid width
-                      transformOrigin: 'top center',
-                      pointerEvents: 'none', // Prevents interaction inside gallery
-                      // Taaki andar ki templates height cut na karein
-                      '& > div': {
-                        height: 'auto !important',
-                        minHeight: '1123px !important'
-                      }
+                  <TemplateSelector
+                    templateName={tpl.id}
+                    data={DUMMY_RESUME_DATA}
+                    theme={{
+                      accentColor: '#2563eb',
+                      fontFamily: 'inter',
+                      density: 'compact',
+                      photoMode: 'hidden',
+                      mode: 'preview',
                     }}
-                  >
-                    <TemplateSelector
-                      templateName={tpl.id}
-                      data={DUMMY_RESUME_DATA} // Professional data use ho raha hai
-                      theme={{
-                        accentColor: '#3b82f6',
-                        fontFamily: 'inter',
-                        density: 'compact',
-                        photoMode: 'hidden',
-                      }}
-                      visibleSections={{
-                        summary: true,
-                        experience: true,
-                        education: true,
-                        projects: true,
-                        skills: true,
-                        hobbies: true,
-                      }}
-                      sectionOrder={[
-                        'summary',
-                        'experience',
-                        'education',
-                        'projects',
-                        'skills',
-                        'hobbies',
-                      ]}
-                      // ✅ SMART FIX: isPreview false rakha hai taaki content substring na ho
-                      isPreview={false} 
-                    />
-                  </Box>
+                    isPreview
+                  />
                 </Box>
 
-                {/* ---------- CARD FOOTER ---------- */}
+                {/* FOOTER */}
                 <Box sx={{ p: 3, textAlign: 'center' }}>
-                  <Typography fontWeight={800} color="white" variant="h6" mb={0.5}>
+                  <Typography variant="h6" fontWeight={800} color="white">
                     {tpl.name}
                   </Typography>
-                  <Typography variant="caption" color="rgba(255,255,255,0.5)" display="block" mb={2}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'rgba(255,255,255,0.6)' }}
+                  >
                     {tpl.desc}
                   </Typography>
 
@@ -142,13 +184,15 @@ const TemplateGallery: React.FC = () => {
                     fullWidth
                     variant="contained"
                     sx={{
-                      background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
-                      fontWeight: 'bold',
-                      py: 1.2,
+                      mt: 2,
+                      background:
+                        'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
+                      fontWeight: 700,
                       borderRadius: 2,
-                      textTransform: 'uppercase',
-                      letterSpacing: 1,
-                      '&:hover': { backgroundColor: '#6d28d9' },
+                      '&:hover': {
+                        background:
+                          'linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%)',
+                      },
                     }}
                     onClick={() =>
                       navigate('/builder', {
@@ -160,9 +204,9 @@ const TemplateGallery: React.FC = () => {
                   </Button>
                 </Box>
               </Paper>
-            </Grid>
-          ))}
-        </Grid>
+            ))}
+          </Box>
+        </Box>
       </Container>
     </Box>
   );

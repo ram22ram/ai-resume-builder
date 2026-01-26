@@ -1,62 +1,82 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { DUMMY_RESUME_DATA } from '../data/dummyResume';
+import { ResumeData, ResumeSection } from '../types';
+import { initialData } from '../constants/initialData';
 
+/**
+ * Mock preview uses SAME architecture as builder
+ * No flat data, no hacks
+ */
 const ResumePreviewMock: React.FC = () => {
-  const {
-    personalInfo,
-    summary,
-    experience,
-    education,
-    skills,
-  } = DUMMY_RESUME_DATA;
+  const resumeData: ResumeData = initialData;
+
+  const getSection = (type: ResumeSection['type']) =>
+    resumeData.sections.find((s) => s.type === type);
+
+  const personal = getSection('personal')?.content;
+  const summary = getSection('summary')?.content as string | undefined;
+  const experience = (getSection('experience')?.content || []) as any[];
+  const education = (getSection('education')?.content || []) as any[];
+  const skills = (getSection('skills')?.content || []) as string[];
 
   return (
     <Box sx={{ fontSize: 9, color: '#0f172a' }}>
       {/* Header */}
-      <Typography fontWeight={700} fontSize={11}>
-        {personalInfo.fullName}
-      </Typography>
-      <Typography fontSize={9} color="text.secondary" gutterBottom>
-        {personalInfo.jobTitle}
-      </Typography>
+      {personal && (
+        <>
+          <Typography fontWeight={700} fontSize={11}>
+            {personal.fullName || 'Your Name'}
+          </Typography>
+          <Typography fontSize={9} color="text.secondary" gutterBottom>
+            {personal.jobTitle || 'Job Title'}
+          </Typography>
+        </>
+      )}
 
       {/* Summary */}
-      <Section title="Summary">
-        <Typography fontSize={8} lineHeight={1.4}>
-          {summary.slice(0, 180)}...
-        </Typography>
-      </Section>
+      {summary && (
+        <Section title="Summary">
+          <Typography fontSize={8} lineHeight={1.4}>
+            {summary.slice(0, 180)}
+          </Typography>
+        </Section>
+      )}
 
       {/* Experience */}
-      <Section title="Experience">
-        {experience.slice(0, 1).map((exp) => (
-          <Box key={exp.id} mb={0.5}>
-            <Typography fontWeight={600} fontSize={8}>
-              {exp.title} – {exp.company}
-            </Typography>
-            <Typography fontSize={7} color="text.secondary">
-              {exp.location}
-            </Typography>
-          </Box>
-        ))}
-      </Section>
+      {experience.length > 0 && (
+        <Section title="Experience">
+          {experience.slice(0, 1).map((exp, idx) => (
+            <Box key={idx} mb={0.5}>
+              <Typography fontWeight={600} fontSize={8}>
+                {exp.position || 'Role'} – {exp.company || 'Company'}
+              </Typography>
+              <Typography fontSize={7} color="text.secondary">
+                {exp.startDate} – {exp.endDate || 'Present'}
+              </Typography>
+            </Box>
+          ))}
+        </Section>
+      )}
 
       {/* Education */}
-      <Section title="Education">
-        {education.slice(0, 1).map((edu) => (
-          <Typography key={edu.id} fontSize={8}>
-            {edu.degree}, {edu.school}
-          </Typography>
-        ))}
-      </Section>
+      {education.length > 0 && (
+        <Section title="Education">
+          {education.slice(0, 1).map((edu, idx) => (
+            <Typography key={idx} fontSize={8}>
+              {edu.degree || 'Degree'} – {edu.institution || 'Institute'}
+            </Typography>
+          ))}
+        </Section>
+      )}
 
       {/* Skills */}
-      <Section title="Skills">
-        <Typography fontSize={7}>
-          {skills.slice(0, 6).join(', ')}...
-        </Typography>
-      </Section>
+      {skills.length > 0 && (
+        <Section title="Skills">
+          <Typography fontSize={7}>
+            {skills.slice(0, 6).join(', ')}
+          </Typography>
+        </Section>
+      )}
     </Box>
   );
 };

@@ -43,7 +43,9 @@
     "lenis": "^1.3.15",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.553.0",
-    "pdfjs-dist": "^5.4.449",
+    "lz-string": "^1.5.0",
+    "pdfjs-dist": "^5.4.530",
+    "qrcode.react": "^4.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-easy-crop": "^5.5.6",
@@ -54,6 +56,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/jest": "^30.0.0",
+    "@types/lz-string": "^1.5.0",
     "@types/node": "^24.10.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
