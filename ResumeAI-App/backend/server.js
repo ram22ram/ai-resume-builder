@@ -7,7 +7,7 @@ const connectDB = require('./config/db');
 
 const app = express();
 
-// 1. CORS Configuration
+// 1. CORS Setup
 app.use(cors({
   origin: [
     'https://resume-ai.co.in', 
@@ -20,24 +20,24 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
-// 2. Handle Preflight OPTIONS (Zaroori hai ERR_NETWORK fix karne ke liye)
+// ✅ FIX: Express v5 Safe Regex for OPTIONS (Error solve karne ke liye)
 app.options(/(.*)/, cors()); 
 
 app.set('trust proxy', 1);
 app.use(express.json());
 
-// 3. Health Check (Sabse upar taaki connectivity turant confirm ho)
+// 2. Health Check (Iska address ab: /api/health hai)
+// Isko routes se upar rakho taaki jaldi detect ho
 app.get('/api/health', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
-    timestamp: new Date().toISOString(),
-    service: 'resumeai-backend-v2'
+    timestamp: new Date().toISOString()
   });
 });
 
-// 4. Session & Passport
+// 3. Session Setup
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -52,9 +52,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./config/passport')(passport);
 
-// 5. Database & Routes
 connectDB();
 
+// 4. API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/resume', require('./routes/resumeRoutes'));
 
