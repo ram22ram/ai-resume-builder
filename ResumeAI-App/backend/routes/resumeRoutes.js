@@ -6,17 +6,17 @@ const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const rateLimit = require('express-rate-limit');
 
-// 1. Rate Limiter
+// 1. RATE LIMITER (Abhi testing ke liye 20 uploads allow kiye hain)
 const parseLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, 
-  max: 20, // Limit badha di taaki testing mein block na ho
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 20, 
   message: { success: false, message: "Too many uploads, try again later" }
 });
 
-// 2. Multer Setup (Memory Storage)
+// 2. MULTER SETUP (Memory storage for Render)
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB tak limit badha di
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (req, file, cb) => {
     if (file.mimetype !== 'application/pdf') {
       return cb(new Error('Only PDF files allowed'), false);
@@ -27,77 +27,77 @@ const upload = multer({
 
 /**
  * 🔓 PUBLIC PDF PARSE ENDPOINT
+ * Ismein "pdfParse is not a function" wala fix daal diya hai.
  */
-router.post('/parse', parseLimiter, (req, res, next) => {
-  // Multer error handling wrapper
-  upload.single('file')(req, res, (err) => {
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json({ success: false, message: `Multer Error: ${err.message}` });
-    } else if (err) {
-      return res.status(400).json({ success: false, message: err.message });
-    }
-    next();
-  });
-}, async (req, res) => {
+router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   try {
     if (!req.file || !req.file.buffer) {
-      console.log("❌ No file buffer received");
-      return res.status(400).json({ success: false, message: 'File buffer is empty' });
+      return res.status(400).json({ success: false, message: 'No file received' });
     }
 
-    console.log(`📄 Parsing file: ${req.file.originalname} (${req.file.size} bytes)`);
+    console.log(`📄 Parsing: ${req.file.originalname}`);
 
-    // ✅ pdf-parse execution with options for better stability
-    const options = {
-      pagerender: (pageData) => pageData.getTextContent().then(c => c.items.map(i => i.str).join(' '))
-    };
+    // FIX: pdf-parse import handling
+    const parser = typeof pdfParse === 'function' ? pdfParse : pdfParse.default;
 
-    const data = await pdfParse(req.file.buffer);
-
-    if (!data || !data.text) {
-      console.log("❌ PDF Parse resulted in empty text");
-      throw new Error("Could not extract text from this PDF");
+    if (typeof parser !== 'function') {
+      throw new Error("pdf-parse library error: parser is not a function");
     }
+
+    const data = await parser(req.file.buffer);
 
     const cleanText = data.text
       .replace(/\r\n/g, '\n')
       .replace(/\n{2,}/g, '\n\n')
       .trim();
 
-    console.log("✅ PDF Parsed Successfully");
-    
     res.json({
       success: true,
       rawText: cleanText,
     });
 
   } catch (err) {
-    console.error('❌ PDF Parse Error Detail:', err.message);
+    console.error('❌ PDF Parse Error:', err.message);
     res.status(500).json({
       success: false,
-      message: `Server Error: ${err.message || 'Failed to parse PDF'}`
+      message: `Server Error: ${err.message}`
     });
   }
 });
 
-// ---------- AUTH ROUTES (UNCHANGED) ----------
+/**
+ * 🔒 GET USER RESUME
+ */
 router.get('/', protect, async (req, res) => {
-  const resume = await Resume.findOne({ user: req.user.id });
-  res.json({ success: true, data: resume });
+  try {
+    const resume = await Resume.findOne({ user: req.user.id });
+    res.json({ success: true, data: resume });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Error fetching resume" });
+  }
 });
 
+/**
+ * 🔒 SAVE OR UPDATE RESUME
+ */
 router.post('/', protect, async (req, res) => {
-  const { data, origin } = req.body;
-  let resume = await Resume.findOne({ user: req.user.id });
-  if (resume) {
-    resume.data = data;
-    resume.origin = origin;
-    resume.updatedAt = Date.now();
-    await resume.save();
-  } else {
-    resume = await Resume.create({ user: req.user.id, data, origin });
+  try {
+    const { data, origin } = req.body;
+
+    let resume = await Resume.findOne({ user: req.user.id });
+    if (resume) {
+      resume.data = data;
+      resume.origin = origin;
+      resume.updatedAt = Date.now();
+      await resume.save();
+    } else {
+      resume = await Resume.create({ user: req.user.id, data, origin });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Error saving resume" });
   }
-  res.json({ success: true });
 });
 
 module.exports = router;
