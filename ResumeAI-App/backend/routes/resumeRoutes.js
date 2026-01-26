@@ -6,14 +6,14 @@ const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const rateLimit = require('express-rate-limit');
 
-// 1. RATE LIMITER (Abhi testing ke liye 20 uploads allow kiye hain)
+// 1. RATE LIMITER
 const parseLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 20, 
+  max: 30, // Testing ke liye limit thodi aur badha di hai
   message: { success: false, message: "Too many uploads, try again later" }
 });
 
-// 2. MULTER SETUP (Memory storage for Render)
+// 2. MULTER SETUP (Memory storage)
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
@@ -27,7 +27,7 @@ const upload = multer({
 
 /**
  * 🔓 PUBLIC PDF PARSE ENDPOINT
- * Ismein "pdfParse is not a function" wala fix daal diya hai.
+ * Ismein har tarah ke import structure ko handle kiya gaya hai.
  */
 router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   try {
@@ -35,21 +35,38 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
       return res.status(400).json({ success: false, message: 'No file received' });
     }
 
-    console.log(`📄 Parsing: ${req.file.originalname}`);
+    console.log(`📄 Attempting to parse: ${req.file.originalname}`);
 
-    // FIX: pdf-parse import handling
-    const parser = typeof pdfParse === 'function' ? pdfParse : pdfParse.default;
-
-    if (typeof parser !== 'function') {
-      throw new Error("pdf-parse library error: parser is not a function");
+    // 🔥 FIX: pdf-parse ko handle karne ke saare patterns
+    let parser;
+    if (typeof pdfParse === 'function') {
+      parser = pdfParse;
+    } else if (pdfParse && typeof pdfParse.default === 'function') {
+      parser = pdfParse.default;
+    } else {
+      // Agar module structure complex hai toh direct call try karo
+      parser = pdfParse;
     }
 
+    // Double check
+    if (typeof parser !== 'function') {
+      console.error("Library Load Error Details:", typeof pdfParse);
+      throw new Error("pdf-parse library error: parser is not a detectable function");
+    }
+
+    // Buffer parsing logic
     const data = await parser(req.file.buffer);
+
+    if (!data || !data.text) {
+      throw new Error("Could not extract text from this PDF file");
+    }
 
     const cleanText = data.text
       .replace(/\r\n/g, '\n')
       .replace(/\n{2,}/g, '\n\n')
       .trim();
+
+    console.log("✅ Successfully parsed PDF");
 
     res.json({
       success: true,
@@ -73,6 +90,7 @@ router.get('/', protect, async (req, res) => {
     const resume = await Resume.findOne({ user: req.user.id });
     res.json({ success: true, data: resume });
   } catch (err) {
+    console.error("Fetch Error:", err.message);
     res.status(500).json({ success: false, message: "Error fetching resume" });
   }
 });
@@ -96,6 +114,7 @@ router.post('/', protect, async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
+    console.error("Save Error:", err.message);
     res.status(500).json({ success: false, message: "Error saving resume" });
   }
 });
