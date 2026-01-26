@@ -4,11 +4,10 @@ import {
   Typography,
   Button,
   Stack,
-  IconButton,
 } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import CloseIcon from '@mui/icons-material/Close';
 import { useRef } from 'react';
 import { ResumeOrigin } from '../context/ResumeContext';
 
@@ -31,112 +30,71 @@ const ResumeStartModal = ({
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // File selection handler
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     onSelect('upload', file);
 
-    // Reset value to allow re-upload of same file if needed
+    // 🔴 IMPORTANT: allow same file re-upload
     e.target.value = '';
   };
 
   return (
-    <Dialog 
-      open={open} 
-      maxWidth="xs" 
-      fullWidth
-      PaperProps={{
-        style: { borderRadius: 16, padding: '8px' }
-      }}
-    >
-      <Box px={3} py={4} textAlign="center" position="relative">
-        {/* Close Button (Optional: only for select mode) */}
-        {mode === 'select' && (
-          <IconButton 
-            onClick={onCancelOverwrite} 
-            sx={{ position: 'absolute', right: 8, top: 8 }}
-          >
-            <CloseIcon />
-          </IconButton>
-        )}
-
-        <Typography variant="h6" fontWeight={700} mb={1}>
+    <Dialog open={open} maxWidth="xs" fullWidth>
+      <Box px={4} py={4} textAlign="center">
+        <Typography fontWeight={700} mb={3}>
           {mode === 'confirm'
-            ? 'Overwrite Existing Resume?'
+            ? 'Overwrite existing resume?'
             : mode === 'error'
-            ? 'Oops! Something went wrong'
-            : 'Ready to build your Resume?'}
+           ? 'Something went wrong. Please try again.'
+            : 'How do you want to start?'}
         </Typography>
 
-        <Typography variant="body2" color="text.secondary" mb={4}>
-          {mode === 'confirm'
-            ? 'Starting a new flow will replace your current progress.'
-            : mode === 'error'
-            ? 'We encountered an error. Please try uploading again.'
-            : 'Choose how you want to begin your journey.'}
-        </Typography>
+        {/* 🔹 Hidden React-controlled file input */}
+          <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf"
+        hidden
+        onChange={handleFileChange}
+      />
 
-        {/* Hidden File Input */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".pdf"
-          hidden
-          onChange={handleFileChange}
-        />
 
         {mode === 'select' && (
           <Stack spacing={2}>
-            {/* OPTION 1: UPLOAD */}
-            <Button 
-              fullWidth
-              variant="outlined"
-              size="large"
-              onClick={() => fileInputRef.current?.click()} 
-              startIcon={<UploadFileIcon />}
-              sx={{ py: 1.5, textTransform: 'none', fontSize: '1rem' }}
-            >
-              Upload Existing PDF
+            <Button onClick={handleUploadClick} startIcon={<UploadFileIcon />}>
+              Upload Resume
             </Button>
 
-            {/* OPTION 2: AI MAGIC */}
-            <Button 
-              fullWidth
-              variant="contained" 
-              size="large"
-              onClick={() => onSelect('ai')} 
-              startIcon={<AutoAwesomeIcon />}
-              sx={{ 
-                py: 1.5, 
-                textTransform: 'none', 
-                fontSize: '1rem',
-                background: 'linear-gradient(45deg, #6366f1 30%, #a855f7 90%)',
-                boxShadow: '0 3px 5px 2px rgba(168, 85, 247, .3)'
-              }}
+            {/* <Button
+              onClick={() => onSelect('linkedin')}
+              startIcon={<LinkedInIcon />}
             >
-              Create with AI Magic
+              Import from LinkedIn
             </Button>
+
+            <Button
+              variant="contained"
+              onClick={() => onSelect('ai')}
+              startIcon={<AutoAwesomeIcon />}
+            >
+              Start with AI
+            </Button> */}
           </Stack>
         )}
 
         {mode === 'confirm' && (
-          <Stack spacing={2} direction="row">
-            <Button 
-              fullWidth 
-              variant="contained" 
-              color="error"
-              onClick={onConfirmOverwrite}
-            >
-              Yes, Overwrite
+          <Stack spacing={2}>
+            <Button variant="contained" onClick={onConfirmOverwrite}>
+              Yes, overwrite
             </Button>
-            <Button 
-              fullWidth 
-              variant="outlined" 
-              onClick={onCancelOverwrite}
-            >
-              Keep Current
+            <Button variant="outlined" onClick={onCancelOverwrite}>
+              Cancel
             </Button>
           </Stack>
         )}
@@ -144,17 +102,25 @@ const ResumeStartModal = ({
         {mode === 'error' && (
           <Stack spacing={2}>
             <Button
-              variant="contained"
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => onSelect('linkedin')}
+              startIcon={<LinkedInIcon />}
+            >
+              Try LinkedIn again
+            </Button>
+
+            <Button
+              onClick={handleUploadClick}
               startIcon={<UploadFileIcon />}
             >
-              Try Uploading Again
+              Upload Resume instead
             </Button>
+
             <Button
-              variant="text"
+              variant="contained"
               onClick={() => onSelect('ai')}
+              startIcon={<AutoAwesomeIcon />}
             >
-              Or Start with AI
+              Start with AI
             </Button>
           </Stack>
         )}
