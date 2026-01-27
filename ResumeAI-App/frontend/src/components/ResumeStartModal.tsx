@@ -4,10 +4,12 @@ import {
   Typography,
   Button,
   Stack,
+  IconButton,
+  alpha,
 } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import EditNoteIcon from '@mui/icons-material/EditNote'; 
+import CloseIcon from '@mui/icons-material/Close';
 import { useRef } from 'react';
 import { ResumeOrigin } from '../context/ResumeContext';
 
@@ -30,97 +32,112 @@ const ResumeStartModal = ({
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     onSelect('upload', file);
-
-    // 🔴 IMPORTANT: allow same file re-upload
     e.target.value = '';
   };
 
   return (
-    <Dialog open={open} maxWidth="xs" fullWidth>
-      <Box px={4} py={4} textAlign="center">
-        <Typography fontWeight={700} mb={3}>
-          {mode === 'confirm'
-            ? 'Overwrite existing resume?'
-            : mode === 'error'
-           ? 'Something went wrong. Please try again.'
-            : 'How do you want to start?'}
+    <Dialog 
+      open={open} 
+      maxWidth="xs" 
+      fullWidth
+      PaperProps={{
+        sx: {
+          bgcolor: '#020617', 
+          backgroundImage: 'none',
+          borderRadius: 4,
+          border: '1px solid',
+          borderColor: alpha('#ffffff', 0.1),
+        }
+      }}
+    >
+      <Box px={3} py={5} textAlign="center" position="relative">
+        <IconButton 
+          onClick={onCancelOverwrite}
+          sx={{ position: 'absolute', right: 12, top: 12, color: 'grey.500' }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+
+        <Typography variant="h5" fontWeight={800} color="white" mb={1}>
+          {mode === 'confirm' ? 'Start Fresh?' : 'Build Your Resume'}
         </Typography>
 
-        {/* 🔹 Hidden React-controlled file input */}
-          <input
-        ref={fileInputRef}
-        type="file"
-        accept=".pdf"
-        hidden
-        onChange={handleFileChange}
-      />
+        <Typography variant="body2" color="grey.500" mb={4}>
+          {mode === 'confirm' 
+            ? 'Starting over will clear your current progress.' 
+            : 'Choose how you want to provide your information.'}
+        </Typography>
 
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf"
+          hidden
+          onChange={handleFileChange}
+        />
 
         {mode === 'select' && (
-          <Stack spacing={2}>
-            <Button onClick={handleUploadClick} startIcon={<UploadFileIcon />}>
-              Upload Resume
+          <Stack spacing={2.5}>
+            {/* OPTION 1: UPLOAD RESUME */}
+            <Button 
+              fullWidth
+              variant="contained" 
+              onClick={() => fileInputRef.current?.click()}
+              startIcon={<UploadFileIcon />}
+              sx={{ 
+                py: 2, 
+                borderRadius: 2,
+                fontSize: '1rem',
+                fontWeight: 600,
+                textTransform: 'none',
+                background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #9333ea 100%)',
+                }
+              }}
+            >
+              Upload Existing Resume
             </Button>
 
-            {/* <Button
-              onClick={() => onSelect('linkedin')}
-              startIcon={<LinkedInIcon />}
-            >
-              Import from LinkedIn
-            </Button>
+            <Typography variant="caption" color="grey.600">
+              — OR —
+            </Typography>
 
-            <Button
-              variant="contained"
-              onClick={() => onSelect('ai')}
-              startIcon={<AutoAwesomeIcon />}
+            {/* OPTION 2: MANUAL ENTRY (No AI mentions) */}
+            <Button 
+              fullWidth
+              variant="outlined"
+              onClick={() => onSelect('ai')} // Function name same rakha hai taaki logic na tute
+              startIcon={<EditNoteIcon />}
+              sx={{ 
+                py: 1.5, 
+                borderRadius: 2,
+                fontSize: '0.95rem',
+                textTransform: 'none',
+                color: 'white',
+                borderColor: alpha('#ffffff', 0.2),
+                '&:hover': {
+                  borderColor: 'white',
+                  bgcolor: alpha('#ffffff', 0.05)
+                }
+              }}
             >
-              Start with AI
-            </Button> */}
+              Fill Details Manually
+            </Button>
           </Stack>
         )}
 
         {mode === 'confirm' && (
-          <Stack spacing={2}>
-            <Button variant="contained" onClick={onConfirmOverwrite}>
-              Yes, overwrite
+          <Stack spacing={2} direction="row" sx={{ mt: 2 }}>
+            <Button fullWidth variant="contained" color="error" onClick={onConfirmOverwrite}>
+              Overwrite
             </Button>
-            <Button variant="outlined" onClick={onCancelOverwrite}>
+            <Button fullWidth variant="outlined" onClick={onCancelOverwrite} sx={{ color: 'white', borderColor: 'grey.700' }}>
               Cancel
-            </Button>
-          </Stack>
-        )}
-
-        {mode === 'error' && (
-          <Stack spacing={2}>
-            <Button
-              onClick={() => onSelect('linkedin')}
-              startIcon={<LinkedInIcon />}
-            >
-              Try LinkedIn again
-            </Button>
-
-            <Button
-              onClick={handleUploadClick}
-              startIcon={<UploadFileIcon />}
-            >
-              Upload Resume instead
-            </Button>
-
-            <Button
-              variant="contained"
-              onClick={() => onSelect('ai')}
-              startIcon={<AutoAwesomeIcon />}
-            >
-              Start with AI
             </Button>
           </Stack>
         )}
