@@ -33,7 +33,9 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 // OPTIONS requests ko specifically handle karo
-// app.options('*', cors());
+app.options('*', cors());
+
+// app.options('*', (req, res) => res.sendStatus(200));
 
 app.set('trust proxy', 1);
 app.use(express.json());
