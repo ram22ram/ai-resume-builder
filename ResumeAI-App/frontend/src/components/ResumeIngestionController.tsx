@@ -26,7 +26,7 @@ export const useResumeIngestionController = () => {
 
       // ✅ FIX 3: Longer timeout + explicit headers
       // const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
-      const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
+      const response = await axios.post(`${API_URL}/resume/parse`, formData, {
         timeout: 120000, 
         headers: { 'Content-Type': 'multipart/form-data' }
       });
