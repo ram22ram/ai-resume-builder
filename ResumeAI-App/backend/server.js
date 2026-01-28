@@ -9,19 +9,27 @@ const app = express();
 
 // 1. CORS Setup
 app.use(cors({
-  origin: [
-    'https://resume-ai.co.in', 
-    'https://www.resume-ai.co.in',
-    'https://resume-ai.netlify.app',
-    'http://localhost:5173',
-    'http://localhost:5174'
-  ],
+  origin: function (origin, callback) {
+    // Ye sabko allow kar dega jo tumne list kiye hain + localhost
+    const allowedOrigins = [
+      'https://resume-ai.co.in', 
+      'https://www.resume-ai.co.in',
+      'https://resume-ai.netlify.app',
+      'http://localhost:5173',
+      'http://localhost:5174'
+    ];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
-// ✅ FIX: Express v5 Safe Regex for OPTIONS (Error solve karne ke liye)
-app.options(/(.*)/, cors()); 
+// OPTIONS requests ko specifically handle karo
+app.options('*', cors());
 
 app.set('trust proxy', 1);
 app.use(express.json());
