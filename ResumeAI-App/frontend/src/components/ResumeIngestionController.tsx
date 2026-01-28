@@ -23,7 +23,7 @@ export const useResumeIngestionController = () => {
       formData.append('file', file);
 
       // 2. ✅ FIXED URL: BaseURL + /api + /resume/parse
-      const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
+      const response = await axios.post(`${API_URL}/resume/parse`, formData, {
         timeout: 120000, // 2 minutes (Render cold start protection)
         headers: { 'Content-Type': 'multipart/form-data' }
       });
