@@ -23,38 +23,36 @@ const upload = multer({
  * 🔓 PUBLIC PDF PARSE ENDPOINT
  */
 router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
+  if (!req.file || !req.file.buffer) {
+    return res.status(400).json({ success: false, message: 'No file received' });
+  }
+
+  // Promise base approach taaki Node.js wait kare
+  const pdfParser = new PDFParser(null, 1);
+
+  const parsePDF = () => {
+    return new Promise((resolve, reject) => {
+      pdfParser.on("pdfParser_dataError", errData => reject(errData.parserError));
+      pdfParser.on("pdfParser_dataReady", () => {
+        const rawText = pdfParser.getRawTextContent();
+        resolve(decodeURIComponent(rawText));
+      });
+      pdfParser.parseBuffer(req.file.buffer);
+    });
+  };
+
   try {
-    if (!req.file || !req.file.buffer) {
-      return res.status(400).json({ success: false, message: 'No file received' });
-    }
-
-    const pdfParser = new PDFParser(null, 1);
-
-    pdfParser.on("pdfParser_dataError", errData => {
-      console.error("❌ PDF Parser Error:", errData.parserError);
-      if (!res.headersSent) {
-        res.status(500).json({ success: false, message: "Parsing failed" });
-      }
+    console.log(`📄 Parsing: ${req.file.originalname}`);
+    const cleanText = await parsePDF();
+    
+    res.json({
+      success: true,
+      rawText: cleanText.replace(/\r\n/g, '\n').trim(),
     });
-
-    pdfParser.on("pdfParser_dataReady", pdfData => {
-      const rawText = pdfParser.getRawTextContent();
-      // Decode URI format strings jo pdf2json deta hai
-      const cleanText = decodeURIComponent(rawText).replace(/\r\n/g, '\n').trim();
-      
-      console.log("✅ Parsing Successful");
-      if (!res.headersSent) {
-        res.json({ success: true, rawText: cleanText });
-      }
-    });
-
-    // Buffer se load karo
-    pdfParser.parseBuffer(req.file.buffer);
-
   } catch (err) {
-    console.error('❌ Server Error:', err.message);
+    console.error('❌ Parsing Error:', err);
     if (!res.headersSent) {
-      res.status(500).json({ success: false, message: err.message });
+      res.status(500).json({ success: false, message: "Failed to parse PDF content" });
     }
   }
 });
