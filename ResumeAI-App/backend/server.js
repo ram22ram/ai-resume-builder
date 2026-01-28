@@ -6,7 +6,7 @@ const connectDB = require('./config/db');
 
 const app = express();
 
-// 1. MANUAL CORS MIDDLEWARE (No more duplicate headers)
+// 1. MANUAL CORS MIDDLEWARE (Sabse upar rakho)
 app.use((req, res, next) => {
   const allowedOrigins = [
     'https://resume-ai.co.in', 
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-  // OPTIONS request ko turant handle karo
+  // OPTIONS (Pre-flight) request ko turant 200 OK bhej do
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 app.set('trust proxy', 1);
 app.use(express.json());
 
-// 2. HEALTH CHECK (Matching with Frontend)
+// 2. HEALTH CHECK (Matching with Frontend Modal)
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });

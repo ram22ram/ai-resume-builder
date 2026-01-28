@@ -16,7 +16,7 @@ export const useResumeIngestionController = () => {
     if (!file) return;
     setIsParsing(true);
 
-    // URL Clean-up logic
+    // 🔍 Auto-Fix for potential double /api
     const finalPath = `${API_URL}/api/resume/parse`.replace(/\/api\/api/g, '/api');
     console.log("🚀 Requesting to:", finalPath);
 
@@ -25,7 +25,7 @@ export const useResumeIngestionController = () => {
       formData.append('file', file);
 
       const response = await axios.post(finalPath, formData, {
-        timeout: 120000, 
+        timeout: 120000, // 2 minutes for Render cold start
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -44,13 +44,9 @@ export const useResumeIngestionController = () => {
     } catch (error: any) {
       console.error("❌ Upload Error:", error);
       setIsParsing(false);
-      alert("Network Error: Check if Backend is Live at Render dashboard.");
+      alert("Network Error: Backend may be starting up. Please wait 10 seconds and try again.");
     }
   };
 
-  return { 
-    startUploadFlow, 
-    startAI: () => { ingestResumeData(initialData, 'ai'); navigate('/builder'); }, 
-    isParsing 
-  };
+  return { startUploadFlow, startAI: () => { ingestResumeData(initialData, 'ai'); navigate('/builder'); }, isParsing };
 };
