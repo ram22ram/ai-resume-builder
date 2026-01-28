@@ -33,16 +33,21 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 // OPTIONS requests ko specifically handle karo
-// app.options('*', cors());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://resume-ai.co.in'); // Apne domain ko allow karo
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
 
-// app.options('*', (req, res) => res.sendStatus(200));
-
-app.options('(.*)', (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.sendStatus(200);
+  // OPTIONS request ko turant 200 OK bhej do bina kisi route check ke
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
 });
+
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/resume', require('./routes/resumeRoutes'));
 
 app.set('trust proxy', 1);
 app.use(express.json());
