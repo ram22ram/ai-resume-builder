@@ -15,7 +15,7 @@ const ResumeBuilder = () => {
   const { user } = useAuth();
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const controller = useResumeIngestionController();
+  const { startUploadFlow, startLinkedInImport, startAI, isParsing } = useResumeIngestionController();
 
   // ✅ ALWAYS MOUNTED — NEVER CONDITIONAL
   const handlers = useResumeHandlers({
@@ -26,15 +26,15 @@ const ResumeBuilder = () => {
   const handleSelect = async (origin: 'upload' | 'linkedin' | 'ai', file?: File) => {
     try {
       if (origin === 'upload' && file) {
-        await controller.startUploadFlow(file);
+        await startUploadFlow(file);
       }
       if (origin === 'linkedin') {
-        await controller.startLinkedInImport();
+       await startLinkedInImport();
       }
       if (origin === 'ai') {
-        controller.startAI();
+        startAI();
       }
-      setShowModal(false);
+      // setShowModal(false);
     } catch {
       setModalMode('error');
     }
@@ -45,15 +45,20 @@ const ResumeBuilder = () => {
       <ResumeStartModal
         open={showModal}
         mode={modalMode}
+        isParsing={isParsing}
         onSelect={handleSelect}
         onConfirmOverwrite={() => {
           setModalMode('select');
           setShowModal(false);
         }}
-        onCancelOverwrite={() => setModalMode('select')}
+        onCancelOverwrite={() => {
+          setModalMode('select');
+          setShowModal(false);
+        }}
+        
       />
 
-      {resumeData && (
+      {resumeData && !isParsing && (
         <BuilderLayout
           resumeData={resumeData}
           handlers={handlers}

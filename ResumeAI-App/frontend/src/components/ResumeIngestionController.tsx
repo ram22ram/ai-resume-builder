@@ -1,4 +1,5 @@
 // src/components/ResumeIngestionController.tsx
+import { useState } from 'react';
 import axios from 'axios';
 import { initialData } from '../constants/initialData';
 import { ResumeData } from '../types';
@@ -10,12 +11,14 @@ const API_URL = import.meta.env.VITE_API_URL as string;
 export const useResumeIngestionController = () => {
   const { ingestResumeData } = useResumeContext();
   const navigate = useNavigate();
+  const [isParsing, setIsParsing] = useState(false);
 
   const startUploadFlow = async (file: File) => {
     if (!file) throw new Error('No file selected');
 
     if (file.size > 3 * 1024 * 1024) throw new Error('File size exceeds 3MB');
     if (file.type !== 'application/pdf') throw new Error('Only PDF supported');
+    setIsParsing(true);
 
     try {
       const formData = new FormData();
@@ -23,8 +26,8 @@ export const useResumeIngestionController = () => {
 
       // ✅ FIX 3: Longer timeout + explicit headers
       // const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
-      const response = await axios.post(`${API_URL}/resume/parse`, formData, {
-        timeout: 120000, // 1 minute (Render cold start protection)
+      const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
+        timeout: 120000, 
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -51,9 +54,11 @@ export const useResumeIngestionController = () => {
       // ✅ FIX 4: Correct navigation path
       navigate('/builder'); 
 
-    } catch (error: any) {
+} catch (error: any) {
       console.error("Upload Error:", error);
-      alert(error.code === 'ECONNABORTED' ? "Server taking too long to wake up. Please try again." : "Upload failed!");
+      alert("Error parsing resume.");
+    } finally {
+      setIsParsing(false); // Chaahe success ho ya fail, loader band
     }
   };
 
@@ -67,5 +72,5 @@ export const useResumeIngestionController = () => {
     navigate('/builder');
   };
 
-  return { startUploadFlow, startLinkedInImport, startAI };
+  return { startUploadFlow, startLinkedInImport, startAI, isParsing};
 };

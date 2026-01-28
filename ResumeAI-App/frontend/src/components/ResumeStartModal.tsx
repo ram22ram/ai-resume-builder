@@ -6,12 +6,15 @@ import {
   Stack,
   IconButton,
   alpha,
+  Backdrop
 } from '@mui/material';
+import { LifeLine } from 'react-loading-indicators';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import EditNoteIcon from '@mui/icons-material/EditNote'; 
 import CloseIcon from '@mui/icons-material/Close';
-import { useRef } from 'react';
+import { useRef,useEffect, useState } from 'react';
 import { ResumeOrigin } from '../context/ResumeContext';
+import axios from 'axios';
 
 type Mode = 'select' | 'confirm' | 'error';
 
@@ -21,6 +24,7 @@ interface Props {
   onSelect: (o: ResumeOrigin, file?: File) => void;
   onConfirmOverwrite: () => void;
   onCancelOverwrite: () => void;
+  isParsing: boolean;
 }
 
 const ResumeStartModal = ({
@@ -29,8 +33,15 @@ const ResumeStartModal = ({
   onSelect,
   onConfirmOverwrite,
   onCancelOverwrite,
+  isParsing
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      axios.get(`${import.meta.env.VITE_API_URL}/api/health`).catch(() => {});
+    }
+  }, [open]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,8 +51,9 @@ const ResumeStartModal = ({
   };
 
   return (
+    <>
     <Dialog 
-      open={open} 
+      open={open && !isParsing}
       maxWidth="xs" 
       fullWidth
       PaperProps={{
@@ -143,6 +155,25 @@ const ResumeStartModal = ({
         )}
       </Box>
     </Dialog>
+    {/* 2. Modern LifeLine Loader Overlay */}
+      <Backdrop
+        sx={{ 
+          color: '#fff', 
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          flexDirection: 'column',
+          bgcolor: 'rgba(2, 6, 23, 0.9)' // Dark slate theme
+        }}
+        open={isParsing}
+      >
+        <LifeLine color="#32cd32" size="medium" text="" textColor="" />
+        <Typography mt={2} fontWeight={600} sx={{ letterSpacing: 1 }}>
+          Waking up AI Servers...
+        </Typography>
+        <Typography variant="caption" color="grey.500">
+          This may take 45-50 seconds on first run.
+        </Typography>
+      </Backdrop>
+      </>
   );
 };
 
