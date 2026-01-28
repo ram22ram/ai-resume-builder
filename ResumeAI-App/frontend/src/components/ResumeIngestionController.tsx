@@ -15,18 +15,27 @@ export const useResumeIngestionController = () => {
   const startUploadFlow = async (file: File) => {
     if (!file) return;
 
-    // 1. Loader ON karo
     setIsParsing(true);
+
+    // 🔍 DEBUGGER BLOCK: URL ki bashad pakadne ke liye
+    const rawPath = `${API_URL}/api/resume/parse`; 
+    const finalPath = rawPath.replace(/\/api\/api/g, '/api'); // Double /api ko single karega
+    
+    console.log("🛠️ DEBUGGER START 🛠️");
+    console.log("1. Base API_URL from .env:", API_URL);
+    console.log("2. Raw Path generated:", rawPath);
+    console.log("3. Final Fixed Path sending to Axios:", finalPath);
 
     try {
       const formData = new FormData();
       formData.append('file', file);
 
-      // 2. ✅ FIXED URL: BaseURL + /api + /resume/parse
-      const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
-        timeout: 120000, // 2 minutes (Render cold start protection)
+      const response = await axios.post(finalPath, formData, {
+        timeout: 120000, 
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+
+      console.log("4. ✅ SERVER RESPONSE:", response.data);
 
       if (response.data?.success) {
         const extractedText = response.data.rawText || '';
@@ -35,35 +44,33 @@ export const useResumeIngestionController = () => {
           ...initialData,
           sections: initialData.sections.map((section) => {
             if (section.type === 'summary') {
-              return {
-                ...section,
-                content: extractedText,
-                isVisible: true,
-              };
+              return { ...section, content: extractedText, isVisible: true };
             }
             return { ...section, isVisible: true };
           }),
         };
 
-        // 3. Data Context mein bharo
         ingestResumeData(parsedResume, 'upload');
-        
-        // 4. Loader OFF karke redirect karo
         setIsParsing(false);
         navigate('/builder');
       } else {
-        throw new Error('Server response was not successful');
+        throw new Error('Server response success: false');
       }
     } catch (error: any) {
-      console.error("Upload Error:", error);
-      setIsParsing(false); // Error aane par loader band
+      console.error("❌ DEBUGGER ERROR ❌");
+      console.error("Status Code:", error.response?.status);
+      console.error("Error Data:", error.response?.data);
+      console.error("Full Error Object:", error);
       
-      // Axios error handle karein
+      setIsParsing(false);
+      
       const msg = error.code === 'ECONNABORTED' 
         ? "Server is taking too long to wake up. Please wait 10 seconds and try again." 
-        : "Upload failed! Please check your connection or server status.";
+        : `Upload failed! Status: ${error.response?.status || 'Network Error'}. Check Console.`;
       
       alert(msg);
+    } finally {
+      console.log("🛠️ DEBUGGER END 🛠️");
     }
   };
 
