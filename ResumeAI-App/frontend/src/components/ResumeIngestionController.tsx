@@ -14,17 +14,11 @@ export const useResumeIngestionController = () => {
 
   const startUploadFlow = async (file: File) => {
     if (!file) return;
-
     setIsParsing(true);
 
-    // 🔍 DEBUGGER BLOCK: URL ki bashad pakadne ke liye
-    const rawPath = `${API_URL}/api/resume/parse`; 
-    const finalPath = rawPath.replace(/\/api\/api/g, '/api'); // Double /api ko single karega
-    
-    console.log("🛠️ DEBUGGER START 🛠️");
-    console.log("1. Base API_URL from .env:", API_URL);
-    console.log("2. Raw Path generated:", rawPath);
-    console.log("3. Final Fixed Path sending to Axios:", finalPath);
+    // URL Clean-up logic
+    const finalPath = `${API_URL}/api/resume/parse`.replace(/\/api\/api/g, '/api');
+    console.log("🚀 Requesting to:", finalPath);
 
     try {
       const formData = new FormData();
@@ -35,54 +29,28 @@ export const useResumeIngestionController = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      console.log("4. ✅ SERVER RESPONSE:", response.data);
-
       if (response.data?.success) {
         const extractedText = response.data.rawText || '';
-
         const parsedResume: ResumeData = {
           ...initialData,
-          sections: initialData.sections.map((section) => {
-            if (section.type === 'summary') {
-              return { ...section, content: extractedText, isVisible: true };
-            }
-            return { ...section, isVisible: true };
-          }),
+          sections: initialData.sections.map((s) => 
+            s.type === 'summary' ? { ...s, content: extractedText, isVisible: true } : { ...s, isVisible: true }
+          ),
         };
-
         ingestResumeData(parsedResume, 'upload');
         setIsParsing(false);
-        navigate('/builder');
-      } else {
-        throw new Error('Server response success: false');
+        navigate('/builder'); 
       }
     } catch (error: any) {
-      console.error("❌ DEBUGGER ERROR ❌");
-      console.error("Status Code:", error.response?.status);
-      console.error("Error Data:", error.response?.data);
-      console.error("Full Error Object:", error);
-      
+      console.error("❌ Upload Error:", error);
       setIsParsing(false);
-      
-      const msg = error.code === 'ECONNABORTED' 
-        ? "Server is taking too long to wake up. Please wait 10 seconds and try again." 
-        : `Upload failed! Status: ${error.response?.status || 'Network Error'}. Check Console.`;
-      
-      alert(msg);
-    } finally {
-      console.log("🛠️ DEBUGGER END 🛠️");
+      alert("Network Error: Check if Backend is Live at Render dashboard.");
     }
   };
 
-  const startAI = () => {
-    ingestResumeData(initialData, 'ai');
-    navigate('/builder');
+  return { 
+    startUploadFlow, 
+    startAI: () => { ingestResumeData(initialData, 'ai'); navigate('/builder'); }, 
+    isParsing 
   };
-
-  const startLinkedInImport = async () => {
-    ingestResumeData(initialData, 'linkedin');
-    navigate('/builder');
-  };
-
-  return { startUploadFlow, startLinkedInImport, startAI, isParsing };
 };

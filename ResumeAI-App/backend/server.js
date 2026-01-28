@@ -1,67 +1,44 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
 const connectDB = require('./config/db');
 
 const app = express();
 
-// 1. CORS Setup
-// app.use(cors({
-//   origin: function (origin, callback) {
-//     // Ye sabko allow kar dega jo tumne list kiye hain + localhost
-//     const allowedOrigins = [
-//       'https://resume-ai.co.in', 
-//       'https://www.resume-ai.co.in',
-//       'https://resume-ai.netlify.app',
-//       'http://localhost:5173',
-//       'http://localhost:5174'
-//     ];
-//     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true,
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-// }));
-app.use(cors({
-  origin: true, // Ye har kisi ko allow kar dega
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-}));
-// OPTIONS requests ko specifically handle karo
+// 1. MANUAL CORS MIDDLEWARE (No more duplicate headers)
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://resume-ai.co.in'); // Apne domain ko allow karo
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
+  const allowedOrigins = [
+    'https://resume-ai.co.in', 
+    'https://www.resume-ai.co.in',
+    'http://localhost:5173'
+  ];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-  // OPTIONS request ko turant 200 OK bhej do bina kisi route check ke
+  // OPTIONS request ko turant handle karo
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
   next();
 });
 
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/resume', require('./routes/resumeRoutes'));
-
 app.set('trust proxy', 1);
 app.use(express.json());
 
-// 2. Health Check (Iska address ab: /api/health hai)
-// Isko routes se upar rakho taaki jaldi detect ho
+// 2. HEALTH CHECK (Matching with Frontend)
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString()
-  });
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// 3. Session Setup
+// 3. SESSION SETUP
 app.use(session({
   secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
@@ -74,15 +51,13 @@ app.use(session({
   }
 }));
 
-
-
 app.use(passport.initialize());
 app.use(passport.session());
 require('./config/passport')(passport);
 
 connectDB();
 
-// 4. API Routes
+// 4. API ROUTES
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/resume', require('./routes/resumeRoutes'));
 
