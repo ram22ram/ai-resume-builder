@@ -48,6 +48,12 @@ app.use(session({
   }
 }));
 
+app.use(cors({
+  origin: true, // Ye har kisi ko allow kar dega
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
 require('./config/passport')(passport);
