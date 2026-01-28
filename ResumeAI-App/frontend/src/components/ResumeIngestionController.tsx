@@ -1,4 +1,3 @@
-// src/components/ResumeIngestionController.tsx
 import { useState } from 'react';
 import axios from 'axios';
 import { initialData } from '../constants/initialData';
@@ -14,57 +13,58 @@ export const useResumeIngestionController = () => {
   const [isParsing, setIsParsing] = useState(false);
 
   const startUploadFlow = async (file: File) => {
-    if (!file) throw new Error('No file selected');
+    if (!file) return;
 
-    if (file.size > 3 * 1024 * 1024) throw new Error('File size exceeds 3MB');
-    if (file.type !== 'application/pdf') throw new Error('Only PDF supported');
+    // 1. Loader ON karo
     setIsParsing(true);
 
     try {
       const formData = new FormData();
       formData.append('file', file);
 
-      // ✅ FIX 3: Longer timeout + explicit headers
-      // const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
-      const response = await axios.post(`${API_URL}/resume/parse`, formData, {
-        timeout: 120000, 
+      // 2. ✅ FIXED URL: BaseURL + /api + /resume/parse
+      const response = await axios.post(`${API_URL}/api/resume/parse`, formData, {
+        timeout: 120000, // 2 minutes (Render cold start protection)
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      if (!response.data?.success) throw new Error('Failed to parse resume');
+      if (response.data?.success) {
+        const extractedText = response.data.rawText || '';
 
-      const extractedText: string = response.data.rawText || '';
+        const parsedResume: ResumeData = {
+          ...initialData,
+          sections: initialData.sections.map((section) => {
+            if (section.type === 'summary') {
+              return {
+                ...section,
+                content: extractedText,
+                isVisible: true,
+              };
+            }
+            return { ...section, isVisible: true };
+          }),
+        };
 
-      const parsedResume: ResumeData = {
-        ...initialData,
-        sections: initialData.sections.map((section) => {
-          if (section.type === 'summary') {
-            return {
-              ...section,
-              content: extractedText,
-              isVisible: true,
-            };
-          }
-          return { ...section, isVisible: true }; 
-        }),
-      };
-
-      ingestResumeData(parsedResume, 'upload');
-
-      // ✅ FIX 4: Correct navigation path
-      navigate('/builder'); 
-
-} catch (error: any) {
+        // 3. Data Context mein bharo
+        ingestResumeData(parsedResume, 'upload');
+        
+        // 4. Loader OFF karke redirect karo
+        setIsParsing(false);
+        navigate('/builder');
+      } else {
+        throw new Error('Server response was not successful');
+      }
+    } catch (error: any) {
       console.error("Upload Error:", error);
-      alert("Error parsing resume.");
-    } finally {
-      setIsParsing(false); // Chaahe success ho ya fail, loader band
+      setIsParsing(false); // Error aane par loader band
+      
+      // Axios error handle karein
+      const msg = error.code === 'ECONNABORTED' 
+        ? "Server is taking too long to wake up. Please wait 10 seconds and try again." 
+        : "Upload failed! Please check your connection or server status.";
+      
+      alert(msg);
     }
-  };
-
-  const startLinkedInImport = async () => {
-    ingestResumeData(initialData, 'linkedin');
-    navigate('/builder');
   };
 
   const startAI = () => {
@@ -72,5 +72,10 @@ export const useResumeIngestionController = () => {
     navigate('/builder');
   };
 
-  return { startUploadFlow, startLinkedInImport, startAI, isParsing};
+  const startLinkedInImport = async () => {
+    ingestResumeData(initialData, 'linkedin');
+    navigate('/builder');
+  };
+
+  return { startUploadFlow, startLinkedInImport, startAI, isParsing };
 };
