@@ -30,31 +30,34 @@ const upload = multer({
 // ========== 3. PDF PARSE ENDPOINT ==========
 router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    if (!req.file) return res.status(400).json({ success: false, message: 'No file' });
+
+    console.log(`📄 Parsing PDF: ${req.file.originalname}`);
+
+    // Node 22 compatibility: Standard require fail hone par internal lib uthao
+    let parseFunc;
+    try {
+        // Step 1: Check standard export
+        if (typeof pdfParse === 'function') {
+            parseFunc = pdfParse;
+        } else if (pdfParse && typeof pdfParse.default === 'function') {
+            parseFunc = pdfParse.default;
+        } else {
+            // Step 2: Force load the actual file path (Sabse bada fix)
+            parseFunc = require('pdf-parse/lib/pdf-parse.js');
+        }
+    } catch (e) {
+        console.error("🚨 Import fail, trying fallback...");
+        parseFunc = require('pdf-parse/lib/pdf-parse.js');
     }
 
-    // --- YAHAN SE PASTE KARO ---
-    console.log(`📄 Parsing PDF: ${req.file.originalname}`); 
-
-    // Library export check (Node 22 Fix)
-    const fn = (pdfParse && pdfParse.default) ? pdfParse.default : pdfParse;
+    // Ab parseFunc 100% function hoga
+    const data = await parseFunc(req.file.buffer);
     
-    // Semicolon zaroori hai 'intermediate value' error rokne ke liye
-    ;const data = await fn(req.file.buffer);
+    const cleanText = data.text.replace(/\r\n/g, '\n').replace(/\s+/g, ' ').trim();
+    console.log(`✅ Success: Parsed ${cleanText.length} chars`);
 
-    if (!data || !data.text) throw new Error("Text extraction failed");
-
-    const cleanText = data.text.replace(/\s+/g, ' ').trim();
-    // --- YAHAN TAK ---
-
-    console.log(`✅ Parsed Successfully`);
-
-    res.json({
-      success: true,
-      rawText: cleanText,
-      pageCount: data.numpages || 1
-    });
+    res.json({ success: true, rawText: cleanText, pageCount: data.numpages || 1 });
 
   } catch (err) {
     console.error('❌ PDF Parse Error:', err.message);
