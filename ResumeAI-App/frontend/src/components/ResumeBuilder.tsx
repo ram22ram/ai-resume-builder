@@ -22,28 +22,18 @@ const ResumeBuilder = () => {
     user,
   });
 
-  const handleSelect = async (origin: 'upload' | 'linkedin' | 'ai', file?: File) => {
+const handleSelect = async (origin: 'upload' | 'linkedin' | 'ai', file?: File) => {
     try {
       if (origin === 'upload' && file) {
-        // ✅ AWAIT lagana zaroori hai taaki parsing khatam hone ka wait kare
-        const success = await startUploadFlow(file); 
-        if (success) {
-          setShowModal(false); // Sirf success hone par hi modal band karo
-        }
+        const success = await startUploadFlow(file);
+        if (success) setShowModal(false); // ✅ Modal ab band ho jayega
         return;
       }
-      
-      if (origin === 'linkedin') {
-        setModalMode('error');
-        return;
-      }
-      
       if (origin === 'ai') {
         startAI();
-        setShowModal(false); // AI mode mein turant band kar sakte hain
+        setShowModal(false); // AI mode mein turant band karein
       }
-    } catch (err) {
-      console.error("Selection Error:", err);
+    } catch {
       setModalMode('error');
     }
   };

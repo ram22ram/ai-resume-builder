@@ -2,9 +2,12 @@ const express = require('express');
 const multer = require('multer');
 const axios = require('axios');
 const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js'); 
+const Resume = require('../models/Resume');
+const { protect } = require('../middleware/authMiddleware');
+
 const router = express.Router();
 
-// Tera ATS Checker wala cleaning logic
+// 1. Cleaning logic (Directly from your ATSChecker)
 const cleanAIResponse = (text) => {
   if (!text) return null;
   let cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -24,7 +27,7 @@ router.post('/parse', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No file' });
 
-    // 1. PDF Text Extraction
+    // PDF Parsing Logic
     const data = new Uint8Array(req.file.buffer);
     const loadingTask = pdfjsLib.getDocument({ data, useSystemFonts: true, disableFontFace: true });
     const pdf = await loadingTask.promise;
@@ -36,35 +39,40 @@ router.post('/parse', upload.single('file'), async (req, res) => {
     }
     const cleanText = fullText.replace(/\s+/g, ' ').trim();
 
-    // 2. Groq AI Call (Vahi logic jo ATSChecker mein chal raha hai)
+    console.log(`🧠 Sending to Groq (Llama-3.3) for stability...`);
+
+    // 2. Groq API Call
     const groqResponse = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: "llama-3.3-70b-versatile", // Stable Model
+        model: "llama-3.3-70b-versatile", // Use this instead of Grok
         messages: [
           {
             role: "system",
-            content: "Extract resume data into JSON. Keys: full_name, email, phone, job_title, summary, experience, skills."
+            content: "Return ONLY a valid JSON object. Keys: full_name, email, phone, job_title, summary, experience, skills."
           },
-          { role: "user", content: `Text: ${cleanText.substring(0, 12000)}` }
+          { role: "user", content: `Extract resume data: ${cleanText.substring(0, 10000)}` }
         ],
         response_format: { type: "json_object" },
         temperature: 0.1
       },
       {
         headers: { 
-          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`, // Render pe GROQ_API_KEY daal dena
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`, // Check Render Dashboard
           'Content-Type': 'application/json' 
         }
       }
     );
 
     const finalJson = cleanAIResponse(groqResponse.data.choices[0].message.content);
+
+    if (!finalJson) throw new Error("AI Clean Failed");
+
     res.json({ success: true, data: finalJson });
 
   } catch (err) {
-    console.error('❌ Error:', err.message);
-    res.status(500).json({ success: false, message: "AI Error: " + err.message });
+    console.error('❌ Final Error:', err.message);
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
