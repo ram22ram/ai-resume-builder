@@ -38,6 +38,14 @@ app.set('trust proxy', 1);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// ========== 11. TIMEOUT SETTINGS ==========
+server.timeout = 120000; // 2 minutes
+app.use((req, res, next) => {
+  req.setTimeout(120000);
+  res.setTimeout(120000);
+  next();
+});
+
 // ========== 3. HEALTH CHECK ==========
 app.get('/api/health', (req, res) => {
   res.status(200).json({ 
@@ -64,7 +72,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ========== 5. PASSPORT CONFIG ==========
-require('./config/passport.js');
+require('./config/passport.js')(passport);
 
 // ========== 6. DATABASE CONNECT ==========
 connectDB();
@@ -96,12 +104,6 @@ const server = app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
 
-// ========== 11. TIMEOUT SETTINGS ==========
-server.timeout = 120000; // 2 minutes
-app.use((req, res, next) => {
-  req.setTimeout(120000);
-  res.setTimeout(120000);
-  next();
-});
+
 
 module.exports = app;
