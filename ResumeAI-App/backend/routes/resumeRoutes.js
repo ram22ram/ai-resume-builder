@@ -1,9 +1,9 @@
 const express = require('express');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
-const pdfParse = require('pdf-parse');
-const Resume = require('../models/Resume.js');
-const { protect } = require('../middleware/authMiddleware.js');
+const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+const Resume = require('../models/Resume');
+const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -29,7 +29,7 @@ const upload = multer({
   }
 });
 
-// ========== 3. PDF PARSE ENDPOINT ==========
+// ========== 3. PDF PARSE ENDPOINT (pdfjs-dist के साथ) ==========
 router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   try {
     // Check if file exists
@@ -42,21 +42,39 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
 
     console.log(`📄 Parsing PDF: ${req.file.originalname} (${req.file.size} bytes)`);
 
-    // Parse PDF using pdf-parse
-    const data = await pdfParse(req.file.buffer);
+    // PDF.js से PDF parse करें
+    const pdfData = new Uint8Array(req.file.buffer);
+    const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+    const pdf = await loadingTask.promise;
     
+    let fullText = '';
+    const pageCount = pdf.numPages;
+
+    // सभी pages से text extract करें
+    for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      
+      // Text items को combine करें
+      const pageText = textContent.items
+        .map(item => item.str)
+        .join(' ');
+      
+      fullText += pageText + '\n';
+    }
+
     // Clean text
-    const cleanText = data.text
+    const cleanText = fullText
       .replace(/\r\n/g, '\n')
       .replace(/\s+/g, ' ')
       .trim();
 
-    console.log(`✅ Parsed ${cleanText.length} characters`);
+    console.log(`✅ Parsed ${cleanText.length} characters from ${pageCount} pages`);
 
     res.json({
       success: true,
       rawText: cleanText,
-      pageCount: data.numpages || 1
+      pageCount: pageCount
     });
 
   } catch (err) {
@@ -71,6 +89,8 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
     } else if (err.message.includes('PDF') || err.message.includes('format')) {
       errorMsg = "Invalid PDF file. Please upload a valid PDF.";
       statusCode = 400;
+    } else {
+      errorMsg = "PDF parsing error: " + err.message;
     }
 
     res.status(statusCode).json({ 
