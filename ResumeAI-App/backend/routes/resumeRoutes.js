@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
-const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+const pdfjsLib = require('pdfjs-dist');
 const Resume = require('../models/Resume');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -29,7 +29,7 @@ const upload = multer({
   }
 });
 
-// ========== 3. PDF PARSE ENDPOINT (pdfjs-dist के साथ) ==========
+// ========== 3. PDF PARSE ENDPOINT ==========
 router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   try {
     // Check if file exists
@@ -42,7 +42,10 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
 
     console.log(`📄 Parsing PDF: ${req.file.originalname} (${req.file.size} bytes)`);
 
-    // PDF.js से PDF parse करें
+    // Server-side के लिए worker disable कर दो
+    pdfjsLib.GlobalWorkerOptions.workerSrc = null;
+
+    // PDF parse करो
     const pdfData = new Uint8Array(req.file.buffer);
     const loadingTask = pdfjsLib.getDocument({ data: pdfData });
     const pdf = await loadingTask.promise;
@@ -50,12 +53,12 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
     let fullText = '';
     const pageCount = pdf.numPages;
 
-    // सभी pages से text extract करें
+    // सभी pages से text extract करो
     for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
       const page = await pdf.getPage(pageNum);
       const textContent = await page.getTextContent();
       
-      // Text items को combine करें
+      // Text items combine करो
       const pageText = textContent.items
         .map(item => item.str)
         .join(' ');
