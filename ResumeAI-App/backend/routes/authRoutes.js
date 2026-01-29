@@ -1,16 +1,17 @@
 const express = require('express');
 const passport = require('passport');
-const { generateJWTToken } = require('../utils/jwtGenerator'); // ✅ यह फ़ाइल भी चाहिए
+// 🔥 FIX: Standard import (bina braces ke agar module.exports use kiya hai)
+const generateJWTToken = require('../utils/jwtGenerator'); 
 
 const router = express.Router();
 
-// ✅ Google Auth Route with Cold Start Protection
+// Google Auth Route
 router.get('/google', (req, res, next) => {
   console.log('Google OAuth Initiated - Uptime:', process.uptime());
   
-  // Cold start check - agar server abhi start hua hai
-  if (process.uptime() < 10) { // First 10 seconds
-    console.log('⚠️  Cold start detected, adding 2s delay for DB...');
+  // Render Cold Start protection
+  if (process.uptime() < 10) {
+    console.log('⚠️ Cold start: Adding delay for DB stability...');
     setTimeout(() => {
       passport.authenticate('google', {
         scope: ['profile', 'email'],
@@ -25,32 +26,35 @@ router.get('/google', (req, res, next) => {
   }
 });
 
-// ✅ Google Callback Route
+// Google Callback Route
 router.get('/google/callback', 
   passport.authenticate('google', {
     failureRedirect: 'https://resume-ai.co.in/login?error=auth_failed',
-    session: false // ✅ JWT use kar rahe hain to session false rakhein
+    session: false 
   }),
   (req, res) => {
     try {
-      // ✅ JWT Token Generate (agar aap JWT use kar rahe hain)
-      const token = generateJWTToken(req.user); // Apna JWT function
+      // ✅ Token Generation Fix
+      const token = generateJWTToken(req.user);
       
-      // ✅ Frontend par redirect with token
-      res.redirect(`https://resume-ai.co.in/auth-success?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
+      const userParam = encodeURIComponent(JSON.stringify({
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email
+      }));
+
+      // Redirecting to builder or auth-success page
+      res.redirect(`https://resume-ai.co.in/builder?token=${token}&user=${userParam}`);
     } catch (error) {
-      console.error('Callback Error:', error);
+      console.error('Callback Error:', error.message);
       res.redirect('https://resume-ai.co.in/login?error=token_generation_failed');
     }
   }
 );
 
-// ✅ Logout Route
 router.get('/logout', (req, res) => {
   req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Logout failed' });
-    }
+    if (err) return res.status(500).json({ error: 'Logout failed' });
     res.redirect('https://resume-ai.co.in');
   });
 });

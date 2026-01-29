@@ -8,14 +8,12 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// 1. Rate Limiter
 const parseLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, 
   max: 50, 
   message: { success: false, message: "Too many uploads, please try again later." }
 });
 
-// 2. Multer Setup
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
@@ -28,14 +26,12 @@ const upload = multer({
   }
 });
 
-// 3. Main Parse Endpoint
 router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' });
 
     console.log(`📄 Parsing PDF: ${req.file.originalname}`);
 
-    // --- PDF Extraction Logic ---
     const data = new Uint8Array(req.file.buffer);
     const loadingTask = pdfjsLib.getDocument({ 
       data,
@@ -55,28 +51,24 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
 
     const cleanText = fullText.replace(/\s+/g, ' ').trim();
 
-    if (cleanText.length < 20) {
-      throw new Error("Extracted text is too short.");
-    }
+    if (cleanText.length < 20) throw new Error("Extracted text is too short.");
 
-    // --- Grok AI Structuring Logic ---
-    console.log(`🧠 Sending to Grok AI...`);
+    console.log(`🧠 Sending to Grok AI for structuring...`);
     
     const grokResponse = await axios.post(
-      'https://api.x.ai/v1/chat/completions',
+      '[https://api.x.ai/v1/chat/completions](https://api.x.ai/v1/chat/completions)',
       {
         model: "grok-beta",
         messages: [
           {
             role: "system",
-            content: "You are a resume parser. Extract information and return ONLY a valid JSON object. Keys: full_name, email, phone, job_title, summary, experience (array of objects with company, role, duration, description), skills (array of strings)."
+            content: "Extract resume data and return ONLY a valid JSON object. Do not include markdown formatting or backticks. Keys: full_name, email, phone, job_title, summary, experience (array of objects), education (array), skills (array)."
           },
           {
             role: "user",
-            content: `Extract from this text: ${cleanText}`
+            content: `Extracted Text: ${cleanText}`
           }
         ],
-        response_format: { type: "json_object" },
         temperature: 0
       },
       {
@@ -87,16 +79,13 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
       }
     );
 
-    const structuredData = grokResponse.data.choices[0].message.content;
-    const finalJson = typeof structuredData === 'string' ? JSON.parse(structuredData) : structuredData;
+    let content = grokResponse.data.choices[0].message.content;
+    
+    // 🔥 Remove potential markdown kachra (backticks)
+    const cleanJsonString = content.replace(/```json/g, "").replace(/```/g, "").trim();
+    const finalJson = JSON.parse(cleanJsonString);
 
-    console.log(`✅ Grok Success!`);
-
-    res.json({
-      success: true,
-      data: finalJson,
-      pageCount: pdf.numPages
-    });
+    res.json({ success: true, data: finalJson });
 
   } catch (err) {
     console.error('❌ Error:', err.message);
@@ -104,13 +93,12 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   }
 });
 
-// 4. Other Routes (Fetch & Save)
 router.get('/', protect, async (req, res) => {
   try {
     const resume = await Resume.findOne({ user: req.user.id });
     res.json({ success: true, data: resume });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Error fetching resume" });
+    res.status(500).json({ success: false, message: "Error" });
   }
 });
 
@@ -124,7 +112,7 @@ router.post('/', protect, async (req, res) => {
     );
     res.json({ success: true, data: resume });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Error saving resume" });
+    res.status(500).json({ success: false, message: "Error" });
   }
 });
 

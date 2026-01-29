@@ -23,41 +23,43 @@ export const useResumeIngestionController = () => {
       formData.append('file', file);
 
       const response = await axios.post(finalPath, formData, {
-        timeout: 150000, // Increased for AI processing
+        timeout: 180000, 
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      if (response.data?.success) {
-        const aiData = response.data.data; // Grok se aaya structured data
+      if (response.data?.success && response.data.data) {
+        const aiData = response.data.data;
 
-        // Mapping AI data to your ResumeData structure
+        // Map AI response into the ResumeData shape (use 'personalInfo' as defined by ResumeData)
         const parsedResume = {
           ...initialData,
           personalInfo: {
-            fullName: aiData.full_name || '',
-            email: aiData.email || '',
-            phone: aiData.phone || '',
-            jobTitle: aiData.job_title || '',
+            fullName: aiData?.full_name || aiData?.fullName || '',
+            email: aiData?.email || '',
+            phone: aiData?.phone || '',
+            jobTitle: aiData?.job_title || aiData?.jobTitle || '',
             address: '',
             portfolio: '',
             linkedin: ''
           },
-          sections: initialData.sections.map((s) => {
-            if (s.type === 'summary') return { ...s, content: aiData.summary || '', isVisible: true };
-            if (s.type === 'experience') return { ...s, items: aiData.experience || [], isVisible: true };
-            if (s.type === 'skills') return { ...s, items: aiData.skills || [], isVisible: true };
+          sections: initialData.sections.map((s: any) => {
+            if (s.type === 'summary') return { ...s, content: aiData?.summary || '', isVisible: true };
+            if (s.type === 'experience') return { ...s, items: aiData?.experience || [], isVisible: true };
+            if (s.type === 'skills') return { ...s, items: aiData?.skills || [], isVisible: true };
             return { ...s, isVisible: true };
           }),
-        } as ResumeData;
+        } as unknown as ResumeData;
 
         ingestResumeData(parsedResume, 'upload');
         setIsParsing(false);
-        return true; // Success signal to close modal
+        return true; 
+      } else {
+        throw new Error("Invalid response from AI");
       }
     } catch (error: any) {
       console.error("Upload Error:", error);
       setIsParsing(false);
-      alert("Upload failed! Server is busy or file is invalid.");
+      alert("AI Processing Failed: " + (error.response?.data?.message || "Server Error"));
       return false;
     }
   };
