@@ -34,24 +34,21 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    console.log(`📄 Parsing PDF with pdf-parse: ${req.file.originalname}`);
+    // --- YAHAN SE PASTE KARO ---
+    console.log(`📄 Parsing PDF: ${req.file.originalname}`); 
 
-    // Senior Dev Tip: Semicolon aur brackets ka order fix kiya hai
-    // Ye line (pdfParse.default || pdfParse) Node 22 ke object vs function issue ko solve karti hai
-    const parseFunction = (pdfParse && pdfParse.default) ? pdfParse.default : pdfParse;
-    const data = await parseFunction(req.file.buffer);
+    // Library export check (Node 22 Fix)
+    const fn = (pdfParse && pdfParse.default) ? pdfParse.default : pdfParse;
     
-    if (!data || !data.text) {
-      throw new Error("Could not extract text from PDF");
-    }
+    // Semicolon zaroori hai 'intermediate value' error rokne ke liye
+    ;const data = await fn(req.file.buffer);
 
-    // Clean text (extra spaces aur lines hatao)
-    const cleanText = data.text
-      .replace(/\r\n/g, '\n')
-      .replace(/\s+/g, ' ')
-      .trim();
+    if (!data || !data.text) throw new Error("Text extraction failed");
 
-    console.log(`✅ Parsed ${cleanText.length} characters successfully`);
+    const cleanText = data.text.replace(/\s+/g, ' ').trim();
+    // --- YAHAN TAK ---
+
+    console.log(`✅ Parsed Successfully`);
 
     res.json({
       success: true,
@@ -60,11 +57,8 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
     });
 
   } catch (err) {
-    console.error('❌ PDF Parse Error:', err.message); //
-    res.status(500).json({ 
-      success: false, 
-      message: "PDF parsing error: " + err.message 
-    });
+    console.error('❌ PDF Parse Error:', err.message);
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
