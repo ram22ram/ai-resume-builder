@@ -37,11 +37,15 @@ const ResumeStartModal = ({
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    if (open) {
-      axios.get(`${import.meta.env.VITE_API_URL}/api/health`).catch(() => {});
-    }
-  }, [open]);
+useEffect(() => {
+  if (open) {
+    // Sirf health check hit karo, path frontend/backend sync hona chahiye
+    axios.get(`${import.meta.env.VITE_API_URL}/health`).catch(() => {
+       // Agar Render dashboard pe URL bina /api ke hai, toh /api/health dalo
+       axios.get(`${import.meta.env.VITE_API_URL}/api/health`).catch(() => {});
+    });
+  }
+}, [open]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
