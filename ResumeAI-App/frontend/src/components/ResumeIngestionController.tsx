@@ -16,50 +16,55 @@ export const useResumeIngestionController = () => {
     if (!file) return;
     setIsParsing(true);
 
-    // 🔍 Auto-Fix for potential double /api
     const finalPath = `${API_URL}/api/resume/parse`.replace(/\/api\/api/g, '/api');
-    console.log("🚀 Requesting to:", finalPath);
 
     try {
       const formData = new FormData();
       formData.append('file', file);
 
       const response = await axios.post(finalPath, formData, {
-        timeout: 120000, // 2 minutes for Render cold start
+        timeout: 150000, // Increased for AI processing
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       if (response.data?.success) {
-        const extractedText = response.data.rawText || '';
-        const parsedResume: ResumeData = {
+        const aiData = response.data.data; // Grok se aaya structured data
+
+        // Mapping AI data to your ResumeData structure
+        const parsedResume = {
           ...initialData,
-          sections: initialData.sections.map((s) => 
-            s.type === 'summary' ? { ...s, content: extractedText, isVisible: true } : { ...s, isVisible: true }
-          ),
-        };
+          personalInfo: {
+            fullName: aiData.full_name || '',
+            email: aiData.email || '',
+            phone: aiData.phone || '',
+            jobTitle: aiData.job_title || '',
+            address: '',
+            portfolio: '',
+            linkedin: ''
+          },
+          sections: initialData.sections.map((s) => {
+            if (s.type === 'summary') return { ...s, content: aiData.summary || '', isVisible: true };
+            if (s.type === 'experience') return { ...s, items: aiData.experience || [], isVisible: true };
+            if (s.type === 'skills') return { ...s, items: aiData.skills || [], isVisible: true };
+            return { ...s, isVisible: true };
+          }),
+        } as ResumeData;
+
         ingestResumeData(parsedResume, 'upload');
         setIsParsing(false);
-        navigate('/builder'); 
+        return true; // Success signal to close modal
       }
-} catch (error: any) {
-  console.error("Upload Error:", error);
-  setIsParsing(false);
-  
-  let msg = "Upload failed! ";
-  
-  if (error.code === 'ERR_NETWORK') {
-    msg += "Cannot connect to server. Please try again in 10 seconds.";
-  } else if (error.code === 'ECONNABORTED') {
-    msg += "Server is taking too long. Try a smaller PDF file (<3MB).";
-  } else if (error.response?.status === 413) {
-    msg += "File too large. Please upload PDF less than 3MB.";
-  } else if (error.response?.status === 400) {
-    msg += "Invalid PDF file. Please check the file format.";
-  }
-  
-  alert(msg);
-}
+    } catch (error: any) {
+      console.error("Upload Error:", error);
+      setIsParsing(false);
+      alert("Upload failed! Server is busy or file is invalid.");
+      return false;
+    }
   };
 
-  return { startUploadFlow, startAI: () => { ingestResumeData(initialData, 'ai'); navigate('/builder'); }, isParsing };
+  return { 
+    startUploadFlow, 
+    startAI: () => { ingestResumeData(initialData, 'ai'); navigate('/builder'); }, 
+    isParsing 
+  };
 };

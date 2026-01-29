@@ -17,7 +17,6 @@ const ResumeBuilder = () => {
 
   const { startUploadFlow, startAI, isParsing } = useResumeIngestionController();
 
-  // ✅ ALWAYS MOUNTED — NEVER CONDITIONAL
   const handlers = useResumeHandlers({
     previewRef,
     user,
@@ -26,18 +25,25 @@ const ResumeBuilder = () => {
   const handleSelect = async (origin: 'upload' | 'linkedin' | 'ai', file?: File) => {
     try {
       if (origin === 'upload' && file) {
-        await startUploadFlow(file);
+        // ✅ AWAIT lagana zaroori hai taaki parsing khatam hone ka wait kare
+        const success = await startUploadFlow(file); 
+        if (success) {
+          setShowModal(false); // Sirf success hone par hi modal band karo
+        }
+        return;
       }
+      
       if (origin === 'linkedin') {
-        // LinkedIn import isn't provided by the ingestion controller; show an error to the user.
         setModalMode('error');
         return;
       }
+      
       if (origin === 'ai') {
         startAI();
+        setShowModal(false); // AI mode mein turant band kar sakte hain
       }
-      // setShowModal(false);
-    } catch {
+    } catch (err) {
+      console.error("Selection Error:", err);
       setModalMode('error');
     }
   };
@@ -47,7 +53,7 @@ const ResumeBuilder = () => {
       <ResumeStartModal
         open={showModal}
         mode={modalMode}
-        isParsing={isParsing}
+        isParsing={isParsing} // Loader isi state se chalta hai
         onSelect={handleSelect}
         onConfirmOverwrite={() => {
           setModalMode('select');
@@ -57,9 +63,9 @@ const ResumeBuilder = () => {
           setModalMode('select');
           setShowModal(false);
         }}
-        
       />
 
+      {/* Jab data aa jaye aur parsing ruk jaye tabhi builder dikhao */}
       {resumeData && !isParsing && (
         <BuilderLayout
           resumeData={resumeData}
