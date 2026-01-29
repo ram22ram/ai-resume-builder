@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
-const pdfParse = require('pdf-parse');
+const pdfParse = require('pdf-parse/lib/pdf-parse.js');
 const Resume = require('../models/Resume');
 const { protect } = require('../middleware/authMiddleware');
 
