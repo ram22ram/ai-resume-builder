@@ -1,9 +1,9 @@
-import express from 'express';
-import multer from 'multer';
-import rateLimit from 'express-rate-limit';
-import pdfParse from 'pdf-parse';
-import Resume from '../models/Resume.js';
-import { protect } from '../middleware/authMiddleware.js';
+const express = require('express');
+const multer = require('multer');
+const rateLimit = require('express-rate-limit');
+const pdfParse = require('pdf-parse');
+const Resume = require('../models/Resume.js');
+const { protect } = require('../middleware/authMiddleware.js');
 
 const router = express.Router();
 
@@ -118,4 +118,4 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

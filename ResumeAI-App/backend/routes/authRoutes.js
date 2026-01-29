@@ -1,7 +1,7 @@
-const generateJWTToken = require('../utils/jwtGenerator');
-
 const express = require('express');
 const passport = require('passport');
+const { generateJWTToken } = require('../utils/jwtGenerator'); // ✅ यह फ़ाइल भी चाहिए
+
 const router = express.Router();
 
 // ✅ Google Auth Route with Cold Start Protection
@@ -33,7 +33,7 @@ router.get('/google/callback',
   }),
   (req, res) => {
     try {
-      // ✅ JWT Token Generate (aggar aap JWT use kar rahe hain)
+      // ✅ JWT Token Generate (agar aap JWT use kar rahe hain)
       const token = generateJWTToken(req.user); // Apna JWT function
       
       // ✅ Frontend par redirect with token

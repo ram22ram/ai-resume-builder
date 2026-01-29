@@ -1,10 +1,10 @@
-import dotenv from 'dotenv';
-import express from 'express';
-import passport from 'passport';
-import session from 'express-session';
-import connectDB from './config/db.js';
-import authRoutes from './routes/authRoutes.js';
-import resumeRoutes from './routes/resumeRoutes.js';
+const dotenv = require('dotenv');
+const express = require('express');
+const passport = require('passport');
+const session = require('express-session');
+const connectDB = require('./config/db.js');
+const authRoutes = require('./routes/authRoutes.js');
+const resumeRoutes = require('./routes/resumeRoutes.js');
 
 dotenv.config();
 const app = express();
@@ -64,7 +64,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ========== 5. PASSPORT CONFIG ==========
-import './config/passport.js';
+require('./config/passport.js');
 
 // ========== 6. DATABASE CONNECT ==========
 connectDB();
@@ -104,4 +104,4 @@ app.use((req, res, next) => {
   next();
 });
 
-export default app;
+module.exports = app;
