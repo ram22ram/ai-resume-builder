@@ -1,17 +1,14 @@
 const express = require('express');
 const multer = require('multer');
-const rateLimit = require('express-rate-limit');
 const axios = require('axios');
 const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js'); 
 const Resume = require('../models/Resume');
-const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// 1. Cleaning Function (Directly from your ATSChecker logic)
+// ATS Checker Style Cleaning Logic
 const cleanAIResponse = (text) => {
   if (!text) return null;
-  // Remove markdown backticks
   let cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
   try {
     const startIndex = cleanedText.indexOf('{');
@@ -21,7 +18,7 @@ const cleanAIResponse = (text) => {
     }
     return JSON.parse(cleanedText);
   } catch (err) {
-    console.error("❌ JSON Clean Error:", err.message);
+    console.error("❌ Cleaning failed:", err.message);
     return null;
   }
 };
@@ -44,40 +41,42 @@ router.post('/parse', upload.single('file'), async (req, res) => {
     }
     const cleanText = fullText.replace(/\s+/g, ' ').trim();
 
-    console.log(`🧠 Sending to Grok AI with ATS-style cleaning...`);
+    console.log(`🧠 Sending to Grok AI (x.ai) for Resume Builder...`);
 
-    // Grok AI Call
+    // 🔥 FIXED GROK API CALL (x.ai Specific)
     const grokResponse = await axios.post(
       'https://api.x.ai/v1/chat/completions',
       {
-        model: "grok-beta",
+        model: "grok-beta", // 🚀 MUST be grok-beta or grok-vision-beta for x.ai
         messages: [
           {
             role: "system",
-            content: "Return ONLY a valid JSON object. Keys: full_name, email, phone, job_title, summary, experience (array), skills (array)."
+            content: "You are a resume parser. Return ONLY a valid JSON object. Keys: full_name, email, phone, job_title, summary, experience (array), skills (array)."
           },
-          { role: "user", content: `Extract from: ${cleanText}` }
+          { role: "user", content: `Extract data: ${cleanText.substring(0, 15000)}` }
         ],
-        temperature: 0.1 // ATS Checker ki tarah low temperature for accuracy
+        temperature: 0, // No creativity needed for parsing
+        stream: false
       },
       {
-        headers: { 'Authorization': `Bearer ${process.env.GROK_API_KEY}`, 'Content-Type': 'application/json' }
+        headers: { 
+          'Authorization': `Bearer ${process.env.GROK_API_KEY}`, // Must be x.ai key
+          'Content-Type': 'application/json' 
+        }
       }
     );
 
-    // 🔥 ATS CHECKER LOGIC APPLIED HERE
     const rawContent = grokResponse.data.choices[0].message.content;
     const finalJson = cleanAIResponse(rawContent);
 
-    if (!finalJson) {
-      throw new Error("AI response cleaning failed.");
-    }
+    if (!finalJson) throw new Error("AI returned unparseable content.");
 
     res.json({ success: true, data: finalJson });
 
   } catch (err) {
-    console.error('❌ Final Error:', err.message);
-    res.status(500).json({ success: false, message: err.message });
+    // Detailed error logging to catch 400 issues
+    console.error('❌ Grok API 400/500 Error:', err.response?.data || err.message);
+    res.status(500).json({ success: false, message: "AI Error: " + (err.response?.data?.error?.message || err.message) });
   }
 });
 
