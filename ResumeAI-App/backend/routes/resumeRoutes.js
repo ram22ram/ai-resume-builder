@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
-const pdfParse = require('pdf-parse');
+const pdfParse = require('pdf-parse'); // Standard import
 const Resume = require('../models/Resume');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -36,10 +36,15 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
 
     console.log(`📄 Parsing PDF with pdf-parse: ${req.file.originalname}`);
 
-    // pdf-parse se text nikalna ekdum asaan hai
-   const data = await (typeof pdfParse === 'function' ? pdfParse : pdfParse.default)(req.file.buffer);
+    // Senior Dev Tip: Semicolon aur brackets ka order fix kiya hai
+    // Ye line (pdfParse.default || pdfParse) Node 22 ke object vs function issue ko solve karti hai
+    const parseFunction = (pdfParse && pdfParse.default) ? pdfParse.default : pdfParse;
+    const data = await parseFunction(req.file.buffer);
     
-    
+    if (!data || !data.text) {
+      throw new Error("Could not extract text from PDF");
+    }
+
     // Clean text (extra spaces aur lines hatao)
     const cleanText = data.text
       .replace(/\r\n/g, '\n')
@@ -55,8 +60,11 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
     });
 
   } catch (err) {
-    console.error('❌ PDF Parse Error:', err.message);
-    res.status(500).json({ success: false, message: "PDF parsing error: " + err.message });
+    console.error('❌ PDF Parse Error:', err.message); //
+    res.status(500).json({ 
+      success: false, 
+      message: "PDF parsing error: " + err.message 
+    });
   }
 });
 
