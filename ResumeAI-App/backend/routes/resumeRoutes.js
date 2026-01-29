@@ -2,7 +2,8 @@
 const express = require('express');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
-const pdfjsLib = require('pdfjs-dist'); // PDF.js for actual text extraction
+// FIXED: Node environment ke liye sirf legacy build hi chalega
+const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js'); 
 const Resume = require('../models/Resume');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -10,7 +11,7 @@ const router = express.Router();
 
 // 2. RATE LIMITER CONFIGURATION
 const parseLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, 
+  windowMs: 60 * 60 * 1000, // 1 hour
   max: 50, 
   message: { success: false, message: "Too many uploads, please try again later." }
 });
@@ -18,7 +19,7 @@ const parseLimiter = rateLimit({
 // 3. MULTER STORAGE CONFIGURATION
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }, 
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'application/pdf') {
       cb(null, true);
@@ -28,27 +29,27 @@ const upload = multer({
   }
 });
 
-// 4. PDF PARSING ENDPOINT (Fixed for Real Text Extraction)
+// 4. PDF PARSING ENDPOINT (Fixed for Node 22 Stability)
 router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    console.log(`📄 Parsing PDF with PDF.js Engine: ${req.file.originalname}`);
+    console.log(`📄 Parsing PDF with Legacy Engine: ${req.file.originalname}`);
 
-    // PDF.js loading logic (Uint8Array format)
+    // Uint8Array format mein data convert karna
     const data = new Uint8Array(req.file.buffer);
     const loadingTask = pdfjsLib.getDocument({ 
       data,
       useSystemFonts: true,
-      disableFontFace: true 
+      disableFontFace: true // Server side stability ke liye zaroori
     });
     
     const pdf = await loadingTask.promise;
     let fullText = "";
 
-    // Loop through each page to extract readable text
+    // Har page se text extract karne ka loop
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
@@ -61,7 +62,7 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
       fullText += pageText + "\n";
     }
 
-    // Clean up extra whitespace
+    // Clean up extra whitespace aur binary headers hatana
     const cleanText = fullText
       .replace(/\s+/g, ' ')
       .trim();
