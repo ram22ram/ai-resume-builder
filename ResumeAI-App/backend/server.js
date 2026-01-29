@@ -1,12 +1,15 @@
-require('dotenv').config();
-const express = require('express');
-const passport = require('passport');
-const session = require('express-session');
-const connectDB = require('./config/db');
+import dotenv from 'dotenv';
+import express from 'express';
+import passport from 'passport';
+import session from 'express-session';
+import connectDB from './config/db.js';
+import authRoutes from './routes/authRoutes.js';
+import resumeRoutes from './routes/resumeRoutes.js';
 
+dotenv.config();
 const app = express();
 
-// 1. MANUAL CORS MIDDLEWARE (Sabse upar rakho)
+// ========== 1. CORS MIDDLEWARE ==========
 app.use((req, res, next) => {
   const allowedOrigins = [
     'https://resume-ai.co.in', 
@@ -23,7 +26,6 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-  // OPTIONS (Pre-flight) request ko turant 200 OK bhej do
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
@@ -31,14 +33,21 @@ app.use((req, res, next) => {
 });
 
 app.set('trust proxy', 1);
-app.use(express.json());
 
-// 2. HEALTH CHECK (Matching with Frontend Modal)
+// ========== 2. BODY PARSERS ==========
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// ========== 3. HEALTH CHECK ==========
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    service: 'ResumeAI Backend'
+  });
 });
 
-// 3. SESSION SETUP
+// ========== 4. SESSION SETUP ==========
 app.use(session({
   secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
@@ -53,15 +62,46 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-require('./config/passport')(passport);
 
+// ========== 5. PASSPORT CONFIG ==========
+import './config/passport.js';
+
+// ========== 6. DATABASE CONNECT ==========
 connectDB();
 
-// 4. API ROUTES
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/resume', require('./routes/resumeRoutes'));
+// ========== 7. ROUTES ==========
+app.use('/api/auth', authRoutes);
+app.use('/api/resume', resumeRoutes);
 
+// ========== 8. ERROR HANDLER ==========
+app.use((err, req, res, next) => {
+  console.error('🚨 Server Error:', err.message);
+  res.status(500).json({
+    success: false,
+    message: 'Internal server error'
+  });
+});
+
+// ========== 9. 404 HANDLER ==========
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.originalUrl} not found`
+  });
+});
+
+// ========== 10. START SERVER ==========
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
+
+// ========== 11. TIMEOUT SETTINGS ==========
+server.timeout = 120000; // 2 minutes
+app.use((req, res, next) => {
+  req.setTimeout(120000);
+  res.setTimeout(120000);
+  next();
+});
+
+export default app;

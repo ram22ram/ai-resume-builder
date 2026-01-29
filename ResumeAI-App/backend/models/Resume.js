@@ -1,10 +1,29 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const resumeSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  data: { type: Object, required: true }, // FULL resume JSON
-  origin: { type: String, enum: ['upload', 'linkedin', 'ai'], required: true },
-  updatedAt: { type: Date, default: Date.now }
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  data: {
+    type: Object,
+    required: true
+  },
+  origin: {
+    type: String,
+    enum: ['upload', 'ai', 'linkedin'],
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-module.exports = mongoose.model('Resume', resumeSchema);
+const Resume = mongoose.model('Resume', resumeSchema);
+export default Resume;

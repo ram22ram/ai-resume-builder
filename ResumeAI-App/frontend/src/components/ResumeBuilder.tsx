@@ -15,7 +15,7 @@ const ResumeBuilder = () => {
   const { user } = useAuth();
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const { startUploadFlow, startLinkedInImport, startAI, isParsing } = useResumeIngestionController();
+  const { startUploadFlow, startAI, isParsing } = useResumeIngestionController();
 
   // ✅ ALWAYS MOUNTED — NEVER CONDITIONAL
   const handlers = useResumeHandlers({
@@ -29,7 +29,9 @@ const ResumeBuilder = () => {
         await startUploadFlow(file);
       }
       if (origin === 'linkedin') {
-       await startLinkedInImport();
+        // LinkedIn import isn't provided by the ingestion controller; show an error to the user.
+        setModalMode('error');
+        return;
       }
       if (origin === 'ai') {
         startAI();

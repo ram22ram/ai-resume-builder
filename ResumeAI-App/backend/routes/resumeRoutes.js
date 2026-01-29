@@ -1,90 +1,121 @@
-const express = require('express');
-const router = express.Router();
-const Resume = require('../models/Resume');
-const { protect } = require('../middleware/authMiddleware');
-const multer = require('multer');
-const PDFParser = require("pdf2json"); 
-const rateLimit = require('express-rate-limit');
+import express from 'express';
+import multer from 'multer';
+import rateLimit from 'express-rate-limit';
+import pdfParse from 'pdf-parse';
+import Resume from '../models/Resume.js';
+import { protect } from '../middleware/authMiddleware.js';
 
-// 1. Rate Limiter
+const router = express.Router();
+
+// ========== 1. RATE LIMITER ==========
 const parseLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 30,
   message: { success: false, message: "Too many uploads, try again later" }
 });
 
-// 2. Multer Setup
+// ========== 2. MULTER SETUP ==========
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }
-});
-
-/**
- * 🔓 PUBLIC PDF PARSE ENDPOINT
- */
-router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
-  if (!req.file || !req.file.buffer) {
-    return res.status(400).json({ success: false, message: 'No file received' });
-  }
-
-  // Promise base approach taaki Node.js wait kare
-  const pdfParser = new PDFParser(null, 1);
-
-  const parsePDF = () => {
-    return new Promise((resolve, reject) => {
-      pdfParser.on("pdfParser_dataError", errData => reject(errData.parserError));
-      pdfParser.on("pdfParser_dataReady", () => {
-        const rawText = pdfParser.getRawTextContent();
-        resolve(decodeURIComponent(rawText));
-      });
-      pdfParser.parseBuffer(req.file.buffer);
-    });
-  };
-
-  try {
-    console.log(`📄 Parsing: ${req.file.originalname}`);
-    const cleanText = await parsePDF();
+  limits: { fileSize: 3 * 1024 * 1024 }, // 3MB
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['application/pdf'];
     
-    res.json({
-      success: true,
-      rawText: cleanText.replace(/\r\n/g, '\n').trim(),
-    });
-  } catch (err) {
-    console.error('❌ Parsing Error:', err);
-    if (!res.headersSent) {
-      res.status(500).json({ success: false, message: "Failed to parse PDF content" });
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'));
     }
   }
 });
 
-/**
- * 🔒 USER ROUTES
- */
+// ========== 3. PDF PARSE ENDPOINT ==========
+router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
+  try {
+    // Check if file exists
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'No file uploaded' 
+      });
+    }
+
+    console.log(`📄 Parsing PDF: ${req.file.originalname} (${req.file.size} bytes)`);
+
+    // Parse PDF using pdf-parse
+    const data = await pdfParse(req.file.buffer);
+    
+    // Clean text
+    const cleanText = data.text
+      .replace(/\r\n/g, '\n')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    console.log(`✅ Parsed ${cleanText.length} characters`);
+
+    res.json({
+      success: true,
+      rawText: cleanText,
+      pageCount: data.numpages || 1
+    });
+
+  } catch (err) {
+    console.error('❌ PDF Parse Error:', err.message);
+
+    let errorMsg = "Failed to parse PDF";
+    let statusCode = 500;
+
+    if (err.message.includes('file size') || err.message.includes('large')) {
+      errorMsg = "File too large. Maximum 3MB allowed.";
+      statusCode = 413;
+    } else if (err.message.includes('PDF') || err.message.includes('format')) {
+      errorMsg = "Invalid PDF file. Please upload a valid PDF.";
+      statusCode = 400;
+    }
+
+    res.status(statusCode).json({ 
+      success: false, 
+      message: errorMsg 
+    });
+  }
+});
+
+// ========== 4. USER RESUME ROUTES ==========
 router.get('/', protect, async (req, res) => {
   try {
     const resume = await Resume.findOne({ user: req.user.id });
     res.json({ success: true, data: resume });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Error fetching" });
+    console.error('Get resume error:', err);
+    res.status(500).json({ success: false, message: "Error fetching resume" });
   }
 });
 
 router.post('/', protect, async (req, res) => {
   try {
     const { data, origin } = req.body;
+    
     let resume = await Resume.findOne({ user: req.user.id });
+    
     if (resume) {
       resume.data = data;
       resume.origin = origin;
       resume.updatedAt = Date.now();
       await resume.save();
     } else {
-      resume = await Resume.create({ user: req.user.id, data, origin });
+      resume = await Resume.create({ 
+        user: req.user.id, 
+        data, 
+        origin 
+      });
     }
-    res.json({ success: true });
+    
+    res.json({ success: true, data: resume });
+    
   } catch (err) {
-    res.status(500).json({ success: false, message: "Error saving" });
+    console.error('Save resume error:', err);
+    res.status(500).json({ success: false, message: "Error saving resume" });
   }
 });
 
-module.exports = router;
+export default router;

@@ -41,11 +41,24 @@ export const useResumeIngestionController = () => {
         setIsParsing(false);
         navigate('/builder'); 
       }
-    } catch (error: any) {
-      console.error("❌ Upload Error:", error);
-      setIsParsing(false);
-      alert("Network Error: Backend may be starting up. Please wait 10 seconds and try again.");
-    }
+} catch (error: any) {
+  console.error("Upload Error:", error);
+  setIsParsing(false);
+  
+  let msg = "Upload failed! ";
+  
+  if (error.code === 'ERR_NETWORK') {
+    msg += "Cannot connect to server. Please try again in 10 seconds.";
+  } else if (error.code === 'ECONNABORTED') {
+    msg += "Server is taking too long. Try a smaller PDF file (<3MB).";
+  } else if (error.response?.status === 413) {
+    msg += "File too large. Please upload PDF less than 3MB.";
+  } else if (error.response?.status === 400) {
+    msg += "Invalid PDF file. Please check the file format.";
+  }
+  
+  alert(msg);
+}
   };
 
   return { startUploadFlow, startAI: () => { ingestResumeData(initialData, 'ai'); navigate('/builder'); }, isParsing };
