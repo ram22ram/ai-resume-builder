@@ -34,12 +34,11 @@ app.use((req, res, next) => {
 
 app.set('trust proxy', 1);
 
-// ========== 2. BODY PARSERS ==========
+// ========== 2. BODY PARSERS & TIMEOUT MIDDLEWARE ==========
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// ========== 11. TIMEOUT SETTINGS ==========
-server.timeout = 120000; // 2 minutes
+// Request timeout middleware (Routes se pehle hona chahiye)
 app.use((req, res, next) => {
   req.setTimeout(120000);
   res.setTimeout(120000);
@@ -72,6 +71,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ========== 5. PASSPORT CONFIG ==========
+// Passport instance pass kar diya hai taaki Google Strategy register ho
 require('./config/passport.js')(passport);
 
 // ========== 6. DATABASE CONNECT ==========
@@ -104,6 +104,8 @@ const server = app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
 
-
+// ========== 11. SERVER TIMEOUT (Server define hone ke BAAD) ==========
+// Isey 'server' variable create hone ke baad hi likh sakte hain
+server.timeout = 120000; 
 
 module.exports = app;
