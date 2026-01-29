@@ -8,111 +8,76 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-const parseLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, 
-  max: 50, 
-  message: { success: false, message: "Too many uploads, please try again later." }
-});
-
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb(new Error('Only PDF files are allowed'), false);
-    }
-  }
-});
-
-router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
+// 1. Cleaning Function (Directly from your ATSChecker logic)
+const cleanAIResponse = (text) => {
+  if (!text) return null;
+  // Remove markdown backticks
+  let cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
   try {
-    if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' });
+    const startIndex = cleanedText.indexOf('{');
+    const endIndex = cleanedText.lastIndexOf('}');
+    if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+      return JSON.parse(cleanedText.substring(startIndex, endIndex + 1));
+    }
+    return JSON.parse(cleanedText);
+  } catch (err) {
+    console.error("❌ JSON Clean Error:", err.message);
+    return null;
+  }
+};
 
-    console.log(`📄 Parsing PDF: ${req.file.originalname}`);
+const upload = multer({ storage: multer.memoryStorage() });
 
+router.post('/parse', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success: false, message: 'No file' });
+
+    // PDF Parsing
     const data = new Uint8Array(req.file.buffer);
-    const loadingTask = pdfjsLib.getDocument({ 
-      data,
-      useSystemFonts: true,
-      disableFontFace: true 
-    });
-    
+    const loadingTask = pdfjsLib.getDocument({ data, useSystemFonts: true, disableFontFace: true });
     const pdf = await loadingTask.promise;
     let fullText = "";
-
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
-      const pageText = textContent.items.map(item => item.str).join(" ");
-      fullText += pageText + "\n";
+      fullText += textContent.items.map(item => item.str).join(" ") + "\n";
     }
-
     const cleanText = fullText.replace(/\s+/g, ' ').trim();
 
-    if (cleanText.length < 20) throw new Error("Extracted text is too short.");
+    console.log(`🧠 Sending to Grok AI with ATS-style cleaning...`);
 
-    console.log(`🧠 Sending to Grok AI for structuring...`);
-    
+    // Grok AI Call
     const grokResponse = await axios.post(
-      '[https://api.x.ai/v1/chat/completions](https://api.x.ai/v1/chat/completions)',
+      'https://api.x.ai/v1/chat/completions',
       {
         model: "grok-beta",
         messages: [
           {
             role: "system",
-            content: "Extract resume data and return ONLY a valid JSON object. Do not include markdown formatting or backticks. Keys: full_name, email, phone, job_title, summary, experience (array of objects), education (array), skills (array)."
+            content: "Return ONLY a valid JSON object. Keys: full_name, email, phone, job_title, summary, experience (array), skills (array)."
           },
-          {
-            role: "user",
-            content: `Extracted Text: ${cleanText}`
-          }
+          { role: "user", content: `Extract from: ${cleanText}` }
         ],
-        temperature: 0
+        temperature: 0.1 // ATS Checker ki tarah low temperature for accuracy
       },
       {
-        headers: {
-          'Authorization': `Bearer ${process.env.GROK_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Authorization': `Bearer ${process.env.GROK_API_KEY}`, 'Content-Type': 'application/json' }
       }
     );
 
-    let content = grokResponse.data.choices[0].message.content;
-    
-    // 🔥 Remove potential markdown kachra (backticks)
-    const cleanJsonString = content.replace(/```json/g, "").replace(/```/g, "").trim();
-    const finalJson = JSON.parse(cleanJsonString);
+    // 🔥 ATS CHECKER LOGIC APPLIED HERE
+    const rawContent = grokResponse.data.choices[0].message.content;
+    const finalJson = cleanAIResponse(rawContent);
+
+    if (!finalJson) {
+      throw new Error("AI response cleaning failed.");
+    }
 
     res.json({ success: true, data: finalJson });
 
   } catch (err) {
-    console.error('❌ Error:', err.message);
+    console.error('❌ Final Error:', err.message);
     res.status(500).json({ success: false, message: err.message });
-  }
-});
-
-router.get('/', protect, async (req, res) => {
-  try {
-    const resume = await Resume.findOne({ user: req.user.id });
-    res.json({ success: true, data: resume });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Error" });
-  }
-});
-
-router.post('/', protect, async (req, res) => {
-  try {
-    const { data, origin } = req.body;
-    let resume = await Resume.findOneAndUpdate(
-      { user: req.user.id },
-      { data, origin, updatedAt: Date.now() },
-      { upsert: true, new: true }
-    );
-    res.json({ success: true, data: resume });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Error" });
   }
 });
 
