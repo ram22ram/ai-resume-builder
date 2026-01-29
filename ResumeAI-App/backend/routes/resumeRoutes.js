@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
-const pdfParse = require('pdf-parse/lib/pdf-parse.js');
+const pdfParse = require('pdf-parse');
 const Resume = require('../models/Resume');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -37,7 +37,8 @@ router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
     console.log(`📄 Parsing PDF with pdf-parse: ${req.file.originalname}`);
 
     // pdf-parse se text nikalna ekdum asaan hai
-    const data = await pdfParse(req.file.buffer);
+   const data = await (typeof pdfParse === 'function' ? pdfParse : pdfParse.default)(req.file.buffer);
+    
     
     // Clean text (extra spaces aur lines hatao)
     const cleanText = data.text
