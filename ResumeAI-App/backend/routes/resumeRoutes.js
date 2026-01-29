@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
-const pdfParse = require('pdf-parse'); // Standard import
+const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js'); // Node 22 ke liye legacy build
 const Resume = require('../models/Resume');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -17,7 +17,7 @@ const parseLimiter = rateLimit({
 // ========== 2. MULTER SETUP ==========
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 3 * 1024 * 1024 }, // 3MB
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'application/pdf') {
       cb(null, true);
@@ -27,45 +27,62 @@ const upload = multer({
   }
 });
 
-// ========== 3. PDF PARSE ENDPOINT ==========
+// ========== 3. PDF PARSE ENDPOINT (PDFJS-DIST) ==========
 router.post('/parse', parseLimiter, upload.single('file'), async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ success: false, message: 'No file' });
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
 
     console.log(`📄 Parsing PDF: ${req.file.originalname}`);
 
-    // Node 22 compatibility: Standard require fail hone par internal lib uthao
-    let parseFunc;
-    try {
-        // Step 1: Check standard export
-        if (typeof pdfParse === 'function') {
-            parseFunc = pdfParse;
-        } else if (pdfParse && typeof pdfParse.default === 'function') {
-            parseFunc = pdfParse.default;
-        } else {
-            // Step 2: Force load the actual file path (Sabse bada fix)
-            parseFunc = require('pdf-parse/lib/pdf-parse.js');
-        }
-    } catch (e) {
-        console.error("🚨 Import fail, trying fallback...");
-        parseFunc = require('pdf-parse/lib/pdf-parse.js');
+    // PDF data load karna (Uint8Array format mein)
+    const data = new Uint8Array(req.file.buffer);
+    const loadingTask = pdfjsLib.getDocument({
+      data,
+      useSystemFonts: true,
+      disableFontFace: true
+    });
+    
+    const pdf = await loadingTask.promise;
+    let fullText = "";
+
+    // Har page se text nikalna (Looping through pages)
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map(item => item.str).join(" ");
+      fullText += pageText + "\n";
     }
 
-    // Ab parseFunc 100% function hoga
-    const data = await parseFunc(req.file.buffer);
-    
-    const cleanText = data.text.replace(/\r\n/g, '\n').replace(/\s+/g, ' ').trim();
-    console.log(`✅ Success: Parsed ${cleanText.length} chars`);
+    // Text clean logic
+    const cleanText = fullText
+      .replace(/\r\n/g, '\n')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-    res.json({ success: true, rawText: cleanText, pageCount: data.numpages || 1 });
+    if (!cleanText) {
+      throw new Error("Extracted text is empty. PDF might be an image/scanned copy.");
+    }
+
+    console.log(`✅ Success: Parsed ${cleanText.length} characters`);
+
+    res.json({
+      success: true,
+      rawText: cleanText,
+      pageCount: pdf.numPages
+    });
 
   } catch (err) {
-    console.error('❌ PDF Parse Error:', err.message);
-    res.status(500).json({ success: false, message: err.message });
+    console.error('❌ PDF.js Parse Error:', err.message);
+    res.status(500).json({ 
+      success: false, 
+      message: "Parsing failed: " + err.message 
+    });
   }
 });
 
-// ========== 4. USER RESUME ROUTES ==========
+// ========== 4. USER RESUME STORAGE ROUTES ==========
 router.get('/', protect, async (req, res) => {
   try {
     const resume = await Resume.findOne({ user: req.user.id });
