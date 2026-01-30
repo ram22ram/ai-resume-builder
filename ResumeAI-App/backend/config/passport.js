@@ -3,18 +3,18 @@ const User = require('../models/User');
 
 module.exports = (passport) => {
   passport.use(new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://resumeai-backend-v2.onrender.com/api/auth/google/callback",
-      proxy: true, // ✅ Render.com ke liye required
-      passReqToCallback: true
-    },
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://resumeai-backend-v2.onrender.com/api/auth/google/callback",
+    proxy: true, // ✅ Render.com ke liye required
+    passReqToCallback: true
+  },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
         console.log('Google Profile Received:', profile.id);
-        
+
         let user = await User.findOne({ googleId: profile.id });
-        
+
         if (user) {
           console.log('Existing user found:', user.email);
           user.lastLogin = new Date();
@@ -31,13 +31,13 @@ module.exports = (passport) => {
             isLoggedIn: true,
             lastLogin: new Date()
           });
-          
+
           await newUser.save();
           return done(null, newUser);
         }
-      } catch (err) { 
+      } catch (err) {
         console.error('Passport Google Strategy Error:', err);
-        return done(err, null); 
+        return done(err, null);
       }
     }
   ));

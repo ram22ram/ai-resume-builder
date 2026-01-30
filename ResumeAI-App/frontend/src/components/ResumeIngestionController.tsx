@@ -26,46 +26,70 @@ export const useResumeIngestionController = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      // Backend se extracted raw text hamesha milta hai
+      // Backend returns raw text even if AI fails
       const rawText = response.data?.data?.summary || "";
       const lines = rawText.split('\n').map((l: string) => l.trim()).filter((l: string) => l.length > 0);
 
-      // --- 🕵️ PLAN B: HEURISTIC EXTRACTION (BINA AI KE) ---
+      // --- 🕵️ PLAN B: ENHANCED HEURISTIC EXTRACTION ---
       
-      // 1. Name Detection: Pehli aisi line jo resume/email keyword na ho
-      const detectedName = lines.find((l: string) => 
-        !l.toLowerCase().includes('resume') && 
-        !l.toLowerCase().includes('curriculum') &&
-        l.split(' ').length <= 4 // Naam aksar 2-4 words ka hota hai
-      ) || "";
+      // 1. Name Detection: Looks for the first non-header line that looks like a name
+      // Name usually: 2-4 words, no numbers, common header keywords excluded
+      const detectedName = lines.find((l: string) => {
+        const lower = l.toLowerCase();
+        const words = l.split(/\s+/).length;
+        return (
+          words >= 2 && words <= 4 &&
+          !lower.includes('resume') && 
+          !lower.includes('curriculum') &&
+          !lower.includes('vitae') &&
+          !lower.includes('email') &&
+          !lower.includes('phone') &&
+          !lower.includes('address') &&
+          !/[0-9]/.test(l) // Names typically don't have numbers
+        );
+      }) || "";
 
-      // 2. Job Title Detection: Common keywords se search karna
-      const jobKeywords = ['Developer', 'Engineer', 'Manager', 'Analyst', 'Designer', 'Executive', 'Lead'];
+      // 2. Job Title Detection: Expanded keywords
+      const jobKeywords = ['Developer', 'Engineer', 'Manager', 'Analyst', 'Designer', 'Executive', 'Lead', 'Consultant', 'Specialist', 'Administrator', 'Architect'];
       const detectedJob = lines.find((l: string) => 
-        jobKeywords.some(key => l.toLowerCase().includes(key.toLowerCase()))
+        jobKeywords.some(key => l.toLowerCase().includes(key.toLowerCase())) && l.length < 50
       ) || "";
 
-      // 3. Email & Phone (Vahi logic jisne pehle kaam kiya)
-      const extractedEmail = rawText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)?.[0] || "";
-      const extractedPhone = rawText.match(/(\+?\d{1,3}[- ]?)?\d{10}/)?.[0] || "";
+      // 3. Email Detection (Case insensitive)
+      const extractedEmail = rawText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i)?.[0] || "";
+
+      // 4. Phone Detection (More robust regex for various formats)
+      // Matches: +1-555-555-5555, (555) 555-5555, 555 555 5555, 555.555.5555
+      const extractedPhone = rawText.match(/(\+?\d{1,4}[.\s-]?)?(\(?\d{3}\)?[.\s-]?)?\d{3}[.\s-]?\d{4}/)?.[0] || "";
 
       // --- 🛠️ MAPPING TO SECTIONS STRUCTURE ---
+      
+      // Prioritize AI data, fall back to Heuristics
+      const finalName = response.data.data.full_name || detectedName;
+      const finalEmail = response.data.data.email || extractedEmail;
+      // Simple clean up for phone if it captures too much noise
+      const finalPhone = (response.data.data.phone || extractedPhone).replace(/[^\d+() -.]/g, '').trim(); 
+      const finalJobTitle = response.data.data.job_title || detectedJob;
+
       const updatedSections = initialData.sections.map((section) => {
         switch (section.type) {
           case 'personal':
             return {
               ...section,
               content: {
-                fullName: response.data.data.full_name || detectedName, // AI first, then Plan B
-                email: response.data.data.email || extractedEmail,
-                phone: response.data.data.phone || extractedPhone,
-                jobTitle: response.data.data.job_title || detectedJob,
-                address: '', portfolio: '', linkedin: ''
+                fullName: finalName,
+                email: finalEmail,
+                phone: finalPhone,
+                jobTitle: finalJobTitle,
+                address: '', // Address usually hard to regex reliably without AI
+                portfolio: '', 
+                linkedin: ''
               },
               isVisible: true
             };
           case 'summary':
-            return { ...section, content: rawText, isVisible: true };
+             // If AI gave a structured summary, use it, else raw text
+            return { ...section, content: response.data.data.summary && response.data.data.summary !== rawText ? response.data.data.summary : rawText.substring(0, 500), isVisible: true };
           default:
             return { ...section, isVisible: true };
         }
