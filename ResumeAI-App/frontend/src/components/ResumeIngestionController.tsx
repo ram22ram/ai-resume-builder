@@ -15,8 +15,6 @@ export const useResumeIngestionController = () => {
   const startUploadFlow = async (file: File) => {
     if (!file) return;
     setIsParsing(true);
-    
-    // API Path normalization
     const finalPath = `${API_URL}/api/resume/parse`.replace(/\/api\/api/g, '/api');
 
     try {
@@ -28,76 +26,66 @@ export const useResumeIngestionController = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      if (response.data?.success) {
-        const aiData = response.data.data;
-        const rawText = aiData.summary || "";
+      // Backend se extracted raw text hamesha milta hai
+      const rawText = response.data?.data?.summary || "";
+      const lines = rawText.split('\n').map((l: string) => l.trim()).filter((l: string) => l.length > 0);
 
-        // ✅ THE BRIDGE: Mapping AI data to your Sections-based UI structure
-        const updatedSections = initialData.sections.map((section) => {
-          switch (section.type) {
-            case 'personal':
-              return {
-                ...section,
-                content: {
-                  fullName: aiData.full_name || aiData.fullName || '',
-                  email: aiData.email || (rawText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)?.[0] || ''),
-                  phone: aiData.phone || (rawText.match(/(\+?\d{1,3}[- ]?)?\d{10}/)?.[0] || ''),
-                  jobTitle: aiData.job_title || aiData.jobTitle || '',
-                  address: '',
-                  portfolio: '',
-                  linkedin: ''
-                },
-                isVisible: true
-              };
-            
-            case 'summary':
-              return {
-                ...section,
-                content: rawText,
-                isVisible: true
-              };
+      // --- 🕵️ PLAN B: HEURISTIC EXTRACTION (BINA AI KE) ---
+      
+      // 1. Name Detection: Pehli aisi line jo resume/email keyword na ho
+      const detectedName = lines.find((l: string) => 
+        !l.toLowerCase().includes('resume') && 
+        !l.toLowerCase().includes('curriculum') &&
+        l.split(' ').length <= 4 // Naam aksar 2-4 words ka hota hai
+      ) || "";
 
-            case 'experience':
-              // AI se agar array aaye toh map karo, nahi toh empty rakho
-              return {
-                ...section,
-                content: Array.isArray(aiData.experience) ? aiData.experience : [],
-                isVisible: true
-              };
+      // 2. Job Title Detection: Common keywords se search karna
+      const jobKeywords = ['Developer', 'Engineer', 'Manager', 'Analyst', 'Designer', 'Executive', 'Lead'];
+      const detectedJob = lines.find((l: string) => 
+        jobKeywords.some(key => l.toLowerCase().includes(key.toLowerCase()))
+      ) || "";
 
-            case 'skills':
-              return {
-                ...section,
-                content: Array.isArray(aiData.skills) ? aiData.skills : [],
-                isVisible: true
-              };
+      // 3. Email & Phone (Vahi logic jisne pehle kaam kiya)
+      const extractedEmail = rawText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)?.[0] || "";
+      const extractedPhone = rawText.match(/(\+?\d{1,3}[- ]?)?\d{10}/)?.[0] || "";
 
-            default:
-              return { ...section, isVisible: true };
-          }
-        });
+      // --- 🛠️ MAPPING TO SECTIONS STRUCTURE ---
+      const updatedSections = initialData.sections.map((section) => {
+        switch (section.type) {
+          case 'personal':
+            return {
+              ...section,
+              content: {
+                fullName: response.data.data.full_name || detectedName, // AI first, then Plan B
+                email: response.data.data.email || extractedEmail,
+                phone: response.data.data.phone || extractedPhone,
+                jobTitle: response.data.data.job_title || detectedJob,
+                address: '', portfolio: '', linkedin: ''
+              },
+              isVisible: true
+            };
+          case 'summary':
+            return { ...section, content: rawText, isVisible: true };
+          default:
+            return { ...section, isVisible: true };
+        }
+      });
 
-        // Final Normalized Resume Object
-        const parsedResume: ResumeData = {
-          ...initialData,
-          sections: updatedSections
-        };
+      const parsedResume: ResumeData = {
+        ...initialData,
+        sections: updatedSections
+      };
 
-        // Global State Update
-        ingestResumeData(parsedResume, 'upload');
-        setIsParsing(false);
-        return true; 
-      }
+      ingestResumeData(parsedResume as any, 'upload');
+      setIsParsing(false);
+      return true;
+
     } catch (error) {
-      console.error("Critical Mapping Error:", error);
+      console.error("Critical Parse Error:", error);
       setIsParsing(false);
       return false;
     }
   };
 
-  return { 
-    startUploadFlow, 
-    startAI: () => { ingestResumeData(initialData, 'ai'); navigate('/builder'); }, 
-    isParsing 
-  };
+  return { startUploadFlow, startAI: () => { ingestResumeData(initialData, 'ai'); navigate('/builder'); }, isParsing };
 };
