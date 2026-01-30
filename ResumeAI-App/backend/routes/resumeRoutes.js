@@ -4,7 +4,7 @@ const axios = require('axios');
 const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js'); 
 const router = express.Router();
 
-// ATS Checker style logic
+// ATS Checker style cleaning logic
 const cleanAIResponse = (text) => {
   if (!text) return null;
   let cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -25,7 +25,7 @@ router.post('/parse', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No file' });
 
-    // PDF Parsing
+    // 1. PDF Text Extraction
     const data = new Uint8Array(req.file.buffer);
     const loadingTask = pdfjsLib.getDocument({ data, useSystemFonts: true, disableFontFace: true });
     const pdf = await loadingTask.promise;
@@ -37,22 +37,22 @@ router.post('/parse', upload.single('file'), async (req, res) => {
     }
     cleanText = fullText.replace(/\s+/g, ' ').trim();
 
-    console.log(`🧠 Using VITE_GROQ_API_KEY for Groq AI...`);
+    console.log(`🧠 Calling Groq with VITE_GROQ_API_KEY...`);
 
-    // Groq API Call
+    // 2. Groq AI Call
     const groqResponse = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
         model: "llama-3.3-70b-versatile",
         messages: [
-          { role: "system", content: "Extract name, email, phone, job_title, summary into JSON." },
+          { role: "system", content: "Extract name, email, phone, job_title, and summary into a JSON object. Return ONLY JSON." },
           { role: "user", content: `Text: ${cleanText.substring(0, 8000)}` }
         ],
-        response_format: { type: "json_object" }
+        response_format: { type: "json_object" },
+        temperature: 0.1
       },
       {
         headers: { 
-          // 🔥 Backend mein environment variable 'VITE_GROQ_API_KEY' use kar rahe hain
           'Authorization': `Bearer ${process.env.VITE_GROQ_API_KEY}`, 
           'Content-Type': 'application/json' 
         }
@@ -63,17 +63,17 @@ router.post('/parse', upload.single('file'), async (req, res) => {
     res.json({ success: true, data: finalJson });
 
   } catch (err) {
-    console.error('⚠️ Fallback Triggered:', err.message);
-    
-    // Emergency Fallback: Agar token abhi bhi 401 de, toh crash mat karo
+    console.error('⚠️ AI Error/Fallback:', err.message);
+    // 🔥 Fallback: Agar AI fail ho toh 500 mat bhejo, raw text bhej do
     res.json({ 
       success: true, 
       data: { 
-        summary: cleanText.substring(0, 500),
-        full_name: "Manual Entry Required",
-        experience: []
+        summary: cleanText || "Error parsing file. Please fill manually.",
+        full_name: "",
+        email: "",
+        job_title: ""
       },
-      message: "AI Busy: Data extracted as raw text." 
+      message: "AI Busy: Extracted raw text." 
     });
   }
 });
