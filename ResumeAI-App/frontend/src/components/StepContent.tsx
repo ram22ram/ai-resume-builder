@@ -18,13 +18,13 @@ const StepContent = ({ resumeData, handlers, activeStep, loadingAi }: any) => {
 
   if (!currentSection) return null;
 
-  // ✅ Mapping fix: Directly pass content and correct change handler
   switch (currentSection.type) {
     case 'personal':
+      // ✅ FIX: Wapas "resumeData" object format mein bhejo taaki destructuring fail na ho
       return (
         <StepPersonalInfo 
-          data={currentSection.content} 
-          onChange={(e: any) => handlers.handleUpdateSection('personal', { ...currentSection.content, [e.target.name]: e.target.value })} 
+          resumeData={{ personalInfo: currentSection.content }} 
+          handlers={handlers} 
         />
       );
     case 'summary':
