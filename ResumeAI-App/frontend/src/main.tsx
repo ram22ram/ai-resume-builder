@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './context/AuthContext';
 // @ts-ignore
-import App from './App.tsx';
+import App from './App';
 import './index.css';
 // ✅ FONT IMPORTS (Yahan paste karein)
 import '@fontsource/inter/300.css';
