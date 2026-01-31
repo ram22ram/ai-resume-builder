@@ -1,13 +1,11 @@
-// StepContent.tsx - REPLACE ENTIRE FILE
 import React from 'react';
-import { Box } from '@mui/material';
 import StepPersonalInfo from './steps/StepPersonalInfo';
 import StepSummary from './steps/StepSummary';
 import StepExperience from './steps/StepExperience';
 import StepEducation from './steps/StepEducation';
 import StepProjects from './steps/StepProjects';
 import StepSkills from './steps/StepSkills';
-import StepCustom from './steps/StepCustom'; // ✅ ADDED IMPORT
+import StepCustom from './steps/StepCustom';
 import StepSettingsDownload from './steps/StepSettingsDownload';
 
 const StepContent = ({ resumeData, handlers, activeStep, loadingAi }: any) => {
@@ -20,9 +18,15 @@ const StepContent = ({ resumeData, handlers, activeStep, loadingAi }: any) => {
 
   if (!currentSection) return null;
 
+  // ✅ Mapping fix: Directly pass content and correct change handler
   switch (currentSection.type) {
     case 'personal':
-      return <StepPersonalInfo resumeData={{ personalInfo: currentSection.content }} handlers={handlers} />;
+      return (
+        <StepPersonalInfo 
+          data={currentSection.content} 
+          onChange={(e: any) => handlers.handleUpdateSection('personal', { ...currentSection.content, [e.target.name]: e.target.value })} 
+        />
+      );
     case 'summary':
       return <StepSummary resumeData={currentSection.content} handlers={handlers} loadingAi={loadingAi} />;
     case 'experience':
@@ -33,7 +37,7 @@ const StepContent = ({ resumeData, handlers, activeStep, loadingAi }: any) => {
       return <StepProjects resumeData={currentSection.content} handlers={handlers} loadingAi={loadingAi} />;
     case 'skills':
       return <StepSkills resumeData={currentSection.content} handlers={handlers} />;
-    case 'custom': // ✅ ADDED CUSTOM CASE
+    case 'custom':
       return <StepCustom sectionData={currentSection} handlers={handlers} />;
     default:
       return null;
