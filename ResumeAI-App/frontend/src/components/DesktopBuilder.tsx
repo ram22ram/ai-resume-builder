@@ -4,31 +4,48 @@ import PreviewPanel from './PreviewPanel';
 
 const DesktopBuilder = ({ resumeData, handlers, previewRef, selectedTemplate }: any) => {
   return (
-    <Box sx={{ height: '100%', overflow: 'hidden' }}>
-      <Stack direction="row" spacing={3} sx={{ height: '100%', alignItems: 'stretch' }}>
-        {/* LEFT: SETTINGS */}
-        <Box sx={{ width: 420, flexShrink: 0, display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto', pr: 1 }}>
+    <Box sx={{ height: 'calc(100vh - 70px)', overflow: 'hidden', bgcolor: '#020617' }}>
+      <Stack direction="row" spacing={0} sx={{ height: '100%' }}>
+        
+        {/* LEFT: FULL FORM FEED (60%) */}
+        <Box sx={{ 
+          flex: 1.4, 
+          height: '100%', 
+          overflowY: 'auto', 
+          borderRight: '1px solid rgba(255,255,255,0.1)',
+          p: { md: 3, lg: 5 },
+          '&::-webkit-scrollbar': { width: '6px' },
+          '&::-webkit-scrollbar-thumb': { bgcolor: '#1e293b', borderRadius: '10px' }
+        }}>
           <BuilderPanel resumeData={resumeData} handlers={handlers} variant="desktop" />
         </Box>
 
-        {/* RIGHT: PREVIEW (Now Scrollable) */}
+        {/* RIGHT: STICKY PREVIEW (40%) */}
         <Box sx={{ 
           flex: 1, 
           height: '100%', 
           display: 'flex', 
-          flexDirection: 'column', 
-          overflowY: 'auto', // ✅ Enabled Scroll
-          bgcolor: 'rgba(0,0,0,0.05)',
-          p: 2,
-          borderRadius: '12px'
+          bgcolor: '#0f172a', 
+          p: 4, 
+          justifyContent: 'center',
+          overflow: 'hidden'
         }}>
-          <PreviewPanel
-            resumeData={resumeData}
-            handlers={handlers}
-            previewRef={previewRef}
-            selectedTemplate={selectedTemplate}
-            variant="desktop"
-          />
+          <Box sx={{ 
+            width: '100%', 
+            maxWidth: '800px', 
+            height: '100%', 
+            overflowY: 'auto',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            borderRadius: '4px'
+          }}>
+            <PreviewPanel
+              resumeData={resumeData}
+              handlers={handlers}
+              previewRef={previewRef}
+              selectedTemplate={selectedTemplate}
+              variant="desktop"
+            />
+          </Box>
         </Box>
       </Stack>
     </Box>

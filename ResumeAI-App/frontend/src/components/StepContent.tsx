@@ -1,47 +1,102 @@
 import React from 'react';
+import { Box, Typography, Divider } from '@mui/material';
 import StepPersonalInfo from './steps/StepPersonalInfo';
 import StepSummary from './steps/StepSummary';
 import StepExperience from './steps/StepExperience';
 import StepEducation from './steps/StepEducation';
 import StepProjects from './steps/StepProjects';
 import StepSkills from './steps/StepSkills';
-import StepCustom from './steps/StepCustom';
-import StepSettingsDownload from './steps/StepSettingsDownload';
 
-const StepContent = ({ resumeData, handlers, activeStep, loadingAi }: any) => {
-  const currentSection = resumeData.sections[activeStep];
-  const isSettings = activeStep === resumeData.sections.length;
+const StepContent = ({ resumeData, handlers, loadingAi }: any) => {
+  if (!resumeData || !resumeData.sections) return null;
 
-  if (isSettings) {
-    return <StepSettingsDownload sections={resumeData.sections} {...resumeData.theme} handlers={handlers} />;
-  }
+  const getSectionContent = (type: string) => 
+    resumeData.sections.find((s: any) => s.type === type)?.content;
 
-  if (!currentSection) return null;
-
-  switch (currentSection.type) {
-    case 'personal':
-      // ✅ FIX: Wapas "resumeData" object format mein bhejo taaki destructuring fail na ho
-      return (
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 8, pb: 10 }}>
+      
+      {/* 1. PERSONAL INFO */}
+      <Box id="section-personal">
+        <Typography variant="h5" sx={{ mb: 3, fontWeight: 800, color: 'white', letterSpacing: -0.5 }}>
+          Personal Information
+        </Typography>
         <StepPersonalInfo 
-          resumeData={{ personalInfo: currentSection.content }} 
+          resumeData={{ personalInfo: getSectionContent('personal') }} 
           handlers={handlers} 
         />
-      );
-    case 'summary':
-      return <StepSummary resumeData={currentSection.content} handlers={handlers} loadingAi={loadingAi} />;
-    case 'experience':
-      return <StepExperience resumeData={currentSection.content} handlers={handlers} loadingAi={loadingAi} />;
-    case 'education':
-      return <StepEducation resumeData={currentSection.content} handlers={handlers} />;
-    case 'projects':
-      return <StepProjects resumeData={currentSection.content} handlers={handlers} loadingAi={loadingAi} />;
-    case 'skills':
-      return <StepSkills resumeData={currentSection.content} handlers={handlers} />;
-    case 'custom':
-      return <StepCustom sectionData={currentSection} handlers={handlers} />;
-    default:
-      return null;
-  }
+      </Box>
+
+      <Divider sx={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+
+      {/* 2. SUMMARY */}
+      <Box id="section-summary">
+        <Typography variant="h5" sx={{ mb: 3, fontWeight: 800, color: 'white' }}>
+          Professional Summary
+        </Typography>
+        <StepSummary 
+          resumeData={getSectionContent('summary')} 
+          handlers={handlers} 
+          loadingAi={loadingAi} 
+        />
+      </Box>
+
+      <Divider sx={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+
+      {/* 3. EXPERIENCE */}
+      <Box id="section-experience">
+        <Typography variant="h5" sx={{ mb: 3, fontWeight: 800, color: 'white' }}>
+          Work Experience
+        </Typography>
+        <StepExperience 
+          resumeData={getSectionContent('experience')} 
+          handlers={handlers} 
+          loadingAi={loadingAi} 
+        />
+      </Box>
+
+      <Divider sx={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+
+      {/* 4. EDUCATION */}
+      <Box id="section-education">
+        <Typography variant="h5" sx={{ mb: 3, fontWeight: 800, color: 'white' }}>
+          Education
+        </Typography>
+        <StepEducation 
+          resumeData={getSectionContent('education')} 
+          handlers={handlers} 
+        />
+      </Box>
+
+      <Divider sx={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+
+      {/* 5. PROJECTS */}
+      <Box id="section-projects">
+        <Typography variant="h5" sx={{ mb: 3, fontWeight: 800, color: 'white' }}>
+          Key Projects
+        </Typography>
+        <StepProjects 
+          resumeData={getSectionContent('projects')} 
+          handlers={handlers} 
+          loadingAi={loadingAi} 
+        />
+      </Box>
+
+      <Divider sx={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+
+      {/* 6. SKILLS */}
+      <Box id="section-skills">
+        <Typography variant="h5" sx={{ mb: 3, fontWeight: 800, color: 'white' }}>
+          Skills & Expertise
+        </Typography>
+        <StepSkills 
+          resumeData={getSectionContent('skills')} 
+          handlers={handlers} 
+        />
+      </Box>
+
+    </Box>
+  );
 };
 
 export default StepContent;
