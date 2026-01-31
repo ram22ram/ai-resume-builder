@@ -24,18 +24,26 @@ export const useResumeIngestionController = () => {
       const response = await axios.post(finalPath, formData);
       const rawText = response.data?.data?.summary || "";
 
+      // ✅ Prompt optimized for pure JSON output
       const aiPrompt = `
-        Extract resume data from this text into a VALID JSON OBJECT. 
-        Structure: { "fullName": "", "email": "", "phone": "", "jobTitle": "", "summary": "", "skills": [], "experience": [] }
-        Text: ${rawText.substring(0, 4000)}
-        Return ONLY JSON.
+        TASK: Parse resume text into JSON.
+        RULES: Return ONLY valid JSON. No conversational text.
+        JSON STRUCTURE: { "fullName": "", "email": "", "phone": "", "jobTitle": "", "summary": "", "skills": [], "experience": [] }
+        TEXT: ${rawText.substring(0, 4000)}
       `;
 
-      const aiResult = await generateContent(aiPrompt, "You are an expert Resume Parser.");
-      const cleanJson = aiResult.replace(/```json/g, '').replace(/```/g, '').trim();
+      const aiResult = await generateContent(aiPrompt, "You are a specialized JSON parser.");
+      
+      // ✅ REGEX CLEANER: Extract content between { and }
+      const jsonMatch = aiResult.match(/\{[\s\S]*\}/);
+      const cleanJson = jsonMatch ? jsonMatch[0] : "{}";
       
       let parsedAi: any = {};
-      try { parsedAi = JSON.parse(cleanJson); } catch (e) { console.warn("AI Parse Error"); }
+      try { 
+        parsedAi = JSON.parse(cleanJson); 
+      } catch (e) { 
+        console.warn("AI returned invalid JSON, falling back to heuristics"); 
+      }
 
       const updatedSections = JSON.parse(JSON.stringify(initialData.sections)).map((section: any) => {
         switch (section.type) {
@@ -62,8 +70,7 @@ export const useResumeIngestionController = () => {
         }
       });
 
-      const parsedResume: ResumeData = { ...initialData, sections: updatedSections };
-      ingestResumeData(parsedResume as any, 'upload');
+      ingestResumeData({ ...initialData, sections: updatedSections } as any, 'upload');
       setIsParsing(false);
       return true;
     } catch (error) {
