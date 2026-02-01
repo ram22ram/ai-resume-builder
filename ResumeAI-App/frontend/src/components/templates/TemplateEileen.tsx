@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 
 const getFontFamily = (font: string) => {
@@ -16,10 +16,10 @@ const getFontFamily = (font: string) => {
 const getSection = (sections: any[], type: string) =>
   sections.find(s => s.type === type)?.content;
 
-const TemplateEileen = forwardRef(({ data, theme, isPreview = false }: any, ref: any) => {
+const TemplateEileen = forwardRef(({ data, theme }: any, ref: any) => {
   const sections = (data?.sections || []).filter(
-  (s: any) => s.isVisible !== false
-);
+    (s: any) => s.isVisible !== false
+  );
 
   const personal = getSection(sections, 'personal') || {};
   const summary = getSection(sections, 'summary');
@@ -44,9 +44,9 @@ const TemplateEileen = forwardRef(({ data, theme, isPreview = false }: any, ref:
       elevation={2}
       sx={{
         display: 'flex',
-        minHeight: '100%',color: textColor,
+        width: '100%',
         fontFamily: font,
-        '& .MuiTypography-root': { fontFamily: font, color: textColor, },
+        color: textColor,
       }}
     >
       {/* LEFT BAR */}
@@ -55,9 +55,11 @@ const TemplateEileen = forwardRef(({ data, theme, isPreview = false }: any, ref:
           {personal.fullName || 'Your Name'}
         </Typography>
 
-        <Typography variant="body2">{personal.email}</Typography>
-        <Typography variant="body2">{personal.phone}</Typography>
-        <Typography variant="body2">{personal.address}</Typography>
+        {[personal.email, personal.phone, personal.address]
+          .filter(Boolean)
+          .map((v: string, i: number) => (
+            <Typography key={i} variant="body2">{v}</Typography>
+          ))}
 
         {skills.length > 0 && (
           <Box mt={space(4)}>
@@ -89,7 +91,9 @@ const TemplateEileen = forwardRef(({ data, theme, isPreview = false }: any, ref:
               <Box key={e.id} mb={space(2)}>
                 <Typography fontWeight={600}>{e.title}</Typography>
                 <Typography variant="caption">{e.company}</Typography>
-                <Typography variant="body2">{e.description}</Typography>
+                {e.description && (
+                  <Typography variant="body2">{e.description}</Typography>
+                )}
               </Box>
             ))}
           </Box>

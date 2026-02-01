@@ -1,24 +1,19 @@
-import React from 'react';
 import { Box, Typography, Divider, Grid, Stack, Avatar } from '@mui/material';
 import { Mail, Phone, MapPin, Linkedin, Globe } from 'lucide-react';
 
-const getFontFamily = (font: string) => {
-  switch (font) {
-    case 'inter': return '"Inter", sans-serif';
-    case 'roboto': return '"Roboto", sans-serif';
-    case 'poppins': return '"Poppins", sans-serif';
-    case 'montserrat': return '"Montserrat", sans-serif';
-    default: return '"Inter", sans-serif';
-  }
+type Section = {
+  type: string;
+  content: any;
+  isVisible?: boolean;
 };
 
-const getSection = (sections: any[], type: string) =>
-  sections.find(s => s.type === type)?.content;
+const getSection = (sections: Section[], type: string) =>
+  sections.find((s: Section) => s.type === type)?.content;
 
-const TemplateModern = ({ data, theme, isPreview = false }: any) => {
-  const sections = (data?.sections || []).filter(
-  (s: any) => s.isVisible !== false
-);
+const TemplateModern = ({ data, theme }: any) => {
+  const sections: Section[] = (data?.sections || []).filter(
+    (s: Section) => s.isVisible !== false
+  );
 
   const personal = getSection(sections, 'personal') || {};
   const summary = getSection(sections, 'summary');
@@ -30,34 +25,31 @@ const TemplateModern = ({ data, theme, isPreview = false }: any) => {
   const {
     accentColor = '#2563eb',
     textColor = '#111827',
-    fontFamily = 'inter',
     density = 'comfortable',
-    photoMode = 'visible'
+    photoMode = 'visible',
   } = theme || {};
 
-  const font = getFontFamily(fontFamily);
   const space = (v: number) =>
     density === 'compact' ? v * 0.85 : density === 'spacious' ? v * 1.25 : v;
 
-  const showPhoto = personal.photo && photoMode !== 'hidden';
+  const showPhoto = Boolean(personal.photo && photoMode !== 'hidden');
 
   return (
     <Box
       sx={{
         p: space(4),
-        fontFamily: font,
         color: textColor,
-        backgroundColor: 'transparent',
-        '& .MuiTypography-root': { fontFamily: font, color: textColor,  },
+        backgroundColor: '#ffffff',
       }}
     >
       {/* HEADER */}
       <Box mb={space(4)}>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={showPhoto ? 9 : 12}>
+          <Grid size={{ xs: showPhoto ? 9 : 12 }}>
             <Typography variant="h3" fontWeight={800} color={accentColor}>
               {personal.fullName || 'Your Name'}
             </Typography>
+
             {personal.jobTitle && (
               <Typography variant="h6" color="text.secondary">
                 {personal.jobTitle}
@@ -74,19 +66,11 @@ const TemplateModern = ({ data, theme, isPreview = false }: any) => {
           </Grid>
 
           {showPhoto && (
-            <Grid item xs={3}>
+            <Grid size={{ xs: 3 }}>
               <Avatar
-  src={personal.photo}
-  sx={{
-    width: 90,
-    height: 90,
-    border: `2px solid ${accentColor}`,
-    borderRadius:
-      photoMode === 'square'
-        ? '8px'
-        : '50%',
-  }}
-/>
+                src={personal.photo}
+                sx={{ width: 90, height: 90 }}
+              />
             </Grid>
           )}
         </Grid>
@@ -110,21 +94,20 @@ const TemplateModern = ({ data, theme, isPreview = false }: any) => {
           <Typography variant="h6" fontWeight={700} color={accentColor}>
             Experience
           </Typography>
-         {(isPreview ? experience.slice(0, 1) : experience).map((e: any) => (
-  <Box key={e.id} mb={space(2)}>
-    <Typography fontWeight={700}>{e.title}</Typography>
-    <Typography variant="caption">{e.company}</Typography>
-
-    {!isPreview && (
-      <Typography variant="body2">{e.description}</Typography>
-    )}
-  </Box>
-))}
+          {experience.map((e: any) => (
+            <Box key={e.id} mb={space(2)}>
+              <Typography fontWeight={700}>{e.title}</Typography>
+              <Typography variant="caption">{e.company}</Typography>
+              {e.description && (
+                <Typography variant="body2">{e.description}</Typography>
+              )}
+            </Box>
+          ))}
         </Box>
       )}
 
       {/* PROJECTS */}
-      {projects.length > 0 && !isPreview && (
+      {projects.length > 0 && (
         <Box mb={space(4)}>
           <Typography variant="h6" fontWeight={700} color={accentColor}>
             Projects

@@ -1,39 +1,19 @@
 import React, { createContext, useContext, useState } from 'react';
 import { ResumeData } from '../types';
+import { initialData } from '../constants/initialData';
 
-export type ResumeOrigin = 'upload' | 'linkedin' | 'ai';
-
-interface ResumeContextType {
-  resumeData: ResumeData | null;
-  origin: ResumeOrigin | null;
-  ingestResumeData: (data: ResumeData, origin: ResumeOrigin) => void;
-  updateResumeData: (newData: ResumeData) => void;
-  resetResume: () => void;
-}
+type ResumeContextType = {
+  resumeData: ResumeData;
+  setResumeData: React.Dispatch<React.SetStateAction<ResumeData>>;
+};
 
 const ResumeContext = createContext<ResumeContextType | null>(null);
 
 export const ResumeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [resumeData, setResumeData] = useState<ResumeData | null>(null);
-  const [origin, setOrigin] = useState<ResumeOrigin | null>(null);
-
-  const ingestResumeData = (data: ResumeData, o: ResumeOrigin) => {
-    setResumeData(data);
-    setOrigin(o);
-    localStorage.setItem('resume_origin', o);
-  };
-
-  const updateResumeData = (newData: ResumeData) => {
-    setResumeData(newData);
-  };
-
-  const resetResume = () => {
-    setResumeData(null);
-    setOrigin(null);
-  };
+  const [resumeData, setResumeData] = useState<ResumeData>(initialData);
 
   return (
-    <ResumeContext.Provider value={{ resumeData, origin, ingestResumeData, updateResumeData, resetResume }}>
+    <ResumeContext.Provider value={{ resumeData, setResumeData }}>
       {children}
     </ResumeContext.Provider>
   );
@@ -41,6 +21,6 @@ export const ResumeProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
 export const useResumeContext = () => {
   const ctx = useContext(ResumeContext);
-  if (!ctx) throw new Error('useResumeContext error');
+  if (!ctx) throw new Error('useResumeContext must be used inside ResumeProvider');
   return ctx;
 };

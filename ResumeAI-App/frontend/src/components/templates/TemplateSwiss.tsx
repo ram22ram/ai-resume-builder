@@ -1,22 +1,19 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Box, Typography, Paper, Grid, Avatar } from '@mui/material';
 
-const getFontFamily = (font: string) => {
-  switch (font) {
-    case 'inter': return '"Inter", sans-serif';
-    case 'roboto': return '"Roboto", sans-serif';
-    case 'poppins': return '"Poppins", sans-serif';
-    default: return '"Inter", sans-serif';
-  }
+type Section = {
+  type: string;
+  content: any;
+  isVisible?: boolean;
 };
 
-const getSection = (sections: any[], type: string) =>
-  sections.find(s => s.type === type)?.content;
+const getSection = (sections: Section[], type: string) =>
+  sections.find((s: Section) => s.type === type)?.content;
 
-const TemplateSwiss = forwardRef(({ data, theme, isPreview = false }: any, ref: any) => {
-  const sections = (data?.sections || []).filter(
-  (s: any) => s.isVisible !== false
-);
+const TemplateSwiss = forwardRef(({ data, theme }: any, ref: any) => {
+  const sections: Section[] = (data?.sections || []).filter(
+    (s: Section) => s.isVisible !== false
+  );
 
   const personal = getSection(sections, 'personal') || {};
   const summary = getSection(sections, 'summary');
@@ -26,60 +23,40 @@ const TemplateSwiss = forwardRef(({ data, theme, isPreview = false }: any, ref: 
 
   const {
     accentColor = '#111827',
-    fontFamily = 'inter',
     textColor = '#111827',
     density = 'comfortable',
-    photoMode = 'visible'
+    photoMode = 'visible',
   } = theme || {};
 
-  const font = getFontFamily(fontFamily);
   const space = (v: number) =>
     density === 'compact' ? v * 0.85 : density === 'spacious' ? v * 1.3 : v;
 
-  const showPhoto = personal.photo && photoMode !== 'hidden';
+  const showPhoto = Boolean(personal.photo && photoMode !== 'hidden');
 
   return (
     <Paper
       ref={ref}
-      elevation={0}
-      sx={{
-        fontFamily: font,color: textColor,
-        '& .MuiTypography-root': { fontFamily: font, color: textColor, },
-        backgroundColor: isPreview ? 'transparent' : 'background.paper',
-      }}
+      elevation={1}
+      sx={{ color: textColor, backgroundColor: '#ffffff' }}
     >
       {/* TOP BAR */}
-      <Box
-        sx={{
-          bgcolor: isPreview ? '#2563eb' : accentColor, // 🔥 MUTED BLUE
-          color: 'white',
-          p: space(4)
-        }}
-      >
+      <Box sx={{ bgcolor: accentColor, color: 'white', p: space(4) }}>
         <Grid container spacing={3} alignItems="center">
-          <Grid item xs={showPhoto ? 9 : 12}>
+          <Grid size={{ xs: showPhoto ? 9 : 12 }}>
             <Typography variant="h3" fontWeight={800}>
               {personal.fullName || 'Your Name'}
             </Typography>
             <Typography variant="body2">
-              {personal.email} • {personal.phone}
+              {[personal.email, personal.phone].filter(Boolean).join(' • ')}
             </Typography>
           </Grid>
 
           {showPhoto && (
-            <Grid item xs={3}>
-             <Avatar
-  src={personal.photo}
-  sx={{
-    width: 90,
-    height: 90,
-    border: `2px solid ${accentColor}`,
-    borderRadius:
-      photoMode === 'square'
-        ? '8px'
-        : '50%',
-  }}
-/>
+            <Grid size={{ xs: 3 }}>
+              <Avatar
+                src={personal.photo}
+                sx={{ width: 90, height: 90 }}
+              />
             </Grid>
           )}
         </Grid>
@@ -105,7 +82,9 @@ const TemplateSwiss = forwardRef(({ data, theme, isPreview = false }: any, ref: 
               <Box key={e.id} mb={space(2)}>
                 <Typography fontWeight={700}>{e.title}</Typography>
                 <Typography variant="caption">{e.company}</Typography>
-                <Typography variant="body2">{e.description}</Typography>
+                {e.description && (
+                  <Typography variant="body2">{e.description}</Typography>
+                )}
               </Box>
             ))}
           </Box>
@@ -129,7 +108,9 @@ const TemplateSwiss = forwardRef(({ data, theme, isPreview = false }: any, ref: 
             <Typography variant="subtitle2" fontWeight={700}>
               SKILLS
             </Typography>
-            <Typography variant="body2">{skills.join(' • ')}</Typography>
+            <Typography variant="body2">
+              {skills.join(' • ')}
+            </Typography>
           </Box>
         )}
       </Box>

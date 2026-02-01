@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Box, Typography, Paper, Avatar } from '@mui/material';
 
 const getFontFamily = (font: string) => {
@@ -16,10 +16,10 @@ const getFontFamily = (font: string) => {
 const getSection = (sections: any[], type: string) =>
   sections.find(s => s.type === type)?.content;
 
-const TemplateElena = forwardRef(({ data, theme, isPreview = false }: any, ref: any) => {
+const TemplateElena = forwardRef(({ data, theme }: any, ref: any) => {
   const sections = (data?.sections || []).filter(
-  (s: any) => s.isVisible !== false
-);
+    (s: any) => s.isVisible !== false
+  );
 
   const personal = getSection(sections, 'personal') || {};
   const summary = getSection(sections, 'summary');
@@ -42,43 +42,37 @@ const TemplateElena = forwardRef(({ data, theme, isPreview = false }: any, ref: 
   const showPhoto = personal.photo && photoMode !== 'hidden';
 
   return (
-        <Paper
-        ref={ref}
-        elevation={isPreview ? 0 : 3}
-        sx={{
-          p: space(4),
-          fontFamily: font,
-          color: textColor,
-          backgroundColor: isPreview ? 'transparent' : 'background.paper',
-        }}
-      >
-
+    <Paper
+      ref={ref}
+      elevation={3}
+      sx={{
+        p: space(4),
+        fontFamily: font,
+        color: textColor,
+        backgroundColor: 'background.paper',
+      }}
+    >
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" mb={space(4)}>
         <Box>
-          <Typography variant="h3" color={accentColor}>
-            {personal.fullName
-  ? personal.fullName.replace(/\b\w/g, c => c.toUpperCase())
-  : 'Your Name'}
+          <Typography variant="h3" color={accentColor} fontWeight={700}>
+            {personal.fullName || 'Your Name'}
           </Typography>
           <Typography variant="body2">
-            {personal.email} • {personal.phone}
+            {[personal.email, personal.phone].filter(Boolean).join(' • ')}
           </Typography>
         </Box>
 
         {showPhoto && (
           <Avatar
-  src={personal.photo}
-  sx={{
-    width: 90,
-    height: 90,
-    border: `2px solid ${accentColor}`,
-    borderRadius:
-      photoMode === 'square'
-        ? '8px'
-        : '50%',
-  }}
-/>
+            src={personal.photo}
+            sx={{
+              width: 90,
+              height: 90,
+              border: `2px solid ${accentColor}`,
+              borderRadius: photoMode === 'square' ? '8px' : '50%',
+            }}
+          />
         )}
       </Box>
 
@@ -96,7 +90,9 @@ const TemplateElena = forwardRef(({ data, theme, isPreview = false }: any, ref: 
             <Box key={e.id} mb={space(2)}>
               <Typography fontWeight={600}>{e.title}</Typography>
               <Typography variant="caption">{e.company}</Typography>
-              <Typography variant="body2">{e.description}</Typography>
+              {e.description && (
+                <Typography variant="body2">{e.description}</Typography>
+              )}
             </Box>
           ))}
         </Box>

@@ -1,5 +1,5 @@
 // Create: src/components/ErrorBoundary.tsx
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import { Box, Typography, Button, Paper } from '@mui/material';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 

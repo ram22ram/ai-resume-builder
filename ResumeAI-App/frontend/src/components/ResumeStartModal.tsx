@@ -13,7 +13,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import EditNoteIcon from '@mui/icons-material/EditNote'; 
 import CloseIcon from '@mui/icons-material/Close';
 import { useRef,useEffect, useState } from 'react';
-import { ResumeOrigin } from '../context/ResumeContext';
+
 import axios from 'axios';
 
 type Mode = 'select' | 'confirm' | 'error';
@@ -21,11 +21,12 @@ type Mode = 'select' | 'confirm' | 'error';
 interface Props {
   open: boolean;
   mode: Mode;
-  onSelect: (o: ResumeOrigin, file?: File) => void;
+  onSelect: (o: 'upload' | 'ai', file?: File) => void;
   onConfirmOverwrite: () => void;
   onCancelOverwrite: () => void;
   isParsing: boolean;
 }
+
 
 const ResumeStartModal = ({
   open,

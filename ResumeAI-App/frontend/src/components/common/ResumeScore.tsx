@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
-import { Box, Paper, Typography, CircularProgress, Alert, Stack, Divider } from '@mui/material';
-import { AlertTriangle, TrendingUp, Globe, CheckCircle2 } from 'lucide-react';
+import { useMemo } from 'react';
+import { Box, Paper, Typography, CircularProgress, Stack, Divider } from '@mui/material';
+import { AlertTriangle, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { calculateResumeScore } from '../../utils/resume.helpers';
 
 const ResumeScore = ({ resumeData }: { resumeData: any }) => {

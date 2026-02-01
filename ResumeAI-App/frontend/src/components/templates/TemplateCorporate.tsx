@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Box, Typography, Paper, Grid, Avatar } from '@mui/material';
 import dayjs from 'dayjs';
 
@@ -17,10 +17,10 @@ const getFontFamily = (fontName: string) => {
 const getSection = (sections: any[], type: string) =>
   sections.find(s => s.type === type);
 
-const TemplateCorporate = forwardRef(({ data, theme, isPreview = false }: any, ref: any) => {
+const TemplateCorporate = forwardRef(({ data, theme }: any, ref: any) => {
   const sections = (data?.sections || []).filter(
-  (s: any) => s.isVisible !== false
-);
+    (s: any) => s.isVisible !== false
+  );
 
   const personal = getSection(sections, 'personal')?.content || {};
   const summary = getSection(sections, 'summary')?.content;
@@ -47,11 +47,12 @@ const TemplateCorporate = forwardRef(({ data, theme, isPreview = false }: any, r
       ref={ref}
       elevation={0}
       sx={{
-        p: isPreview ? 2 : 4,
+        p: 4,
         fontFamily: font,
-        bgcolor: '#f5f6fa',color: textColor,
+        bgcolor: '#f5f6fa',
+        color: textColor,
         minHeight: '100%',
-        '& .MuiTypography-root': { fontFamily: font,color: textColor, },
+        '& .MuiTypography-root': { fontFamily: font, color: textColor },
       }}
     >
       {/* HEADER */}
@@ -61,23 +62,20 @@ const TemplateCorporate = forwardRef(({ data, theme, isPreview = false }: any, r
             {personal.fullName || 'Your Name'}
           </Typography>
           <Typography variant="body2">
-            {personal.email} • {personal.phone}
+            {[personal.email, personal.phone].filter(Boolean).join(' • ')}
           </Typography>
         </Box>
 
         {showPhoto && (
           <Avatar
-  src={personal.photo}
-  sx={{
-    width: 90,
-    height: 90,
-    border: `2px solid ${accentColor}`,
-    borderRadius:
-      photoMode === 'square'
-        ? '8px'
-        : '50%',
-  }}
-/>
+            src={personal.photo}
+            sx={{
+              width: 90,
+              height: 90,
+              border: `2px solid ${accentColor}`,
+              borderRadius: photoMode === 'square' ? '8px' : '50%',
+            }}
+          />
         )}
       </Box>
 
@@ -93,7 +91,7 @@ const TemplateCorporate = forwardRef(({ data, theme, isPreview = false }: any, r
 
       <Grid container spacing={space(3)}>
         {/* LEFT */}
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md:8 }}>
           {/* EXPERIENCE */}
           {experience.length > 0 && (
             <Box mb={space(3)}>
@@ -104,9 +102,14 @@ const TemplateCorporate = forwardRef(({ data, theme, isPreview = false }: any, r
                 <Box key={e.id} mb={space(2)}>
                   <Typography fontWeight={600}>{e.title}</Typography>
                   <Typography variant="caption">
-                    {e.company} | {dayjs(e.startDate).format('MMM YYYY')} – {e.isPresent ? 'Present' : dayjs(e.endDate).format('MMM YYYY')}
+                    {e.company}
+                    {e.startDate && (
+                      <> | {dayjs(e.startDate).format('MMM YYYY')} – {e.isPresent ? 'Present' : dayjs(e.endDate).format('MMM YYYY')}</>
+                    )}
                   </Typography>
-                  <Typography variant="body2">{e.description}</Typography>
+                  {e.description && (
+                    <Typography variant="body2">{e.description}</Typography>
+                  )}
                 </Box>
               ))}
             </Box>
@@ -119,7 +122,7 @@ const TemplateCorporate = forwardRef(({ data, theme, isPreview = false }: any, r
                 Education
               </Typography>
               {education.map((e: any) => (
-                <Box key={e.id}>
+                <Box key={e.id} mb={1}>
                   <Typography fontWeight={600}>{e.degree}</Typography>
                   <Typography variant="body2">{e.school}</Typography>
                 </Box>
@@ -129,7 +132,7 @@ const TemplateCorporate = forwardRef(({ data, theme, isPreview = false }: any, r
         </Grid>
 
         {/* RIGHT */}
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md:4 }}>
           {/* SKILLS */}
           {skills.length > 0 && (
             <Box>

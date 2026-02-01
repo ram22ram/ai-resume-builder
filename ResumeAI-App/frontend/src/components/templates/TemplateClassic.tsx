@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Box, Typography, Paper, Avatar, Divider } from '@mui/material';
 import dayjs from 'dayjs';
 
@@ -17,10 +17,10 @@ const getFontFamily = (fontName: string) => {
 const getSection = (sections: any[], type: string) =>
   sections.find(s => s.type === type);
 
-const TemplateClassic = forwardRef(({ data, theme, isPreview = false }: any, ref: any) => {
+const TemplateClassic = forwardRef(({ data, theme }: any, ref: any) => {
   const sections = (data?.sections || []).filter(
-  (s: any) => s.isVisible !== false
-);
+    (s: any) => s.isVisible !== false
+  );
 
   const personal = getSection(sections, 'personal')?.content || {};
   const summary = getSection(sections, 'summary')?.content;
@@ -45,31 +45,29 @@ const TemplateClassic = forwardRef(({ data, theme, isPreview = false }: any, ref
 
   return (
     <Paper
-    ref={ref}
-    elevation={0}
-    sx={{
-      p: isPreview ? 2 : 4,
-      fontFamily: font,
-      color: textColor,
-      backgroundColor: isPreview ? 'transparent' : 'background.paper',
-    }}
-  >
+      ref={ref}
+      elevation={0}
+      sx={{
+        p: 4,
+        fontFamily: font,
+        color: textColor,
+        backgroundColor: 'background.paper',
+      }}
+    >
       {/* HEADER */}
       <Box textAlign="center" mb={space(2)}>
         {showPhoto && (
           <Avatar
-  src={personal.photo}
-  sx={{
-    width: 90,
-    height: 90,
-    border: `2px solid ${accentColor}`,
-    borderRadius:
-      photoMode === 'square'
-        ? '8px'
-        : '50%',
-  }}
-/>
-
+            src={personal.photo}
+            sx={{
+              width: 90,
+              height: 90,
+              border: `2px solid ${accentColor}`,
+              borderRadius: photoMode === 'square' ? '8px' : '50%',
+              mx: 'auto',
+              mb: 1,
+            }}
+          />
         )}
 
         <Typography variant="h3" fontWeight={700} color={accentColor}>
@@ -77,7 +75,7 @@ const TemplateClassic = forwardRef(({ data, theme, isPreview = false }: any, ref
         </Typography>
 
         <Typography variant="body2" mt={1}>
-          {personal.email} • {personal.phone} • {personal.address}
+          {[personal.email, personal.phone, personal.address].filter(Boolean).join(' • ')}
         </Typography>
 
         <Divider sx={{ my: 2 }} />
@@ -103,9 +101,14 @@ const TemplateClassic = forwardRef(({ data, theme, isPreview = false }: any, ref
             <Box key={e.id} mb={space(1.5)}>
               <Typography fontWeight={600}>{e.title}</Typography>
               <Typography variant="caption">
-                {e.company} | {dayjs(e.startDate).format('MMM YYYY')} – {e.isPresent ? 'Present' : dayjs(e.endDate).format('MMM YYYY')}
+                {e.company}
+                {e.startDate && (
+                  <> | {dayjs(e.startDate).format('MMM YYYY')} – {e.isPresent ? 'Present' : dayjs(e.endDate).format('MMM YYYY')}</>
+                )}
               </Typography>
-              <Typography variant="body2">{e.description}</Typography>
+              {e.description && (
+                <Typography variant="body2">{e.description}</Typography>
+              )}
             </Box>
           ))}
         </Box>
@@ -118,9 +121,11 @@ const TemplateClassic = forwardRef(({ data, theme, isPreview = false }: any, ref
             Education
           </Typography>
           {education.map((e: any) => (
-            <Box key={e.id}>
+            <Box key={e.id} mb={1}>
               <Typography fontWeight={600}>{e.degree}</Typography>
-              <Typography variant="body2">{e.school} ({e.year})</Typography>
+              <Typography variant="body2">
+                {e.school}{e.year ? ` (${e.year})` : ''}
+              </Typography>
             </Box>
           ))}
         </Box>
