@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
 
 const AuthSuccess = () => {
@@ -11,32 +12,56 @@ const AuthSuccess = () => {
     const token = searchParams.get('token');
     const userParam = searchParams.get('user');
 
+    // ❌ Missing params → go home
     if (!token || !userParam) {
       navigate('/', { replace: true });
       return;
     }
 
     try {
-      const userData = JSON.parse(decodeURIComponent(userParam));
+      const decodedUser = JSON.parse(decodeURIComponent(userParam));
 
-      if (!userData || !userData._id || !userData.email) {
-        throw new Error('Invalid user data');
+      // ❌ Basic validation
+      if (!decodedUser?._id || !decodedUser?.email) {
+        throw new Error('Invalid user payload');
       }
 
-      login(userData, token);
+      // ✅ Save session
+      login(decodedUser, token);
 
-      // 🔑 allow state update before redirect
+      // ✅ Redirect after state settles
       setTimeout(() => {
         navigate('/dashboard', { replace: true });
       }, 0);
 
-    } catch (error) {
-      console.error('AuthSuccess error', error);
+    } catch (err) {
+      console.error('AuthSuccess failed:', err);
       navigate('/', { replace: true });
     }
   }, [searchParams, navigate, login]);
 
-  return <div>Logging you in… Please wait.</div>;
+  // 🔄 Minimal loader UI
+  return (
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: '#020617',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+      }}
+    >
+      <CircularProgress color="primary" />
+      <Typography mt={2} fontWeight={600}>
+        Logging you in…
+      </Typography>
+      <Typography variant="caption" color="grey.400">
+        Please wait a moment
+      </Typography>
+    </Box>
+  );
 };
 
 export default AuthSuccess;

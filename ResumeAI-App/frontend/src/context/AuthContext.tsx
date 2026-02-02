@@ -32,7 +32,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
   const [isLoading, setIsLoading] = useState(true);
 
   // 🔁 Restore login on refresh
@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (storedUser && storedToken) {
         setUser(JSON.parse(storedUser));
-        setIsAuthenticated(true);
+        
       }
     } catch (err) {
       console.error('Auth restore failed', err);
@@ -60,14 +60,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('resume_token', token);
 
     setUser(userData);
-    setIsAuthenticated(true);
+    
   };
+
+  const isAuthenticated = !!user;
 
   // ✅ LOGOUT
   const logout = () => {
     googleLogout();
     setUser(null);
-    setIsAuthenticated(false);
+    
     localStorage.removeItem('resume_user');
     localStorage.removeItem('resume_token');
     window.location.href = '/';
