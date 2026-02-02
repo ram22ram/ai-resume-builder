@@ -24,8 +24,8 @@ interface LayoutProps {
 }
 
 const navItems = [
-  { label: 'Resume Builder', path: '/builder', icon: <FileText size={18} /> },
-  { label: 'ATS Checker', path: '/ats', icon: <FileText size={18} /> },
+  // { label: 'Resume Builder', path: '/builder', icon: <FileText size={18} /> },
+  // { label: 'ATS Checker', path: '/ats', icon: <FileText size={18} /> },
   { label: 'Mock Interview', path: '/interview', icon: <Mic size={18} /> },
   { label: 'GitHub to CV', path: '/github', icon: <Github size={18} /> },
   { label: 'Cold Email', path: '/email', icon: <Mail size={18} /> },
