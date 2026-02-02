@@ -1,67 +1,45 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Box, CircularProgress, Typography } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
 
 const AuthSuccess = () => {
-  const [searchParams] = useSearchParams();
+  const [params] = useSearchParams();
   const navigate = useNavigate();
   const { login } = useAuth();
 
   useEffect(() => {
-    const token = searchParams.get('token');
-    const userParam = searchParams.get('user');
+    const token = params.get('token');
+    const userParam = params.get('user');
 
-    // ❌ Missing params → go home
+    console.log('AUTH SUCCESS PAGE HIT');
+    console.log('Token:', token);
+    console.log('User Param:', userParam);
+
     if (!token || !userParam) {
+      console.error('Missing token or user');
       navigate('/', { replace: true });
       return;
     }
 
     try {
-      const decodedUser = JSON.parse(decodeURIComponent(userParam));
+      const user = JSON.parse(decodeURIComponent(userParam));
 
-      // ❌ Basic validation
-      if (!decodedUser?._id || !decodedUser?.email) {
-        throw new Error('Invalid user payload');
-      }
+      if (!user.email) throw new Error('Invalid user object');
 
-      // ✅ Save session
-      login(decodedUser, token);
+      login(user, token);
 
-      // ✅ Redirect after state settles
+      // allow state update
       setTimeout(() => {
         navigate('/dashboard', { replace: true });
-      }, 0);
+      }, 100);
 
     } catch (err) {
-      console.error('AuthSuccess failed:', err);
+      console.error('Auth parsing failed', err);
       navigate('/', { replace: true });
     }
-  }, [searchParams, navigate, login]);
+  }, [login, navigate, params]);
 
-  // 🔄 Minimal loader UI
-  return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        bgcolor: '#020617',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white',
-      }}
-    >
-      <CircularProgress color="primary" />
-      <Typography mt={2} fontWeight={600}>
-        Logging you in…
-      </Typography>
-      <Typography variant="caption" color="grey.400">
-        Please wait a moment
-      </Typography>
-    </Box>
-  );
+  return <div style={{ color: 'white', padding: 40 }}>Logging you in…</div>;
 };
 
 export default AuthSuccess;
