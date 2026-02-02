@@ -7,13 +7,10 @@ import { HelmetProvider } from 'react-helmet-async';
 
 // ✅ CONTEXT PROVIDERS
 import { AuthProvider } from './context/AuthContext';
-import { ResumeProvider } from './context/ResumeContext';
 
 // ✅ PAGES / COMPONENTS
 import HomePage from './components/HomePage';
-import ResumeBuilder from './components/ResumeBuilder';
 import Dashboard from './components/Dashboard';
-import ATSChecker from './components/ATSChecker';
 import InterviewSimulator from './components/InterviewSimulator';
 import GithubConverter from './components/GithubConverter';
 import ColdEmail from './components/ColdEmail';
@@ -63,7 +60,7 @@ function App() {
           <CssBaseline />
             <AuthProvider>
               {/* ✅ IMPORTANT: ResumeProvider wraps Routes */}
-              <ResumeProvider>
+              
                 <Routes>
                   {/* PUBLIC */}
                   <Route path="/" element={<HomePage />} />
@@ -81,15 +78,11 @@ function App() {
                   />
 
                   {/* ✅ RESUME BUILDER (NOW SAFE) */}
-                  <Route path="/builder" element={<ResumeBuilder />} />
-
+                 
                   {/* TOOLS */}
-                  <Route path="/ats" element={<ATSChecker />} />
                   <Route path="/interview" element={<InterviewSimulator />} />
                   <Route path="/github" element={<GithubConverter />} />
                   <Route path="/email" element={<ColdEmail />} />
-                  <Route path="/salary-tools" element={<SalaryToolsPlaceholder />} />
-                  <Route path="/career-advice" element={<CareerAdvicePlaceholder />} />
 
                   {/* LEGAL */}
                   <Route
@@ -108,7 +101,7 @@ function App() {
                   {/* FALLBACK */}
                   <Route path="*" element={<HomePage />} />
                 </Routes>
-              </ResumeProvider>
+             
             </AuthProvider>
         </ThemeProvider>
       </HelmetProvider>
