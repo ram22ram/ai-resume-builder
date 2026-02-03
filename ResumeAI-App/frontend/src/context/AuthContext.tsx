@@ -8,6 +8,7 @@ interface User {
   name: string;
   email: string;
   picture?: string;
+  isPremium?: boolean;
 
   resumeCreated?: boolean;
   resumesCreated?: number;

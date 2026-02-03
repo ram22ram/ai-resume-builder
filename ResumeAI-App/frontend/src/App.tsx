@@ -22,6 +22,7 @@ import RefundPolicy from './components/RefundPolicy';
 import AuthSuccess from './pages/AuthSuccess';
 import MarketingPage from './pages/MarketingPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import PremiumGate from './components/PremiumGate';
 
 // --- PLACEHOLDERS ---
 const SalaryToolsPlaceholder = () => (
@@ -80,9 +81,25 @@ function App() {
                   {/* ✅ RESUME BUILDER (NOW SAFE) */}
                  
                   {/* TOOLS */}
-                  <Route path="/interview" element={<InterviewSimulator />} />
-                  <Route path="/github" element={<GithubConverter />} />
-                  <Route path="/email" element={<ColdEmail />} />
+                  <Route path="/interview" element={
+                    <PremiumGate>
+                      <InterviewSimulator />
+                    </PremiumGate>} />
+                  <Route path="/github" element={
+                    <PremiumGate>
+                      <GithubConverter />
+                    </PremiumGate>} />
+                  <Route path="/email" element={
+                    <PremiumGate>
+                      <ColdEmail />
+                    </PremiumGate>} />
+                    {/* <Route path="/ats"
+                      element={
+                        <PremiumGate>
+                          <ATSChecker />
+                        </PremiumGate>
+                      }
+                    /> */}
 
                   {/* LEGAL */}
                   <Route
