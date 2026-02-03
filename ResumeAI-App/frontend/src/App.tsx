@@ -23,6 +23,8 @@ import AuthSuccess from './pages/AuthSuccess';
 import MarketingPage from './pages/MarketingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import PremiumGate from './components/PremiumGate';
+import ResumeBuilder from './components/ResumeBuilder';
+
 
 // --- PLACEHOLDERS ---
 const SalaryToolsPlaceholder = () => (
@@ -93,6 +95,13 @@ function App() {
                     <PremiumGate>
                       <ColdEmail />
                     </PremiumGate>} />
+                    <Route path="/builder"
+                      element={
+                        <ProtectedRoute>
+                          <ResumeBuilder />
+                        </ProtectedRoute>
+                      }
+                    />
                     {/* <Route path="/ats"
                       element={
                         <PremiumGate>
