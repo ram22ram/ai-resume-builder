@@ -1,16 +1,18 @@
 import React, { useMemo } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { HelmetProvider } from 'react-helmet-async';
 
-// ✅ CONTEXT PROVIDERS
+/* ================= CONTEXT ================= */
 import { AuthProvider } from './context/AuthContext';
 
-// ✅ PAGES / COMPONENTS
+/* ================= PAGES ================= */
 import HomePage from './components/HomePage';
 import Dashboard from './components/Dashboard';
+import ResumeBuilder from './components/ResumeBuilder';
+
 import InterviewSimulator from './components/InterviewSimulator';
 import GithubConverter from './components/GithubConverter';
 import ColdEmail from './components/ColdEmail';
@@ -21,23 +23,10 @@ import RefundPolicy from './components/RefundPolicy';
 
 import AuthSuccess from './pages/AuthSuccess';
 import MarketingPage from './pages/MarketingPage';
+
+/* ================= ROUTE GUARDS ================= */
 import ProtectedRoute from './components/ProtectedRoute';
 import PremiumGate from './components/PremiumGate';
-import ResumeBuilder from './components/ResumeBuilder';
-
-
-// --- PLACEHOLDERS ---
-const SalaryToolsPlaceholder = () => (
-  <div style={{ color: 'white', padding: 50 }}>
-    Salary Tools & Negotiation Script coming soon...
-  </div>
-);
-
-const CareerAdvicePlaceholder = () => (
-  <div style={{ color: 'white', padding: 50 }}>
-    Personalized Career Roadmaps coming soon...
-  </div>
-);
 
 function App() {
   const theme = useMemo(
@@ -61,74 +50,93 @@ function App() {
       <HelmetProvider>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-            <AuthProvider>
-              {/* ✅ IMPORTANT: ResumeProvider wraps Routes */}
-              
-                <Routes>
-                  {/* PUBLIC */}
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/start" element={<MarketingPage />} />
-                  <Route path="/auth-success" element={<AuthSuccess />} />
+          <AuthProvider>
+            <Routes>
 
-                  {/* DASHBOARD (PROTECTED) */}
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    }
-                  />
+              {/* ================= PUBLIC ================= */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/start" element={<MarketingPage />} />
+              <Route path="/auth-success" element={<AuthSuccess />} />
 
-                  {/* ✅ RESUME BUILDER (NOW SAFE) */}
-                 
-                  {/* TOOLS */}
-                  <Route path="/interview" element={
-                    <PremiumGate>
-                      <InterviewSimulator />
-                    </PremiumGate>} />
-                  <Route path="/github" element={
-                    <PremiumGate>
-                      <GithubConverter />
-                    </PremiumGate>} />
-                  <Route path="/email" element={
-                    <PremiumGate>
-                      <ColdEmail />
-                    </PremiumGate>} />
-                    <Route path="/builder"
-                      element={
-                        <ProtectedRoute>
-                          <ResumeBuilder />
-                        </ProtectedRoute>
-                      }
-                    />
-                    {/* <Route path="/ats"
-                      element={
-                        <PremiumGate>
-                          <ATSChecker />
-                        </PremiumGate>
-                      }
-                    /> */}
+              {/* ================= DASHBOARD ================= */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-                  {/* LEGAL */}
-                  <Route
-                    path="/privacy"
-                    element={<PrivacyPolicy onBack={() => window.history.back()} />}
-                  />
-                  <Route
-                    path="/terms"
-                    element={<TermsConditions onBack={() => window.history.back()} />}
-                  />
-                  <Route
-                    path="/refund"
-                    element={<RefundPolicy onBack={() => window.history.back()} />}
-                  />
+              {/* ================= RESUME BUILDER (CORE) ================= */}
+              <Route
+                path="/builder"
+                element={
+                  <ProtectedRoute>
+                    <ResumeBuilder />
+                  </ProtectedRoute>
+                }
+              />
 
-                  {/* FALLBACK */}
-                  <Route path="*" element={<HomePage />} />
-                </Routes>
-             
-            </AuthProvider>
+              {/* ================= PREMIUM TOOLS ================= */}
+              <Route
+                path="/interview"
+                element={
+                  <PremiumGate>
+                    <InterviewSimulator />
+                  </PremiumGate>
+                }
+              />
+
+              <Route
+                path="/github"
+                element={
+                  <PremiumGate>
+                    <GithubConverter />
+                  </PremiumGate>
+                }
+              />
+
+              <Route
+                path="/email"
+                element={
+                  <PremiumGate>
+                    <ColdEmail />
+                  </PremiumGate>
+                }
+              />
+
+              {/* ================= ATS (ENABLE WHEN FILE EXISTS) ================= */}
+              {/*
+              <Route
+                path="/ats"
+                element={
+                  <PremiumGate>
+                    <ATSChecker />
+                  </PremiumGate>
+                }
+              />
+              */}
+
+              {/* ================= LEGAL ================= */}
+              <Route
+                path="/privacy"
+                element={<PrivacyPolicy onBack={() => window.history.back()} />}
+              />
+              <Route
+                path="/terms"
+                element={<TermsConditions onBack={() => window.history.back()} />}
+              />
+              <Route
+                path="/refund"
+                element={<RefundPolicy onBack={() => window.history.back()} />}
+              />
+
+              {/* ================= FALLBACK ================= */}
+              <Route path="*" element={<HomePage />} />
+
+            </Routes>
+          </AuthProvider>
         </ThemeProvider>
       </HelmetProvider>
     </GoogleOAuthProvider>
