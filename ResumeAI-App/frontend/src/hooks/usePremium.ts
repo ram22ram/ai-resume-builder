@@ -1,11 +1,11 @@
 import { useAuth } from '../context/AuthContext';
 
 export const usePremium = () => {
-    const { user, isAuthenticated, isLoading } = useAuth();
+    const { user, isLoading } = useAuth();
 
     return {
-        isLoggedIn: isAuthenticated,
-        isPremium: !!user?.isPremium,
+        isLoggedIn: !!user,
+        isPremium: user?.isPremium === true,
         isLoading,
     };
 };

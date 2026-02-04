@@ -3,9 +3,15 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
-  googleId: String, // ✅ Google unique ID store karne ke liye
-  avatar: String,   // ✅ User ki profile picture
-  isLoggedIn: { type: Boolean, default: false }
-});
+  googleId: String,
+  avatar: String,
+
+  // 🔥 PREMIUM FIELDS
+  isPremium: { type: Boolean, default: false },
+  plan: { type: String, default: 'free' }, // free | pro
+  subscriptionId: String,
+  subscriptionStatus: String, // active | cancelled
+
+}, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

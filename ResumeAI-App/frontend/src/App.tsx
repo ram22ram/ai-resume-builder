@@ -27,6 +27,7 @@ import MarketingPage from './pages/MarketingPage';
 /* ================= ROUTE GUARDS ================= */
 import ProtectedRoute from './components/ProtectedRoute';
 import PremiumGate from './components/PremiumGate';
+import ATSChecker from './components/ATSChecker';
 
 function App() {
   const theme = useMemo(
@@ -107,7 +108,7 @@ function App() {
               />
 
               {/* ================= ATS (ENABLE WHEN FILE EXISTS) ================= */}
-              {/*
+             
               <Route
                 path="/ats"
                 element={
@@ -116,7 +117,7 @@ function App() {
                   </PremiumGate>
                 }
               />
-              */}
+              
 
               {/* ================= LEGAL ================= */}
               <Route

@@ -62,21 +62,30 @@
 
   <!-- Structured Data -->
   <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "ResumeAI",
+  "url": "https://resume-ai.co.in",
+  "description": "Create ATS-friendly resumes in minutes with ResumeAI.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": [
     {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "ResumeAI",
-      "url": "https://resume-ai.co.in",
-      "description": "Create ATS-friendly resumes in minutes with ResumeAI.",
-      "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR",
+      "name": "Free Resume Builder"
+    },
+    {
+      "@type": "Offer",
+      "price": "199",
+      "priceCurrency": "INR",
+      "name": "Premium Subscription"
     }
-    </script>
+  ]
+}
+</script>
 </head>
 
 <body>

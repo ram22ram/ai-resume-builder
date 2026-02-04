@@ -1,25 +1,17 @@
-import React, { forwardRef } from 'react';
+import { Box, Paper } from '@mui/material';
+import TemplateRenderer from './TemplateRenderer';
+import { useResume } from '../context/ResumeContext';
 
-const ResumePreview = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
-  ({ children }, ref) => {
-    return (
-      <div
-        ref={ref}
-        id="resume-preview"
-        style={{
-          width: '210mm',
-          minHeight: '297mm',
-          background: '#ffffff',
-          padding: '20mm',
-          boxSizing: 'border-box',
-          color: '#000',
-          fontFamily: 'Inter, Arial, sans-serif',
-        }}
-      >
-        {children}
-      </div>
-    );
-  }
-);
+const ResumePreview = () => {
+  const { resume, selectedTemplate } = useResume();
+
+  return (
+    <Paper elevation={3} sx={{ p: 2 }}>
+      <Box id="resume-preview">
+        <TemplateRenderer template={selectedTemplate} data={resume} />
+      </Box>
+    </Paper>
+  );
+};
 
 export default ResumePreview;

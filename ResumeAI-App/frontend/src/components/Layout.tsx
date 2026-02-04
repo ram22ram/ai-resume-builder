@@ -6,7 +6,7 @@ import {
   useTheme, useMediaQuery, Avatar
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FileText, Mic, Github, Mail, Menu as MenuIcon, X, LogOut, LayoutDashboard } from 'lucide-react';
+import { FileText, Mic, Github, Mail, Menu as MenuIcon, X, LogOut, LayoutDashboard, Search } from 'lucide-react';
 import { Helmet } from 'react-helmet-async'; 
 
 // ✅ IMPORT RESUME CONTEXT
@@ -23,13 +23,14 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const navItems = [
-  // { label: 'Resume Builder', path: '/builder', icon: <FileText size={18} /> },
-  // { label: 'ATS Checker', path: '/ats', icon: <FileText size={18} /> },
-  { label: 'Mock Interview', path: '/interview', icon: <Mic size={18} /> },
-  { label: 'GitHub to CV', path: '/github', icon: <Github size={18} /> },
-  { label: 'Cold Email', path: '/email', icon: <Mail size={18} /> },
+ const navItems = [
+  { label: 'Resume Builder', path: '/builder', icon: <FileText size={18}/> },
+  { label: 'ATS Checker', path: '/ats', icon: <Search size={18}/> },
+  { label: 'Mock Interview', path: '/interview', icon: <Mic size={18}/> },
+  { label: 'GitHub to CV', path: '/github', icon: <Github size={18}/> },
+  { label: 'Cold Email', path: '/email', icon: <Mail size={18}/> },
 ];
+
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
