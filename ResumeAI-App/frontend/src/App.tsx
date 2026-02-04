@@ -73,9 +73,9 @@ function App() {
               <Route
                 path="/builder"
                 element={
-                  <ProtectedRoute>
+                  // <ProtectedRoute>
                     <ResumeBuilder />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 }
               />
 
