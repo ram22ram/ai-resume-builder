@@ -1,7 +1,6 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Lock } from 'lucide-react';
 import { ALL_TEMPLATES } from '../templates/templates.config';
-import { useAuth } from '../context/AuthContext';
 
 interface Props {
   selected: string;
@@ -9,40 +8,33 @@ interface Props {
 }
 
 const TemplateSelector = ({ selected, onChange }: Props) => {
-  const { user } = useAuth();
-
   return (
     <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 3 }}>
-      {ALL_TEMPLATES.map((tpl) => {
-        const locked = tpl.isPremium && !user;
+      {ALL_TEMPLATES.map((tpl) => (
+        <Box
+          key={tpl.id}
+          sx={{
+            p: 2,
+            width: 180,
+            border: '1px solid rgba(255,255,255,0.1)',
+            cursor: 'pointer',
+            position: 'relative',
+          }}
+          onClick={() => onChange(tpl.id)}
+        >
+          <Typography fontWeight="bold">{tpl.name}</Typography>
 
-        return (
-          <Box
-            key={tpl.id}
-            sx={{
-              p: 2,
-              width: 180,
-              border: '1px solid rgba(255,255,255,0.1)',
-              opacity: locked ? 0.5 : 1,
-              cursor: locked ? 'not-allowed' : 'pointer',
-              position: 'relative',
-            }}
-            onClick={() => !locked && onChange(tpl.id)}
-          >
-            <Typography fontWeight="bold">{tpl.name}</Typography>
+          {tpl.isPremium && (
+            <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+              <Lock size={16} />
+            </Box>
+          )}
 
-            {locked && (
-              <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-                <Lock size={16} />
-              </Box>
-            )}
-
-            {selected === tpl.id && (
-              <Typography color="#22c55e">Selected</Typography>
-            )}
-          </Box>
-        );
-      })}
+          {selected === tpl.id && (
+            <Typography color="#22c55e">Selected</Typography>
+          )}
+        </Box>
+      ))}
     </Box>
   );
 };
