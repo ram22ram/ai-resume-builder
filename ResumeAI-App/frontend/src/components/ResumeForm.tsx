@@ -4,12 +4,21 @@ import { useResume } from '../context/ResumeContext';
 const ResumeForm = () => {
   const { resume, setResume } = useResume();
 
-  const updatePersonal = (field: string, value: string) => {
+  const getSection = (type: string) =>
+    resume.sections.find((s) => s.type === type);
+
+  const updateSection = (type: string, content: any) => {
     setResume((prev) => ({
       ...prev,
-      personalInfo: { ...prev.personalInfo, [field]: value },
+      sections: prev.sections.map((s) =>
+        s.type === type ? { ...s, content } : s
+      ),
     }));
   };
+
+  const personal = getSection('personal')?.content || {};
+  const summary = getSection('summary')?.content || '';
+  const skills = getSection('skills')?.content || [];
 
   return (
     <Box>
@@ -20,46 +29,64 @@ const ResumeForm = () => {
       <Stack spacing={2}>
         <TextField
           label="Full Name"
-          value={resume.personalInfo.fullName}
-          onChange={(e) => updatePersonal('fullName', e.target.value)}
+          value={personal.fullName || ''}
+          onChange={(e) =>
+            updateSection('personal', {
+              ...personal,
+              fullName: e.target.value,
+            })
+          }
         />
 
         <TextField
           label="Email"
-          value={resume.personalInfo.email}
-          onChange={(e) => updatePersonal('email', e.target.value)}
+          value={personal.email || ''}
+          onChange={(e) =>
+            updateSection('personal', {
+              ...personal,
+              email: e.target.value,
+            })
+          }
         />
 
         <TextField
           label="Phone"
-          value={resume.personalInfo.phone}
-          onChange={(e) => updatePersonal('phone', e.target.value)}
+          value={personal.phone || ''}
+          onChange={(e) =>
+            updateSection('personal', {
+              ...personal,
+              phone: e.target.value,
+            })
+          }
         />
 
         <TextField
           label="Job Title"
-          value={resume.personalInfo.jobTitle}
-          onChange={(e) => updatePersonal('jobTitle', e.target.value)}
+          value={personal.jobTitle || ''}
+          onChange={(e) =>
+            updateSection('personal', {
+              ...personal,
+              jobTitle: e.target.value,
+            })
+          }
         />
 
         <TextField
           label="Professional Summary"
           multiline
           rows={4}
-          value={resume.summary}
-          onChange={(e) =>
-            setResume((prev) => ({ ...prev, summary: e.target.value }))
-          }
+          value={summary}
+          onChange={(e) => updateSection('summary', e.target.value)}
         />
 
         <TextField
           label="Skills (comma separated)"
-          value={resume.skills.join(', ')}
+          value={skills.join(', ')}
           onChange={(e) =>
-            setResume((prev) => ({
-              ...prev,
-              skills: e.target.value.split(',').map((s) => s.trim()),
-            }))
+            updateSection(
+              'skills',
+              e.target.value.split(',').map((s: string) => s.trim())
+            )
           }
         />
       </Stack>

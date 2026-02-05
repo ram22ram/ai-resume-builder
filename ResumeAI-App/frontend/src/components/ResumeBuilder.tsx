@@ -6,6 +6,7 @@ import TemplateSelector from './TemplateSelector';
 import { useAutoSave } from '../hooks/useAutoSave';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import Layout from './Layout';
 
 const BuilderInner = () => {
   const { resume, loadFromATS, selectedTemplate, setSelectedTemplate } = useResume();
@@ -46,7 +47,9 @@ const BuilderInner = () => {
 
 const ResumeBuilder = () => (
   <ResumeProvider>
-    <BuilderInner />
+    <Layout>
+      <BuilderInner />
+    </Layout>
   </ResumeProvider>
 );
 

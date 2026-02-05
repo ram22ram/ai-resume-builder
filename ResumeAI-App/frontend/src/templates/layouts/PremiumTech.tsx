@@ -1,37 +1,77 @@
-import React from 'react';
+import { ResumeData, ResumeSection } from '../../context/ResumeContext';
 
-const PremiumTech = ({ data }: any) => {
-  const { personalInfo, summary, experience, projects, skills } = data;
+interface Props {
+  data: ResumeData;
+}
+
+const PremiumTech = ({ data }: Props) => {
+  const get = (type: ResumeSection['type']) =>
+    data.sections.find((s) => s.type === type)?.content;
+
+  const personal = (get('personal') || {}) as {
+    fullName?: string;
+    jobTitle?: string;
+  };
+
+  const summary = (get('summary') || '') as string;
+  const experience = (get('experience') || []) as {
+    position: string;
+    description?: string;
+  }[];
+
+  const projects = (get('projects') || []) as {
+    title: string;
+    description?: string;
+  }[];
+
+  const skills = (get('skills') || []) as string[];
 
   return (
     <div style={{ fontFamily: 'Inter, monospace', fontSize: 12 }}>
-      <h1>{personalInfo.fullName}</h1>
-      <p>{personalInfo.jobTitle}</p>
+      <h1>{personal.fullName || 'Your Name'}</h1>
+      <p>{personal.jobTitle || ''}</p>
 
-      <h3>Technical Summary</h3>
-      <p>{summary}</p>
+      {summary && (
+        <>
+          <h3>Technical Summary</h3>
+          <p>{summary}</p>
+        </>
+      )}
 
-      <h3>Experience</h3>
-      {experience.map((exp: any) => (
-        <div key={exp.id}>
-          <strong>{exp.position}</strong>
-          <p>{exp.description}</p>
-        </div>
-      ))}
+      {experience.length > 0 && (
+        <>
+          <h3>Experience</h3>
+          {experience.map((exp, i) => (
+            <div key={i}>
+              <strong>{exp.position}</strong>
+              {exp.description && <p>{exp.description}</p>}
+            </div>
+          ))}
+        </>
+      )}
 
-      <h3>Projects</h3>
-      {projects?.map((p: any) => (
-        <p key={p.id}>
-          <strong>{p.title}</strong> – {p.description}
-        </p>
-      ))}
+      {projects.length > 0 && (
+        <>
+          <h3>Projects</h3>
+          {projects.map((p, i) => (
+            <p key={i}>
+              <strong>{p.title}</strong>
+              {p.description && ` – ${p.description}`}
+            </p>
+          ))}
+        </>
+      )}
 
-      <h3>Tech Stack</h3>
-      <ul>
-        {skills.map((skill: string) => (
-          <li key={skill}>{skill}</li>
-        ))}
-      </ul>
+      {skills.length > 0 && (
+        <>
+          <h3>Tech Stack</h3>
+          <ul>
+            {skills.map((skill, i) => (
+              <li key={i}>{skill}</li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };

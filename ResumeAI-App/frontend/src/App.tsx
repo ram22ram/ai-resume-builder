@@ -111,11 +111,7 @@ function App() {
              
               <Route
                 path="/ats"
-                element={
-                  <PremiumGate>
-                    <ATSChecker />
-                  </PremiumGate>
-                }
+                element={<ATSChecker />}
               />
               
 
