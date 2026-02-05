@@ -3,6 +3,7 @@ import { ResumeProvider, useResume } from '../context/ResumeContext';
 import ResumeForm from './ResumeForm';
 import ResumePreview from './ResumePreview';
 import TemplateSelector from './TemplateSelector';
+import DownloadResumeButton from './DownloadResumeButton';
 import { useAutoSave } from '../hooks/useAutoSave';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -38,7 +39,11 @@ const BuilderInner = () => {
         <ResumeForm />
 
         <Box sx={{ position: 'sticky', top: 90 }}>
+          <Box sx={{ mb: 2 }}>
+            <DownloadResumeButton />
+          </Box>
           <ResumePreview />
+          <Box sx={{ mt: 2 }} />
         </Box>
       </Box>
     </Box>

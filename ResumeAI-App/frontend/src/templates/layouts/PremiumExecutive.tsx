@@ -1,4 +1,4 @@
-import { ResumeData, ResumeSection } from '../../context/ResumeContext';
+import { ResumeData, ResumeSection } from '../../types';
 
 interface Props {
   data: ResumeData;

@@ -59,3 +59,12 @@ export const exportResumePDF = async (
     // cleanup
     if (watermark) watermark.remove();
 };
+
+export const generatePDF = () => {
+    const element = document.getElementById('resume-preview');
+    if (element) {
+        exportResumePDF(element);
+    } else {
+        console.error('Resume preview element not found');
+    }
+};
