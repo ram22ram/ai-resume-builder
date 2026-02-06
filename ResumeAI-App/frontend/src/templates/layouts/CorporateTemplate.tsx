@@ -64,6 +64,15 @@ const CorporateTemplate: React.FC<Props> = ({ data }) => {
     }
   };
 
+  // Check if section exists and is visible (even if empty)
+  const isVisible = (type: string) => data.sections.some(s => s.type === type && s.isVisible);
+
+  const EmptyState = ({ name }: { name: string }) => (
+     <div style={{ padding: '8px', border: '1px dashed #ccc', color: '#999', fontSize: '9pt', fontStyle: 'italic', marginBottom: '15px' }}>
+       Empty {name}. Add details in the editor.
+     </div>
+  );
+
   return (
     <div style={{ ...standardStyles.page, padding: 0, fontFamily: standardStyles.fonts.sans }}>
       
@@ -84,17 +93,19 @@ const CorporateTemplate: React.FC<Props> = ({ data }) => {
         
         {/* LEFT COLUMN (Experience, Summary) */}
         <div style={styles.mainColumn}>
-            {summary && (
+            {isVisible('summary') && (
                 <section style={{ marginBottom: '25px' }}>
                     <h2 style={styles.sectionTitle}>Executive Summary</h2>
-                    <p style={{ margin: 0, textAlign: 'justify', lineHeight: 1.6 }}>{summary}</p>
+                    {summary ? (
+                       <p style={{ margin: 0, textAlign: 'justify', lineHeight: 1.6 }}>{summary}</p>
+                    ) : <EmptyState name="Summary" />}
                 </section>
             )}
 
-            {experience.length > 0 && (
+            {isVisible('experience') && (
                 <section style={{ marginBottom: '25px' }}>
                     <h2 style={styles.sectionTitle}>Professional Experience</h2>
-                    {experience.map((exp: any, i: number) => (
+                    {experience.length > 0 ? experience.map((exp: any, i: number) => (
                         <div key={i} style={{ marginBottom: '15px' }}>
                             <div style={{ fontWeight: 'bold', fontSize: '11pt' }}>{exp.position}</div>
                             <div style={{ color: accentColor, fontWeight: 600, fontSize: '10pt', marginBottom: '4px' }}>
@@ -111,44 +122,44 @@ const CorporateTemplate: React.FC<Props> = ({ data }) => {
                                 </ul>
                             )}
                         </div>
-                    ))}
+                    )) : <EmptyState name="Experience" />}
                 </section>
             )}
 
-             {projects.length > 0 && (
+             {isVisible('projects') && (
                 <section>
                     <h2 style={styles.sectionTitle}>Key Projects</h2>
-                    {projects.map((proj: any, i: number) => (
+                    {projects.length > 0 ? projects.map((proj: any, i: number) => (
                         <div key={i} style={{ marginBottom: '12px' }}>
                             <div style={{ fontWeight: 'bold' }}>{proj.title}</div>
                             <p style={{ margin: '2px 0', fontSize: '10pt' }}>{proj.description}</p>
                         </div>
-                    ))}
+                    )) : <EmptyState name="Projects" />}
                 </section>
             )}
         </div>
 
         {/* RIGHT COLUMN (Education, Skills) */}
         <div style={styles.sideColumn}>
-            {education.length > 0 && (
+            {isVisible('education') && (
                 <section style={{ marginBottom: '30px' }}>
                     <h2 style={styles.sectionTitle}>Education</h2>
-                    {education.map((edu: any, i: number) => (
+                    {education.length > 0 ? education.map((edu: any, i: number) => (
                         <div key={i} style={{ marginBottom: '15px' }}>
                             <div style={{ fontWeight: 'bold' }}>{edu.institution}</div>
                             <div style={{ fontSize: '9pt', marginBottom: '2px' }}>{edu.degree}</div>
                             <div style={{ fontSize: '9pt', color: '#666' }}>{edu.startDate} – {edu.endDate}</div>
                             {edu.score && <div style={{ fontSize: '9pt', fontWeight: 600 }}>GPA: {edu.score}</div>}
                         </div>
-                    ))}
+                    )) : <EmptyState name="Education" />}
                 </section>
             )}
 
-            {skills.length > 0 && (
+            {isVisible('skills') && (
                 <section style={{ marginBottom: '30px' }}>
                     <h2 style={styles.sectionTitle}>Core Competencies</h2>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                         {/* Assuming skills is string[] or {name}[] */}
+                    {skills.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                          {(Array.isArray(skills) ? skills : []).map((skill: any, i: number) => {
                              const name = typeof skill === 'string' ? skill : skill.name;
                              return (
@@ -157,7 +168,8 @@ const CorporateTemplate: React.FC<Props> = ({ data }) => {
                                  </div>
                              );
                          })}
-                    </div>
+                      </div>
+                    ) : <EmptyState name="Skills" />}
                 </section>
             )}
         </div>

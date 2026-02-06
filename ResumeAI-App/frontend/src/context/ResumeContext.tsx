@@ -7,6 +7,7 @@ import {
   useEffect,
 } from 'react';
 import { ResumeData, ResumeSection } from '../types';
+import { parseResumeText } from '../utils/resumeParser';
 
 interface ResumeContextType {
   resume: ResumeData;
@@ -155,7 +156,21 @@ export const ResumeProvider = ({ children }: { children: ReactNode }) => {
         setSelectedTemplate: handleTemplateChange,
         loadFromATS: (text: string) => {
           console.log('Loading from ATS:', text);
-          // TODO: Improve ATS ingestion with regex parsing
+          const parsed = parseResumeText(text);
+          
+          setResume(prev => {
+              const newSections = prev.sections.map(s => {
+                  if (s.type === 'personal') {
+                      return { ...s, content: { ...s.content, ...parsed.personal } };
+                  }
+                  if (s.type === 'summary' && parsed.summary) {
+                      return { ...s, content: parsed.summary };
+                  }
+                  return s;
+              });
+              
+              return { ...prev, sections: newSections };
+          });
         },
         addSection,
         removeSection,

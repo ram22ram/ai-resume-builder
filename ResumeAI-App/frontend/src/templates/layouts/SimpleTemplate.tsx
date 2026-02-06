@@ -57,16 +57,36 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
 
   const renderSection = (section: any) => {
       const items = Array.isArray(section.content) ? section.content : [];
+      const hasContent = items.length > 0 || (typeof section.content === 'string' && section.content.trim().length > 0);
       
+      const EmptyState = () => (
+          <div style={{ padding: '10px 0', border: '1px dashed #ccc', borderRadius: '4px', background: '#f9fafb', textAlign: 'center' }}>
+              <span style={{ fontSize: '10pt', color: '#9ca3af', fontStyle: 'italic' }}>
+                  Empty {section.title} section. Add details in the editor.
+              </span>
+          </div>
+      );
+
       // SUMMARY
       if (section.type === 'summary') {
-          if (!section.content) return null;
            return (
              <section key={section.id}>
                <div style={styles.sectionHeader}>{section.title}</div>
-               <p style={{ margin: 0, color: '#4b5563', lineHeight: 1.6 }}>{section.content}</p>
+               {section.content ? (
+                   <p style={{ margin: 0, color: '#4b5563', lineHeight: 1.6 }}>{section.content}</p>
+               ) : <EmptyState />}
              </section>
            );
+      }
+
+      // GENERIC EMPTY CHECK FOR LISTS
+      if (!hasContent && section.type !== 'summary') {
+          return (
+              <section key={section.id}>
+                  <div style={styles.sectionHeader}>{section.title}</div>
+                  <EmptyState />
+              </section>
+          );
       }
 
       // EDUCATION

@@ -19,37 +19,46 @@ const TemplateCard: React.FC<Props> = ({
 }) => {
   const locked = template.isPremium && !isPremiumUser;
 
-  const handleClick = () => {
-    if (locked) {
-      onUpgrade();
-    } else {
-      onSelect(template);
-    }
-  };
-
   return (
-    <div className={`template-card ${locked ? 'locked' : ''}`} onClick={handleClick}>
-      <div className="preview">
-        <MiniResumePreview layout={template.layout} />
-        {template.isPremium && (
-          <span className="badge premium">Premium</span>
-        )}
-        {locked && (
-          <div className="lock-overlay">
-            <Lock size={28} />
-            <p>Upgrade to unlock</p>
-          </div>
-        )}
+    <div className="template-card-container">
+      <div className={`template-card-visual ${locked ? 'locked' : ''}`}>
+        <div className="a4-aspect-ratio">
+           <MiniResumePreview layout={template.layout} />
+        </div>
+        
+        {/* Badges */}
+        <div className="card-badges">
+            {template.isPremium ? (
+                <span className="badge premium"><Lock size={12} style={{marginRight:4}}/> Premium</span>
+            ) : (
+                <span className="badge free">Free</span>
+            )}
+            <span className="badge category">{template.category}</span>
+        </div>
+
+        {/* Hover Overlay */}
+        <div className="card-overlay">
+            {locked ? (
+                <div className="lock-content">
+                    <Lock size={32} />
+                    <p>Upgrade to Unlock</p>
+                    <button className="btn-upgrade" onClick={(e) => { e.stopPropagation(); onUpgrade(); }}>
+                        Upgrade Pro
+                    </button>
+                </div>
+            ) : (
+                <div className="action-buttons">
+                    <button className="btn-use" onClick={() => onSelect(template)}>
+                        Use Template
+                    </button>
+                </div>
+            )}
+        </div>
       </div>
 
-      <div className="info">
+      <div className="template-info">
         <h3>{template.name}</h3>
         <p>{template.description}</p>
-
-        <div className="meta">
-          <span>{template.category.toUpperCase()}</span>
-          <span>{template.layout}</span>
-        </div>
       </div>
     </div>
   );

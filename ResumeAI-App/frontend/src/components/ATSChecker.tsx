@@ -88,35 +88,55 @@ const ATSChecker = () => {
           </ul>
         </Box>
 
-        {/* LOCKED FOR NON-PREMIUM */}
-        {(!user || !isPremium) && (
-          <Paper variant="outlined" sx={{ p: 2, bgcolor: 'rgba(255,255,255,0.05)', borderColor: '#333' }}>
+        {/* LOGGED USERS (Free & Premium): Generic Content Tips */}
+        {user ? (
+            <Box mb={2}>
+                <Typography variant="subtitle1" fontWeight="bold" color="info.main">
+                    📝 Content Improvements (Logged In)
+                </Typography>
+                <ul style={{ color: '#e0f2fe' }}>
+                    {major.map((rec, i) => <li key={i}>{rec}</li>)}
+                </ul>
+            </Box>
+        ) : (
+            <Paper variant="outlined" sx={{ p: 2, mb: 2, bgcolor: 'rgba(255,255,255,0.05)', borderColor: '#333' }}>
+                <Typography color="info.main" fontWeight="bold" gutterBottom>
+                    🔓 Login to see Content Analysis
+                </Typography>
+                <Button variant="outlined" size="small" onClick={() => navigate('/login', { state: { from: '/ats' } })}>
+                    Login to Unlock
+                </Button>
+            </Paper>
+        )}
+
+        {/* PREMIUM ONLY: Deep Keyword Analysis */}
+        {isPremium ? (
+          <Box mb={2}>
+            <Typography variant="subtitle1" fontWeight="bold" color="primary">
+              🚀 Keyword Gap Analysis (Premium Only)
+            </Typography>
+            <ul style={{ color: '#fff' }}>
+              {result.missingKeywords?.length > 0 ? (
+                  result.missingKeywords.map((k: string) => (
+                    <li key={k} style={{ color: '#f87171' }}>Missing keyword: "{k}"</li>
+                  ))
+              ) : (
+                  <li style={{ color: '#4ade80' }}>Great job! No major keywords missing.</li>
+              )}
+            </ul>
+          </Box>
+        ) : (
+          <Paper variant="outlined" sx={{ p: 2, bgcolor: 'rgba(255,158,11,0.1)', borderColor: '#f59e0b' }}>
             <Typography color="warning.main" fontWeight="bold">
-              🔒 Premium Recommendations Hidden
+              🔒 Premium Keyword Insights Hidden
             </Typography>
             <Typography variant="body2" color="text.secondary" mb={2}>
-              Unlock deep insights, keyword gaps, and formatting fixes.
+              See exactly which keywords your resume is missing to pass ATS scanners.
             </Typography>
-            <Button variant="contained" size="small" onClick={() => navigate('/pricing')}>
+            <Button variant="contained" color="warning" size="small" onClick={() => navigate('/pricing')}>
               Upgrade to Unlock
             </Button>
           </Paper>
-        )}
-
-        {/* PREMIUM ONLY: Major Recommendations */}
-        {user && isPremium && (
-          <Box mb={2}>
-            <Typography variant="subtitle1" fontWeight="bold" color="primary">
-              🚀 Advanced Insights (Premium)
-            </Typography>
-            <ul style={{ color: '#fff' }}>
-              {major.map((rec, i) => <li key={i}>{rec}</li>)}
-              {/* Also show specific missing keywords if any */}
-              {result.missingKeywords?.length > 0 && result.missingKeywords.map((k: string) => (
-                <li key={k} style={{ color: '#f87171' }}>Missing keyword: "{k}"</li>
-              ))}
-            </ul>
-          </Box>
         )}
       </Box>
     );

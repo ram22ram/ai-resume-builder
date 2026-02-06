@@ -29,9 +29,6 @@ export const useDownloadGuard = () => {
 
         // 2. Allow Download (Free or Premium/Subscribed)
         downloadFn();
-
-        // 3️⃣ Allowed
-        downloadFn();
     };
 
     return { handleDownload };

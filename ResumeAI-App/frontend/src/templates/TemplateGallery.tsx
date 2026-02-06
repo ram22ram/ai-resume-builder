@@ -5,13 +5,7 @@ import TemplateCard from './TemplateCard';
 import { useAuth } from '../context/AuthContext';
 import './templates.css';
 
-const categories: (TemplateCategory | 'all')[] = [
-  'all',
-  'fresher',
-  'tech',
-  'professional',
-  'creative',
-];
+
 
 const TemplateGallery: React.FC = () => {
   const navigate = useNavigate();
@@ -47,16 +41,25 @@ const TemplateGallery: React.FC = () => {
       </header>
 
       {/* FILTER BAR */}
-      <div className="filters">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            className={cat === activeCategory ? 'active' : ''}
-            onClick={() => setActiveCategory(cat)}
-          >
-            {cat.toUpperCase()}
-          </button>
-        ))}
+      {/* FILTER BAR - Professional Tabs */}
+      <div className="filters-container">
+        <div className="filters">
+            {[
+                { id: 'all', label: 'All Templates' },
+                { id: 'fresher', label: 'Students / Freshers' },
+                { id: 'tech', label: 'Tech / Developers' },
+                { id: 'professional', label: 'Non-Tech / MBA' },
+                { id: 'creative', label: 'Creative' },
+            ].map(tab => (
+            <button
+                key={tab.id}
+                className={tab.id === activeCategory ? 'active' : ''}
+                onClick={() => setActiveCategory(tab.id as any)}
+            >
+                {tab.label}
+            </button>
+            ))}
+        </div>
       </div>
 
       {/* GRID */}
