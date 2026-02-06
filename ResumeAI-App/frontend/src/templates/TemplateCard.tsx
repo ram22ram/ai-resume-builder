@@ -1,11 +1,11 @@
 import React from 'react';
 import { Lock } from 'lucide-react';
 import { ResumeTemplate } from './templates.config';
+import MiniResumePreview from '../components/MiniResumePreview';
 import './templates.css';
 
 interface Props {
   template: ResumeTemplate;
-  isLoggedIn: boolean;
   isPremiumUser: boolean;
   onSelect: (template: ResumeTemplate) => void;
   onUpgrade: () => void;
@@ -13,7 +13,6 @@ interface Props {
 
 const TemplateCard: React.FC<Props> = ({
   template,
-  isLoggedIn,
   isPremiumUser,
   onSelect,
   onUpgrade,
@@ -31,7 +30,7 @@ const TemplateCard: React.FC<Props> = ({
   return (
     <div className={`template-card ${locked ? 'locked' : ''}`} onClick={handleClick}>
       <div className="preview">
-        <img src={template.previewImage} alt={template.name} />
+        <MiniResumePreview layout={template.layout} />
         {template.isPremium && (
           <span className="badge premium">Premium</span>
         )}

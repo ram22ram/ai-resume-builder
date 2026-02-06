@@ -12,7 +12,6 @@ const ModernTemplate: React.FC<Props> = ({ data }) => {
     data.sections.find((s) => s.type === type && s.isVisible)?.content;
 
   const personal = getSection('personal') || {};
-  const summary = getSection('summary') || '';
   const experience = getSection('experience') || [];
   const education = getSection('education') || [];
   const skills = getSection('skills') || [];

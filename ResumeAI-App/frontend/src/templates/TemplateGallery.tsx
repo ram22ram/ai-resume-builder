@@ -7,18 +7,15 @@ import './templates.css';
 
 const categories: (TemplateCategory | 'all')[] = [
   'all',
-  'tech',
-  'non-tech',
   'fresher',
-  'management',
-  'design',
-  'finance',
-  'general',
+  'tech',
+  'professional',
+  'creative',
 ];
 
 const TemplateGallery: React.FC = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // 🔐 TEMP: premium flag (later backend se ayega)
   const isPremiumUser = false;
@@ -68,7 +65,6 @@ const TemplateGallery: React.FC = () => {
           <TemplateCard
             key={template.id}
             template={template}
-            isLoggedIn={isAuthenticated}
             isPremiumUser={isPremiumUser}
             onSelect={handleSelectTemplate}
             onUpgrade={handleUpgrade}

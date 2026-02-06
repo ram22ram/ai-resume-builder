@@ -148,12 +148,15 @@ const CorporateTemplate: React.FC<Props> = ({ data }) => {
                 <section style={{ marginBottom: '30px' }}>
                     <h2 style={styles.sectionTitle}>Core Competencies</h2>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                         {/* Assuming skills is string[] */}
-                         {(Array.isArray(skills) ? skills : []).map((skill: string, i: number) => (
-                             <div key={i} style={{ borderLeft: `3px solid ${accentColor}`, paddingLeft: '8px' }}>
-                                 {skill}
-                             </div>
-                         ))}
+                         {/* Assuming skills is string[] or {name}[] */}
+                         {(Array.isArray(skills) ? skills : []).map((skill: any, i: number) => {
+                             const name = typeof skill === 'string' ? skill : skill.name;
+                             return (
+                                 <div key={i} style={{ borderLeft: `3px solid ${accentColor}`, paddingLeft: '8px' }}>
+                                     {name}
+                                 </div>
+                             );
+                         })}
                     </div>
                 </section>
             )}

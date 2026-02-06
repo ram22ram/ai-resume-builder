@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types';
+import { ResumeData } from '../../types';
 import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
@@ -7,14 +7,8 @@ interface Props {
 }
 
 const SimpleTemplate: React.FC<Props> = ({ data }) => {
-  const getSection = (type: ResumeSection['type']) =>
-    data.sections.find((s) => s.type === type && s.isVisible)?.content;
-
-  const personal = getSection('personal') || {};
-  const summary = getSection('summary') || '';
-  const experience = getSection('experience') || [];
-  const education = getSection('education') || [];
-  const skills = getSection('skills') || [];
+  const personal = data.sections.find(s => s.type === 'personal')?.content || {};
+  const bodySections = data.sections.filter(s => s.type !== 'personal' && s.isVisible);
 
   const styles = {
     headerBorder: {
@@ -33,7 +27,7 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
       fontSize: '10pt',
       color: '#4b5563',
       display: 'flex' as const,
-        flexWrap: 'wrap' as const,
+      flexWrap: 'wrap' as const,
       gap: '12px',
     },
     sectionHeader: {
@@ -61,6 +55,122 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
     }
   };
 
+  const renderSection = (section: any) => {
+      const items = Array.isArray(section.content) ? section.content : [];
+      
+      // SUMMARY
+      if (section.type === 'summary') {
+          if (!section.content) return null;
+           return (
+             <section key={section.id}>
+               <div style={styles.sectionHeader}>{section.title}</div>
+               <p style={{ margin: 0, color: '#4b5563', lineHeight: 1.6 }}>{section.content}</p>
+             </section>
+           );
+      }
+
+      // EDUCATION
+      if (section.type === 'education') {
+          return (
+             <section key={section.id}>
+               <div style={styles.sectionHeader}>{section.title}</div>
+               {items.map((edu: any, i: number) => (
+                 <div key={i} style={{ marginBottom: '12px' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                     <div style={styles.itemTitle}>{edu.institution}</div>
+                     <div style={styles.date}>{edu.date || edu.year || `${edu.startDate || ''} - ${edu.endDate || ''}`}</div>
+                   </div>
+                   <div style={styles.itemSubtitle}>
+                     {edu.degree} {edu.fieldOfStudy ? `in ${edu.fieldOfStudy}` : ''}
+                   </div>
+                   {(edu.score || edu.grade) && <div style={{ fontSize: '10pt', fontWeight: 500 }}>Grade: {edu.score || edu.grade}</div>}
+                 </div>
+               ))}
+             </section>
+          );
+      }
+
+      // EXPERIENCE
+      if (section.type === 'experience') {
+          return (
+             <section key={section.id}>
+               <div style={styles.sectionHeader}>{section.title}</div>
+               {items.map((exp: any, i: number) => (
+                 <div key={i} style={{ marginBottom: '15px' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                     <div style={styles.itemTitle}>{exp.role || exp.position}</div>
+                     <div style={styles.date}>{exp.date || `${exp.startDate || ''} - ${exp.endDate || ''}`}</div>
+                   </div>
+                   <div style={{ ...styles.itemSubtitle, fontWeight: 500 }}>{exp.company}</div>
+                   {exp.description && (
+                     <p style={{ margin: '4px 0 0 0', fontSize: '10pt', color: '#4b5563', lineHeight: 1.5 }}>
+                       {exp.description}
+                     </p>
+                   )}
+                 </div>
+               ))}
+             </section>
+          );
+      }
+
+      // PROJECTS
+      if (section.type === 'projects') {
+          return (
+             <section key={section.id}>
+               <div style={styles.sectionHeader}>{section.title}</div>
+               {items.map((proj: any, i: number) => (
+                 <div key={i} style={{ marginBottom: '12px' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                     <div style={styles.itemTitle}>
+                         {proj.title} {proj.link && <a href={proj.link} style={{ fontSize: '9pt', color: '#2563eb', fontWeight: 'normal' }}>(Link)</a>}
+                     </div>
+                   </div>
+                   <div style={{ fontSize: '10pt', color: '#374151', fontStyle: 'italic', marginBottom: '4px' }}>{proj.tech}</div>
+                   <p style={{ margin: 0, fontSize: '10pt', color: '#4b5563', lineHeight: 1.5 }}>{proj.description}</p>
+                 </div>
+               ))}
+             </section>
+          );
+      }
+
+      // SKILLS
+      if (section.type === 'skills') {
+          return (
+             <section key={section.id}>
+               <div style={styles.sectionHeader}>{section.title}</div>
+               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                 {items.map((skill: any, i: number) => {
+                     const name = typeof skill === 'string' ? skill : skill.name;
+                     const level = skill.level ? ` (${skill.level})` : '';
+                     return (
+                         <span key={i} style={{ background: '#f3f4f6', padding: '4px 8px', borderRadius: '4px', fontSize: '10pt', color: '#374151' }}>
+                             {name}{level}
+                         </span>
+                     );
+                 })}
+               </div>
+             </section>
+          );
+      }
+
+      // DEFAULT / CUSTOM
+      return (
+         <section key={section.id}>
+           <div style={styles.sectionHeader}>{section.title}</div>
+           {items.map((item: any, i: number) => (
+             <div key={i} style={{ marginBottom: '12px' }}>
+               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                 <div style={styles.itemTitle}>{item.title}</div>
+                 <div style={styles.date}>{item.date}</div>
+               </div>
+               <div style={styles.itemSubtitle}>{item.subtitle}</div>
+               <p style={{ margin: '4px 0 0 0', fontSize: '10pt', color: '#4b5563' }}>{item.description}</p>
+             </div>
+           ))}
+         </section>
+      );
+  };
+
   return (
     <div style={{ ...standardStyles.page, fontFamily: standardStyles.fonts.sans }}>
       {/* HEADER */}
@@ -70,67 +180,12 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
           {personal.jobTitle}
         </div>
         <div style={styles.contact}>
-          {[personal.email, personal.phone, personal.location, personal.linkedin].filter(Boolean).join('  •  ')}
+          {[personal.email, personal.phone, personal.address].filter(Boolean).join('  •  ')}
         </div>
       </div>
 
-      {/* SUMMARY */}
-      {summary && (
-        <section>
-          <div style={styles.sectionHeader}>Profile</div>
-          <p style={{ margin: 0, color: '#4b5563', lineHeight: 1.6 }}>{summary}</p>
-        </section>
-      )}
-
-      {/* EDUCATION - Clean List */}
-      {education.length > 0 && (
-        <section>
-          <div style={styles.sectionHeader}>Education</div>
-          {education.map((edu: any, i: number) => (
-            <div key={i} style={{ marginBottom: '12px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div style={styles.itemTitle}>{edu.institution}</div>
-                <div style={styles.date}>{edu.startDate} – {edu.endDate}</div>
-              </div>
-              <div style={styles.itemSubtitle}>
-                {edu.degree} {edu.fieldOfStudy ? `in ${edu.fieldOfStudy}` : ''}
-              </div>
-              {edu.score && <div style={{ fontSize: '10pt', fontWeight: 500 }}>Grade: {edu.score}</div>}
-            </div>
-          ))}
-        </section>
-      )}
-
-      {/* EXPERIENCE - Clean Blocks */}
-      {experience.length > 0 && (
-        <section>
-          <div style={styles.sectionHeader}>Experience</div>
-          {experience.map((exp: any, i: number) => (
-            <div key={i} style={{ marginBottom: '15px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div style={styles.itemTitle}>{exp.position}</div>
-                <div style={styles.date}>{exp.startDate} – {exp.isCurrent ? 'Present' : exp.endDate}</div>
-              </div>
-              <div style={{ ...styles.itemSubtitle, fontWeight: 500 }}>{exp.company}</div>
-              {exp.description && (
-                <p style={{ margin: '4px 0 0 0', fontSize: '10pt', color: '#4b5563', lineHeight: 1.5 }}>
-                  {exp.description}
-                </p>
-              )}
-            </div>
-          ))}
-        </section>
-      )}
-
-      {/* SKILLS - Simple Clean Text */}
-      {skills.length > 0 && (
-        <section>
-          <div style={styles.sectionHeader}>Skills</div>
-          <p style={{ margin: 0, lineHeight: 1.6 }}>
-            {Array.isArray(skills) ? skills.join('  •  ') : skills}
-          </p>
-        </section>
-      )}
+      {/* DYNAMIC SECTIONS */}
+      {bodySections.map((section) => renderSection(section))}
     </div>
   );
 };

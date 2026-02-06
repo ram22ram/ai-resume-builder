@@ -15,19 +15,20 @@ export const useDownloadGuard = () => {
 
         const isPremiumTemplate = template?.isPremium;
 
-        // 1️⃣ Not logged in → login
-        if (!user) {
-            navigate('/login', {
-                state: { intent: 'download' },
-            });
-            return;
+        // 1. Check Premium Restrictions
+        if (isPremiumTemplate) {
+            if (!user) {
+                navigate('/login', { state: { intent: 'download' } });
+                return;
+            }
+            if (!user.isPremium) {
+                navigate('/pricing');
+                return;
+            }
         }
 
-        // 2️⃣ Premium template but no plan
-        if (isPremiumTemplate && !user.isPremium) {
-            navigate('/pricing');
-            return;
-        }
+        // 2. Allow Download (Free or Premium/Subscribed)
+        downloadFn();
 
         // 3️⃣ Allowed
         downloadFn();
