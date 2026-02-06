@@ -14,10 +14,18 @@ const BuilderInner = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // 1. Handle ATS Data
     if (location.state?.resumeText) {
       loadFromATS(location.state.resumeText);
     }
-  }, [location.state, loadFromATS]);
+
+    // 2. Handle Template Selection from URL
+    const params = new URLSearchParams(location.search);
+    const templateId = params.get('template');
+    if (templateId) {
+       setSelectedTemplate(templateId);
+    }
+  }, [location.state, location.search, loadFromATS, setSelectedTemplate]);
 
   useAutoSave('resume_draft', resume);
 

@@ -23,6 +23,7 @@ import RefundPolicy from './components/RefundPolicy';
 
 import AuthSuccess from './pages/AuthSuccess';
 import MarketingPage from './pages/MarketingPage';
+import TemplateSelectPage from './pages/TemplateSelectPage';
 
 /* ================= ROUTE GUARDS ================= */
 import ProtectedRoute from './components/ProtectedRoute';
@@ -68,6 +69,9 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              {/* ================= TEMPLATES ================= */}
+              <Route path="/templates" element={<TemplateSelectPage />} />
 
               {/* ================= RESUME BUILDER (CORE) ================= */}
               <Route
