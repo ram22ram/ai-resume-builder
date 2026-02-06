@@ -1,10 +1,12 @@
 import React from 'react';
 import { ResumeData, ResumeSection } from '../../types';
+import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
 }
 
+// "The DevOps" - Dark accents, Code typography, Terminal feel
 const PremiumTech: React.FC<Props> = ({ data }) => {
   const getSection = (type: ResumeSection['type']) =>
     data.sections.find((s) => s.type === type && s.isVisible)?.content;
@@ -19,145 +21,114 @@ const PremiumTech: React.FC<Props> = ({ data }) => {
   return (
     <div
       style={{
-        width: '210mm',
-        minHeight: '297mm',
-        backgroundColor: '#fff',
-        color: '#1a202c',
-        fontFamily: '"Fira Code", "Roboto Mono", "Consolas", monospace',
-        fontSize: '9.5pt',
-        lineHeight: 1.5,
-        position: 'relative',
-        boxSizing: 'border-box',
-        padding: '0'
+        ...standardStyles.page,
+        fontFamily: standardStyles.fonts.mono,
+        color: '#2d3748',
+        padding: 0, 
       }}
     >
-      {/* Header Bar */}
+      {/* Header - Terminal Style */}
       <header style={{ 
-        backgroundColor: '#2d3748', 
-        color: '#e2e8f0', 
-        padding: '30px 40px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
+        backgroundColor: '#1a202c', 
+        color: '#4fd1c5', 
+        padding: '25mm 20mm 15mm 20mm',
+        fontFamily: standardStyles.fonts.mono,
+        borderBottom: '4px solid #48bb78'
       }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: '24pt', fontWeight: 700, color: '#63b3ed' }}>
-            {`> ${personal.fullName || 'User_Name'}`}
-          </h1>
-          <div style={{ marginTop: '5px', fontSize: '11pt', color: '#a0aec0' }}>
-            {`// ${personal.jobTitle || 'Developer'}`}
-          </div>
-        </div>
-        <div style={{ textAlign: 'right', fontSize: '9pt', lineHeight: '1.6' }}>
-          {personal.email && <div>{`const email = '${personal.email}';`}</div>}
-          {personal.phone && <div>{`const phone = '${personal.phone}';`}</div>}
-          {personal.github && <div>{`const github = '${personal.github}';`}</div>}
-          {personal.linkedin && <div>{`const linkedin = '${personal.linkedin}';`}</div>}
+        <div style={{ opacity: 0.7, fontSize: '9pt', marginBottom: '5px' }}>// START_SESSION: {personal.jobTitle || 'DEVELOPER'}</div>
+        <h1 style={{ margin: 0, fontSize: '26pt', color: '#fff', letterSpacing: '-0.5px' }}>
+          {`> ${personal.fullName || 'User_Name'}`} <span style={{ animation: 'blink 1s step-end infinite' }}>_</span>
+        </h1>
+        
+        <div style={{ marginTop: '15px', color: '#cbd5e0', fontSize: '9pt', display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+             {personal.email && <span>const email = '{personal.email}';</span>}
+             {personal.phone && <span>const phone = '{personal.phone}';</span>}
+             {personal.github && <span>const github = '{personal.github}';</span>}
+             {personal.linkedin && <span>const linkedIn = 'profile';</span>}
         </div>
       </header>
 
-      <div style={{ padding: '30px 40px' }}>
+      <div style={{ padding: '20mm' }}>
         
-        {/* Summary */}
-        {summary && (
-          <section style={{ marginBottom: '25px' }}>
-            <h2 style={{ fontSize: '12pt', color: '#2b6cb0', borderBottom: '2px solid #edf2f7', paddingBottom: '5px', marginBottom: '10px' }}>
-              /** READ_ME */
-            </h2>
-            <p style={{ margin: 0, textAlign: 'justify', fontFamily: '"Inter", sans-serif' }}>{summary}</p>
-          </section>
-        )}
-
-        {/* Skills - Top for functionality in Tech resumes often */}
+        {/* Skills - Array Style */}
         {skills.length > 0 && (
-          <section style={{ marginBottom: '25px' }}>
-             <h2 style={{ fontSize: '12pt', color: '#2b6cb0', borderBottom: '2px solid #edf2f7', paddingBottom: '5px', marginBottom: '10px' }}>
-              import &#123; Skills &#125; from 'Expertise'
-            </h2>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {skills.map((skill: string, index: number) => (
-                <span key={index} style={{ 
-                  backgroundColor: '#ebf8ff', 
-                  color: '#2c5282',
-                  padding: '3px 8px', 
-                  borderRadius: '4px',
-                  fontSize: '9pt',
-                  fontWeight: 600,
-                  fontFamily: '"Inter", sans-serif'
-                }}>
-                  {skill}
-                </span>
-              ))}
+          <section style={{ marginBottom: '25px', backgroundColor: '#f7fafc', padding: '15px', borderRadius: '4px', border: '1px solid #e2e8f0' }}>
+            <div style={{ color: '#805ad5', fontWeight: 700, marginBottom: '8px' }}>const techStack = [</div>
+            <div style={{ paddingLeft: '20px', display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
+                {(Array.isArray(skills) ? skills : []).map((skill: string, i: number) => (
+                    <span key={i} style={{ color: '#d53f8c' }}>
+                        '{skill}'{i < skills.length - 1 ? ',' : ''}
+                    </span>
+                ))}
             </div>
+            <div style={{ color: '#805ad5', fontWeight: 700 }}>];</div>
           </section>
         )}
 
-        {/* Projects */}
-        {projects.length > 0 && (
-          <section style={{ marginBottom: '25px' }}>
-            <h2 style={{ fontSize: '12pt', color: '#2b6cb0', borderBottom: '2px solid #edf2f7', paddingBottom: '5px', marginBottom: '10px' }}>
-              git log --projects
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-              {projects.map((proj: any, index: number) => (
-                <div key={index} style={{ border: '1px solid #e2e8f0', borderRadius: '4px', padding: '15px' }}>
-                  <div style={{ fontWeight: 'bold', fontSize: '11pt', color: '#2d3748', marginBottom: '5px' }}>
-                    {proj.name}
-                  </div>
-                  <p style={{ margin: '0 0 10px 0', fontSize: '9pt', color: '#4a5568', fontFamily: '"Inter", sans-serif' }}>
-                    {proj.description}
-                  </p>
-                  {proj.technologies && (
-                    <div style={{ fontSize: '8.5pt', color: '#718096' }}>
-                      Stack: [{proj.technologies.join(', ')}]
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Experience */}
+        {/* Experience - Git Log Style */}
         {experience.length > 0 && (
-          <section style={{ marginBottom: '25px' }}>
-            <h2 style={{ fontSize: '12pt', color: '#2b6cb0', borderBottom: '2px solid #edf2f7', paddingBottom: '5px', marginBottom: '10px' }}>
-              class WorkExperience extends Career
-            </h2>
-            {experience.map((exp: any, index: number) => (
-              <div key={index} style={{ marginBottom: '20px', paddingLeft: '15px', borderLeft: '2px solid #cbd5e0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ fontSize: '11pt', color: '#2d3748' }}>{exp.position}</strong>
-                  <span style={{ fontSize: '9pt', color: '#718096' }}>
-                    {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}
-                  </span>
-                </div>
-                <div style={{ color: '#4a5568', marginBottom: '5px', fontWeight: 600 }}>@{exp.company}</div>
-                {exp.description && (
-                  <p style={{ margin: 0, fontSize: '9.5pt', fontFamily: '"Inter", sans-serif' }}>{exp.description}</p>
-                )}
-              </div>
-            ))}
+          <section style={{ marginBottom: '30px' }}>
+             <h2 style={{ fontSize: '14pt', borderBottom: '2px solid #cbd5e0', paddingBottom: '5px', marginBottom: '15px' }}>
+                 git log --experience
+             </h2>
+             {experience.map((exp: any, i: number) => (
+                 <div key={i} style={{ marginBottom: '20px', borderLeft: '2px dashed #cbd5e0', paddingLeft: '15px' }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                        <div style={{ fontWeight: 700, fontSize: '11pt', color: '#2b6cb0' }}>commit: {exp.position}</div>
+                        <div style={{ fontSize: '9pt', color: '#718096' }}>{exp.startDate} - {exp.endDate}</div>
+                     </div>
+                     <div style={{ fontSize: '10pt', fontWeight: 600, color: '#4a5568', marginBottom: '5px' }}>
+                         Author: @{exp.company}
+                     </div>
+                     {exp.description && (
+                         <div style={{ fontSize: '9.5pt', lineHeight: 1.5, color: '#2d3748' }}>
+                             {exp.description}
+                         </div>
+                     )}
+                 </div>
+             ))}
           </section>
         )}
 
-        {/* Education */}
-        {education.length > 0 && (
-          <section style={{ marginBottom: '20px' }}>
-            <h2 style={{ fontSize: '12pt', color: '#2b6cb0', borderBottom: '2px solid #edf2f7', paddingBottom: '5px', marginBottom: '10px' }}>
-              Education.init()
-            </h2>
-            {education.map((edu: any, index: number) => (
-              <div key={index} style={{ marginBottom: '10px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <strong style={{ fontSize: '10.5pt' }}>{edu.institution}</strong>
-                  <span style={{ fontSize: '9pt' }}>{edu.startDate} - {edu.endDate}</span>
-                </div>
-                <div style={{ fontFamily: '"Inter", sans-serif' }}>{edu.degree}</div>
-              </div>
-            ))}
-          </section>
+        {/* Projects - Function Style */}
+        {projects.length > 0 && (
+           <section style={{ marginBottom: '30px' }}>
+               <h2 style={{ fontSize: '14pt', borderBottom: '2px solid #cbd5e0', paddingBottom: '5px', marginBottom: '15px' }}>
+                   function buildProjects() &#123;
+               </h2>
+               {projects.map((proj: any, i: number) => (
+                   <div key={i} style={{ marginBottom: '15px', paddingLeft: '15px' }}>
+                       <div style={{ fontWeight: 700, fontSize: '11pt' }}>
+                           return <span style={{ color: '#3182ce' }}>{proj.title}</span>();
+                       </div>
+                       <p style={{ margin: '4px 0 6px 0', fontSize: '9.5pt' }}>{proj.description}</p>
+                       {proj.technologies && (
+                           <div style={{ fontSize: '8.5pt', color: '#718096' }}>
+                               // Stack: {Array.isArray(proj.technologies) ? proj.technologies.join(', ') : proj.technologies}
+                           </div>
+                       )}
+                   </div>
+               ))}
+               <div style={{ fontSize: '14pt', color: '#cbd5e0' }}>&#125;</div>
+           </section>
         )}
+
+        {/* Education - Bottom */}
+        {education.length > 0 && (
+           <section>
+              <h2 style={{ fontSize: '14pt', borderBottom: '2px solid #cbd5e0', paddingBottom: '5px', marginBottom: '15px' }}>
+                  Education
+              </h2>
+              {education.map((edu: any, i: number) => (
+                  <div key={i} style={{ marginBottom: '10px' }}>
+                      <div style={{ fontWeight: 700 }}>{edu.institution}</div>
+                      <div style={{ fontSize: '9.5pt' }}>{edu.degree}</div>
+                      <div style={{ fontSize: '9pt', color: '#718096' }}>{edu.startDate} - {edu.endDate}</div>
+                  </div>
+              ))}
+           </section>
+        )}
+
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ResumeData, ResumeSection } from '../../types';
+import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
@@ -16,206 +17,154 @@ const ClassicTemplate: React.FC<Props> = ({ data }) => {
   const skills = getSection('skills') || [];
   const projects = getSection('projects') || [];
 
-  const theme = data.theme || {
-    accentColor: '#000000',
-    fontFamily: 'serif',
-    textColor: '#000000',
+  // Helper styles
+  const styles = {
+    sectionTitle: {
+      fontSize: '12pt',
+      fontWeight: 'bold',
+      textTransform: 'uppercase' as const,
+      borderBottom: '1px solid #000',
+      marginBottom: '8px',
+      paddingBottom: '2px',
+      letterSpacing: '0.5px',
+    },
+    bold: { fontWeight: 'bold' },
+    italic: { fontStyle: 'italic' },
+    bulletList: {
+      margin: '4px 0 8px 18px',
+      padding: 0,
+    },
+    bulletItem: {
+      marginBottom: '2px',
+    }
   };
 
   return (
     <div
       style={{
-        width: '210mm',
-        minHeight: '297mm',
-        padding: '20mm',
-        backgroundColor: 'white',
-        color: '#000',
-        fontFamily: '"Times New Roman", Times, serif',
-        fontSize: '11pt',
-        lineHeight: 1.4,
-        boxSizing: 'border-box',
+        ...standardStyles.page,
+        fontFamily: standardStyles.fonts.serif,
       }}
     >
-      {/* Header */}
-      <header
-        style={{
-          borderBottom: '1px solid #000',
-          paddingBottom: '10px',
-          marginBottom: '20px',
-          textAlign: 'center',
-        }}
-      >
-        <h1
-          style={{
-            margin: '0 0 5px 0',
-            fontSize: '24pt',
-            textTransform: 'uppercase',
-            fontWeight: 'bold',
-            letterSpacing: '1px',
-          }}
-        >
-          {personal.fullName || 'Your Name'}
+      {/* 1. Header: Name & Contact - Centered */}
+      <header style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <h1 style={{ 
+          fontSize: '22pt', 
+          fontWeight: 'bold', 
+          textTransform: 'uppercase', 
+          marginBottom: '6px',
+          letterSpacing: '1px',
+          margin: '0 0 6px 0'
+        }}>
+          {personal.fullName || 'YOUR NAME'}
         </h1>
-        <div style={{ fontSize: '12pt', fontWeight: 'bold', marginBottom: '5px' }}>
-          {personal.jobTitle}
-        </div>
-        <div style={{ fontSize: '10pt' }}>
-          {[personal.email, personal.phone, personal.address, personal.linkedin]
-            .filter(Boolean)
-            .join(' | ')}
+        
+        {/* Contact Info Row */}
+        <div style={{ fontSize: '10pt', display: 'flex', justifyContent: 'center',flexWrap: 'wrap', gap: '5px' }}>
+          {[
+            personal.email, 
+            personal.phone, 
+            personal.linkedin, 
+            personal.address
+          ].filter(Boolean).map((item, i, arr) => (
+             <React.Fragment key={i}>
+                <span>{item}</span>
+                {i < arr.length - 1 && <span> | </span>}
+             </React.Fragment>
+          ))}
         </div>
       </header>
 
-      {/* Summary */}
-      {summary && (
-        <section style={{ marginBottom: '15px' }}>
-          <h2
-            style={{
-              fontSize: '12pt',
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              borderBottom: '1px solid #ccc',
-              marginBottom: '8px',
-              paddingBottom: '2px',
-            }}
-          >
-            Professional Summary
-          </h2>
-          <p style={{ margin: 0, textAlign: 'justify' }}>{summary}</p>
-        </section>
-      )}
-
-      {/* Education - Often prioritized in Indian formats for freshers, but standard placement here */}
+      {/* 2. Education - CRITICAL for Freshers - Table Style */}
       {education.length > 0 && (
-        <section style={{ marginBottom: '15px' }}>
-          <h2
-            style={{
-              fontSize: '12pt',
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              borderBottom: '1px solid #ccc',
-              marginBottom: '8px',
-              paddingBottom: '2px',
-            }}
-          >
-            Education
-          </h2>
+        <section style={{ marginBottom: '16px' }}>
+          <h2 style={styles.sectionTitle}>Education</h2>
           {education.map((edu: any, index: number) => (
-            <div key={index} style={{ marginBottom: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                <span>{edu.institution}</span>
-                <span>
-                  {edu.startDate} – {edu.endDate}
-                </span>
+            <div key={index} style={{ marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ flex: 1 }}>
+                <span style={styles.bold}>{edu.degree}</span>
+                {edu.fieldOfStudy && <span> in {edu.fieldOfStudy}</span>}
+                <div style={styles.italic}>{edu.school}</div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontStyle: 'italic' }}>
-                <span>{edu.degree} {edu.field ? `in ${edu.field}` : ''}</span>
-                {edu.gpa && <span>GPA/Percentage: {edu.gpa}</span>}
+              <div style={{ textAlign: 'right', minWidth: '100px' }}>
+                <div style={styles.bold}>
+                  {edu.startDate} - {edu.endDate}
+                </div>
+                {/* Visual Emphasis on Marks */}
+                {edu.score && (
+                  <div style={{ fontSize: '10pt',fontWeight: 'bold' }}>
+                    CGPA/Percentage: {edu.score}
+                  </div>
+                )}
               </div>
             </div>
           ))}
         </section>
       )}
 
-      {/* Experience */}
-      {experience.length > 0 && (
-        <section style={{ marginBottom: '15px' }}>
-          <h2
-            style={{
-              fontSize: '12pt',
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              borderBottom: '1px solid #ccc',
-              marginBottom: '8px',
-              paddingBottom: '2px',
-            }}
-          >
-            Work Experience
-          </h2>
-          {experience.map((exp: any, index: number) => (
-            <div key={index} style={{ marginBottom: '12px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                <span>{exp.position}</span>
-                <span>
-                  {exp.startDate} – {exp.isCurrent ? 'Present' : exp.endDate}
-                </span>
+      {/* 3. Tech Skills */}
+      {skills.length > 0 && (
+        <section style={{ marginBottom: '16px' }}>
+          <h2 style={styles.sectionTitle}>Technical Skills</h2>
+          <div style={{ fontSize: '10.5pt', lineHeight: 1.6 }}>
+             {/* Note: In a real "classic" resume, we might categorize. 
+                 Since data is a flat list, we join them clearly. */}
+             <strong>Core Competencies: </strong> 
+             {Array.isArray(skills) ? skills.join(', ') : skills}
+          </div>
+        </section>
+      )}
+
+      {/* 4. Projects - Essential for Students */}
+      {projects.length > 0 && (
+        <section style={{ marginBottom: '16px' }}>
+          <h2 style={styles.sectionTitle}>Academic Projects</h2>
+          {projects.map((proj: any, index: number) => (
+            <div key={index} style={{ marginBottom: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                <span style={styles.bold}>{proj.title}</span>
+                {proj.link && (
+                  <a href={proj.link} style={{ color: 'black', textDecoration: 'none', fontSize: '9pt' }}>
+                    [Link]
+                  </a>
+                )}
               </div>
-              <div style={{ fontStyle: 'italic', marginBottom: '4px' }}>{exp.company}</div>
-              {exp.description && (
-                <div style={{ whiteSpace: 'pre-line', textAlign: 'justify' }}>
-                   {exp.description.split('\n').map((line: string, i: number) => {
-                      const trimmed = line.trim();
-                      if (!trimmed) return null;
-                      // Check if line starts with a bullet indicator or just treat all lines as bullets for standard look
-                      const isBullet = trimmed.startsWith('-') || trimmed.startsWith('•') || trimmed.startsWith('*');
-                      const content = isBullet ? trimmed.substring(1).trim() : trimmed;
-                      return (
-                        <div key={i} style={{ display: 'flex', marginBottom: '2px' }}>
-                          <span style={{ marginRight: '8px' }}>•</span>
-                          <span style={{ flex: 1 }}>{content}</span>
-                        </div>
-                      );
-                   })}
-                </div>
+              
+              {/* Fallback description or bullets */}
+              {proj.description && (
+                <ul style={styles.bulletList}>
+                   {proj.description.split('.').filter((s: string) => s.trim().length > 0).map((stmt: string, i: number) => (
+                      <li key={i} style={styles.bulletItem}>{stmt.trim()}.</li>
+                   ))}
+                </ul>
               )}
             </div>
           ))}
         </section>
       )}
 
-       {/* Projects */}
-       {projects.length > 0 && (
-        <section style={{ marginBottom: '15px' }}>
-          <h2
-            style={{
-              fontSize: '12pt',
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              borderBottom: '1px solid #ccc',
-              marginBottom: '8px',
-              paddingBottom: '2px',
-            }}
-          >
-            Projects
-          </h2>
-          {projects.map((project: any, index: number) => (
-            <div key={index} style={{ marginBottom: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                <span>{project.name}</span>
-                {project.link && (
-                  <a href={project.link} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'underline', fontSize: '9pt' }}>
-                    View Project
-                  </a>
-                )}
+      {/* 5. Experience / Internships */}
+      {experience.length > 0 && (
+        <section style={{ marginBottom: '16px' }}>
+          <h2 style={styles.sectionTitle}>Internships & Experience</h2>
+          {experience.map((exp: any, index: number) => (
+            <div key={index} style={{ marginBottom: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={styles.bold}>{exp.position}</span>
+                <span style={styles.bold}>{exp.startDate} - {exp.endDate}</span>
               </div>
-              <div style={{ fontStyle: 'italic', fontSize: '10pt', marginBottom: '2px' }}>
-                 {project.technologies && project.technologies.join(', ')}
-              </div>
-              <p style={{ margin: 0, textAlign: 'justify' }}>{project.description}</p>
+              <div style={styles.italic}>{exp.company} | {exp.location}</div>
+              
+              {exp.description && (
+                <ul style={styles.bulletList}>
+                    {/* Basic sentence splitting for bullets if not already formatted */}
+                    {exp.description.split('.').filter((s:string) => s.trim().length > 0).map((stmt:string, i:number) => (
+                       <li key={i} style={styles.bulletItem}>{stmt.trim()}.</li>
+                    ))}
+                </ul>
+              )}
             </div>
           ))}
-        </section>
-      )}
-
-      {/* Skills */}
-      {skills.length > 0 && (
-        <section>
-          <h2
-            style={{
-              fontSize: '12pt',
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              borderBottom: '1px solid #ccc',
-              marginBottom: '8px',
-              paddingBottom: '2px',
-            }}
-          >
-            Technical Skills
-          </h2>
-          <div style={{ lineHeight: 1.5 }}>
-            {/* If skills are simple strings, join them. If categories, handle them. Assuming string[] for now per types.ts */}
-            {skills.join(' • ')}
-          </div>
         </section>
       )}
     </div>

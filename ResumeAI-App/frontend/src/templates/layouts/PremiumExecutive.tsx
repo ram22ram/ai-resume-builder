@@ -1,50 +1,138 @@
+import React from 'react';
 import { ResumeData, ResumeSection } from '../../types';
+import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
 }
 
-const PremiumExecutive = ({ data }: Props) => {
-  const get = (type: ResumeSection['type']) =>
-    data.sections.find((s) => s.type === type)?.content;
+// "The Executive" - Center aligned, serif, elegant, high hierarchy
+const PremiumExecutive: React.FC<Props> = ({ data }) => {
+  const getSection = (type: ResumeSection['type']) =>
+    data.sections.find((s) => s.type === type && s.isVisible)?.content;
 
-  const personal = (get('personal') || {}) as {
-    fullName?: string;
-    jobTitle?: string;
+  const personal = getSection('personal') || {};
+  const summary = getSection('summary') || '';
+  const experience = getSection('experience') || [];
+  const education = getSection('education') || [];
+  const skills = getSection('skills') || [];
+
+
+  const styles = {
+    header: {
+        textAlign: 'center' as const,
+        marginBottom: '30px',
+        borderBottom: 'double 4px #000',
+        paddingBottom: '20px',
+    },
+    name: {
+        fontSize: '28pt',
+        fontFamily: standardStyles.fonts.serif,
+        textTransform: 'uppercase' as const,
+        letterSpacing: '3px',
+        fontWeight: 'normal' as const,
+        marginBottom: '10px',
+        margin: 0
+    },
+    title: {
+        fontSize: '11pt',
+        textTransform: 'uppercase' as const,
+        letterSpacing: '2px',
+        marginBottom: '10px',
+        fontWeight: 600
+    },
+    sectionTitle: {
+        textAlign: 'center' as const,
+        fontSize: '12pt',
+        textTransform: 'uppercase' as const,
+        letterSpacing: '2px',
+        fontWeight: 600,
+        marginBottom: '15px',
+        marginTop: '25px',
+        color: '#222'
+    },
+    separator: {
+        width: '40px',
+        height: '2px',
+        backgroundColor: '#b49b57', // Gold/Bronze
+        margin: '5px auto 20px auto'
+    }
   };
 
-  const summary = (get('summary') || '') as string;
-  const experience = (get('experience') || []) as {
-    position: string;
-    company: string;
-    description?: string;
-  }[];
-
   return (
-    <div style={{ fontFamily: 'Helvetica', fontSize: 12 }}>
-      <header style={{ marginBottom: 12 }}>
-        <h1>{personal.fullName || 'Your Name'}</h1>
-        <strong>{personal.jobTitle || ''}</strong>
+    <div style={{ ...standardStyles.page, fontFamily: 'Georgia, serif' }}>
+      
+      {/* Header */}
+      <header style={styles.header}>
+         <h1 style={styles.name}>{personal.fullName || 'YOUR NAME'}</h1>
+         <div style={styles.title}>{personal.jobTitle}</div>
+         <div style={{ fontSize: '9pt', display: 'flex', justifyContent: 'center', gap: '20px', fontStyle: 'italic' }}>
+             {[personal.email, personal.phone, personal.location].filter(Boolean).map((c, i) => (
+                 <span key={i}>{c}</span>
+             ))}
+         </div>
+         {personal.linkedin && <div style={{ fontSize: '9pt', marginTop: '5px' }}>{personal.linkedin}</div>}
       </header>
 
+      {/* Summary */}
       {summary && (
         <section>
-          <h3>Executive Summary</h3>
-          <p>{summary}</p>
+             <div style={styles.sectionTitle}>Executive Profile</div>
+             <div style={styles.separator}></div>
+             <p style={{ textAlign: 'center', margin: '0 20px', lineHeight: 1.6, fontStyle: 'italic' }}>{summary}</p>
         </section>
       )}
 
+      {/* Experience - Center-ish or Classic */}
       {experience.length > 0 && (
-        <section>
-          <h3>Leadership Experience</h3>
-          {experience.map((exp, i) => (
-            <div key={i} style={{ marginBottom: 8 }}>
-              <strong>{exp.position}</strong> – {exp.company}
-              {exp.description && <div>{exp.description}</div>}
-            </div>
-          ))}
-        </section>
+          <section>
+              <div style={styles.sectionTitle}>Professional Experience</div>
+              <div style={styles.separator}></div>
+              {experience.map((exp: any, i: number) => (
+                  <div key={i} style={{ marginBottom: '20px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '1px solid #eee', paddingBottom: '4px', marginBottom: '8px' }}>
+                          <span style={{ fontWeight: 'bold', fontSize: '11pt' }}>{exp.position}</span>
+                          <span style={{ fontSize: '10pt', fontStyle: 'italic' }}>{exp.startDate} – {exp.endDate}</span>
+                      </div>
+                      <div style={{ fontWeight: 600, fontSize: '10pt', marginBottom: '6px' }}>{exp.company} | {exp.location}</div>
+                      {exp.description && (
+                          <div style={{ textAlign: 'justify', lineHeight: 1.5 }}>{exp.description}</div>
+                      )}
+                  </div>
+              ))}
+          </section>
       )}
+
+      {/* Education & Skills - Split */}
+      <div style={{ display: 'flex', gap: '40px', marginTop: '30px' }}>
+          <div style={{ flex: 1 }}>
+              {education.length > 0 && (
+                  <section>
+                      <div style={{ ...styles.sectionTitle, textAlign: 'left' }}>Education</div>
+                      <div style={{ ...styles.separator, margin: '5px 0 15px 0' }}></div>
+                      {education.map((edu: any, i: number) => (
+                          <div key={i} style={{ marginBottom: '10px' }}>
+                              <div style={{ fontWeight: 'bold' }}>{edu.institution}</div>
+                              <div>{edu.degree}</div>
+                              <div style={{ fontSize: '9pt', fontStyle: 'italic' }}>{edu.startDate} - {edu.endDate}</div>
+                          </div>
+                      ))}
+                  </section>
+              )}
+          </div>
+          <div style={{ flex: 1 }}>
+              {skills.length > 0 && (
+                  <section>
+                      <div style={{ ...styles.sectionTitle, textAlign: 'left' }}>Core Competencies</div>
+                      <div style={{ ...styles.separator, margin: '5px 0 15px 0' }}></div>
+                      <div style={{ lineHeight: 1.6 }}>
+                          {Array.isArray(skills) ? skills.join(', ') : skills}
+                      </div>
+                  </section>
+              )}
+          </div>
+      </div>
+
     </div>
   );
 };

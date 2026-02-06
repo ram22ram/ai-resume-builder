@@ -1,11 +1,12 @@
-
 import React from 'react';
 import { ResumeData, ResumeSection } from '../../types';
+import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
 }
 
+// "The Space Saver" - High density, Inter font, Grid-like
 const MinimalTemplate: React.FC<Props> = ({ data }) => {
   const getSection = (type: ResumeSection['type']) =>
     data.sections.find((s) => s.type === type && s.isVisible)?.content;
@@ -16,110 +17,129 @@ const MinimalTemplate: React.FC<Props> = ({ data }) => {
   const education = getSection('education') || [];
   const skills = getSection('skills') || [];
 
+  const styles = {
+    headerOneLine: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+      borderBottom: '2px solid #000',
+      paddingBottom: '10px',
+      marginBottom: '15px',
+    },
+    name: {
+      fontSize: '20pt',
+      fontWeight: 800,
+      margin: 0,
+      letterSpacing: '-0.5px',
+    },
+    contactSmall: {
+      fontSize: '9pt',
+      textAlign: 'right' as const,
+    },
+    sectionTitle: {
+      fontSize: '10pt',
+      fontWeight: 700,
+      textTransform: 'uppercase' as const,
+      width: '120px', // Fixed width for sidebar effect
+      flexShrink: 0,
+    },
+    row: {
+      display: 'flex',
+      marginBottom: '15px',
+    },
+    content: {
+      flex: 1,
+    }
+  };
+
   return (
-    <div
-      style={{
-        width: '210mm',
-        minHeight: '297mm',
-        padding: '20mm',
-        backgroundColor: 'white',
-        color: '#222',
-        fontFamily: '"Roboto", "Segoe UI", sans-serif',
-        fontSize: '10pt',
-        lineHeight: 1.6,
-        boxSizing: 'border-box',
-      }}
-    >
-      {/* Header - Left Aligned, Very Large Name */}
-      <header style={{ marginBottom: '30px' }}>
-        <h1
-          style={{
-            margin: '0 0 10px 0',
-            fontSize: '32pt',
-            fontWeight: 300,
-            letterSpacing: '-1px',
-            color: '#000',
-          }}
-        >
-          {personal.fullName || 'Your Name'}
-        </h1>
-        <div style={{ fontSize: '12pt', fontWeight: 500, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '15px' }}>
-          {personal.jobTitle}
+    <div style={{ ...standardStyles.page, fontFamily: standardStyles.fonts.modern, padding: '15mm' }}>
+      {/* 1. Header - Ultra Compact */}
+      <header style={styles.headerOneLine}>
+        <div>
+          <h1 style={styles.name}>{personal.fullName}</h1>
+          <div style={{ fontSize: '11pt', fontWeight: 500 }}>{personal.jobTitle}</div>
         </div>
-        <div style={{ fontSize: '9pt', color: '#666', display: 'flex', gap: '15px' }}>
-          {personal.email && <span>{personal.email}</span>}
-          {personal.phone && <span>{personal.phone}</span>}
-          {personal.location && <span>{personal.location}</span>}
-          {personal.linkedin && <span>{personal.linkedin}</span>}
+        <div style={styles.contactSmall}>
+          <div>{personal.email}</div>
+          <div>{personal.phone}</div>
+          <div>{personal.linkedin}</div>
         </div>
       </header>
 
-      {/* Summary */}
-      {summary && (
-        <section style={{ marginBottom: '30px' }}>
-          <p style={{ margin: 0, maxWidth: '85%' }}>{summary}</p>
-        </section>
+      {/* 2. Skills - Top Priority (Chips Style) */}
+      {skills.length > 0 && (
+        <div style={styles.row}>
+          <div style={styles.sectionTitle}>Key Skills</div>
+          <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {(Array.isArray(skills) ? skills : []).map((skill: string, i: number) => (
+              <span key={i} style={{ 
+                fontSize: '9pt', 
+                border: '1px solid #ddd', 
+                padding: '2px 8px', 
+                borderRadius: '4px',
+                fontWeight: 500 
+              }}>
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
       )}
 
-      {/* Layout Grid: Experience (Left) | Education & Skills (Right) */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
-        
-        {/* Left Column */}
-        <div>
-          {experience.length > 0 && (
-            <section style={{ marginBottom: '30px' }}>
-              <h2 style={{ fontSize: '10pt', textTransform: 'uppercase', letterSpacing: '2px', borderBottom: '1px solid #eee', paddingBottom: '5px', marginBottom: '15px' }}>
-                Experience
-              </h2>
-              {experience.map((exp: any, index: number) => (
-                <div key={index} style={{ marginBottom: '20px' }}>
-                  <div style={{ fontWeight: 600, fontSize: '11pt' }}>{exp.position}</div>
-                  <div style={{ fontSize: '10pt', color: '#555', marginBottom: '5px' }}>
-                    {exp.company} | {exp.startDate} – {exp.isCurrent ? 'Present' : exp.endDate}
-                  </div>
-                  {exp.description && (
-                    <p style={{ margin: 0, fontSize: '9.5pt', color: '#444' }}>{exp.description}</p>
-                  )}
-                </div>
-              ))}
-            </section>
-          )}
-        </div>
-
-        {/* Right Column */}
-        <div>
-           {education.length > 0 && (
-            <section style={{ marginBottom: '30px' }}>
-              <h2 style={{ fontSize: '10pt', textTransform: 'uppercase', letterSpacing: '2px', borderBottom: '1px solid #eee', paddingBottom: '5px', marginBottom: '15px' }}>
-                Education
-              </h2>
-              {education.map((edu: any, index: number) => (
-                <div key={index} style={{ marginBottom: '15px' }}>
-                  <div style={{ fontWeight: 600 }}>{edu.institution}</div>
+      {/* 3. Education - Compact */}
+      {education.length > 0 && (
+        <div style={styles.row}>
+          <div style={styles.sectionTitle}>Education</div>
+          <div style={styles.content}>
+            {education.map((edu: any, i: number) => (
+              <div key={i} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ fontWeight: 700 }}>{edu.institution}</div>
                   <div style={{ fontSize: '9pt' }}>{edu.degree}</div>
-                  <div style={{ fontSize: '9pt', color: '#666' }}>{edu.startDate} – {edu.endDate}</div>
                 </div>
-              ))}
-            </section>
-           )}
-
-           {skills.length > 0 && (
-            <section>
-              <h2 style={{ fontSize: '10pt', textTransform: 'uppercase', letterSpacing: '2px', borderBottom: '1px solid #eee', paddingBottom: '5px', marginBottom: '15px' }}>
-                Skills
-              </h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                {skills.map((skill: string, index: number) => (
-                  <span key={index} style={{ fontSize: '9.5pt' }}>{skill}</span>
-                ))}
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '9pt', fontWeight: 600 }}>{edu.startDate} - {edu.endDate}</div>
+                  {edu.score && <div style={{ fontSize: '9pt' }}>Score: {edu.score}</div>}
+                </div>
               </div>
-            </section>
-           )}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* 4. Experience - Dense */}
+      {experience.length > 0 && (
+        <div style={styles.row}>
+          <div style={styles.sectionTitle}>Experience</div>
+          <div style={styles.content}>
+            {experience.map((exp: any, i: number) => (
+              <div key={i} style={{ marginBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <div style={{ fontWeight: 700 }}>{exp.position} <span style={{ fontWeight: 400 }}>at {exp.company}</span></div>
+                    <div style={{ fontSize: '9pt', color: '#555' }}>{exp.startDate} - {exp.endDate}</div>
+                </div>
+                {exp.description && (
+                  <div style={{ fontSize: '9.5pt', color: '#333' }}>
+                    {exp.description}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* 5. Summary - Bottom Filler if needed */}
+      {summary && (
+        <div style={{ ...styles.row, borderTop: '1px solid #eee', paddingTop: '15px' }}>
+           <div style={styles.sectionTitle}>About</div>
+           <div style={{ flex: 1, fontSize: '9pt', color: '#555' }}>{summary}</div>
+        </div>
+      )}
+
     </div>
   );
 };
 
 export default MinimalTemplate;
-
