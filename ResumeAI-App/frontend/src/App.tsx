@@ -7,6 +7,7 @@ import { HelmetProvider } from 'react-helmet-async';
 
 /* ================= CONTEXT ================= */
 import { AuthProvider } from './context/AuthContext';
+import { ResumeProvider } from './context/ResumeContext';
 
 /* ================= PAGES ================= */
 import HomePage from './components/HomePage';
@@ -54,7 +55,8 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <AuthProvider>
-            <Routes>
+            <ResumeProvider>
+              <Routes>
 
               {/* ================= PUBLIC ================= */}
               <Route path="/" element={<HomePage />} />
@@ -137,7 +139,8 @@ function App() {
               {/* ================= FALLBACK ================= */}
               <Route path="*" element={<HomePage />} />
 
-            </Routes>
+              </Routes>
+            </ResumeProvider>
           </AuthProvider>
         </ThemeProvider>
       </HelmetProvider>
