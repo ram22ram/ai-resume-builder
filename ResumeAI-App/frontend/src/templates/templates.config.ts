@@ -1,20 +1,17 @@
 // src/templates/templates.config.ts
 
 export type TemplateCategory =
-    | 'tech'
-    | 'non-tech'
-    | 'fresher'
-    | 'management'
-    | 'design'
-    | 'finance'
-    | 'general';
+    | 'fresher'   // Students, Interns
+    | 'tech'      // Developers
+    | 'professional' // Management, HR, Finance
+    | 'creative'; // Designers, Marketing
 
 export type TemplateLayout =
-    | 'minimal'
-    | 'modern'
-    | 'sidebar'
-    | 'executive'
-    | 'creative';
+    | 'simple'    // Single column, standard
+    | 'modern'    // Accent colors, clean
+    | 'sidebar'   // Two column
+    | 'executive' // Serif, formal
+    | 'code';     // For Premium Tech
 
 export interface ResumeTemplate {
     id: string;
@@ -23,34 +20,31 @@ export interface ResumeTemplate {
     layout: TemplateLayout;
     isPremium: boolean;
     description: string;
-    previewImage: string; // thumbnail path
     recommendedFor: string[];
 }
 
 /* ======================================================
-   FREE TEMPLATES (10)
+   FREE TEMPLATES (Solid foundation for Students)
    ====================================================== */
 
 export const FREE_TEMPLATES: ResumeTemplate[] = [
     {
         id: 'simple_clean',
         name: 'Simple Clean',
-        category: 'general',
-        layout: 'minimal',
+        category: 'fresher',
+        layout: 'simple',
         isPremium: false,
-        description: 'Clean and ATS-friendly resume for all profiles.',
-        previewImage: '/templates/simple_clean.png',
-        recommendedFor: ['Students', 'Freshers', 'Any role'],
+        description: 'Standard academic format. Best for ATS parsing.',
+        recommendedFor: ['College Students', 'Off-Campus Drives'],
     },
     {
         id: 'student_basic',
-        name: 'Student Basic',
+        name: 'Dense Fresher',
         category: 'fresher',
-        layout: 'modern',
+        layout: 'simple',
         isPremium: false,
-        description: 'Perfect for college students and first jobs.',
-        previewImage: '/templates/student_basic.png',
-        recommendedFor: ['Freshers', 'Internships'],
+        description: 'Fitting more content on one page. Good for high achievers.',
+        recommendedFor: ['Final Year Students', 'High CGPA'],
     },
     {
         id: 'tech_starter',
@@ -58,236 +52,60 @@ export const FREE_TEMPLATES: ResumeTemplate[] = [
         category: 'tech',
         layout: 'modern',
         isPremium: false,
-        description: 'Entry-level tech resume with skill focus.',
-        previewImage: '/templates/tech_starter.png',
-        recommendedFor: ['Developers', 'IT Students'],
+        description: 'Clean modern look highlighting skills.',
+        recommendedFor: ['Junior Developers', 'BCA/MCA'],
     },
     {
         id: 'nontech_classic',
-        name: 'Classic Resume',
-        category: 'non-tech',
-        layout: 'minimal',
+        name: 'Classic Professional',
+        category: 'professional',
+        layout: 'simple',
         isPremium: false,
-        description: 'Traditional format for non-technical roles.',
-        previewImage: '/templates/nontech_classic.png',
-        recommendedFor: ['Sales', 'Admin', 'Office roles'],
-    },
-    {
-        id: 'general_modern',
-        name: 'Modern General',
-        category: 'general',
-        layout: 'modern',
-        isPremium: false,
-        description: 'Modern look with balanced sections.',
-        previewImage: '/templates/general_modern.png',
-        recommendedFor: ['Any professional'],
+        description: 'Traditional Times New Roman format.',
+        recommendedFor: ['Govt Jobs', 'Bank PO', 'Admin'],
     },
     {
         id: 'basic_sidebar',
-        name: 'Basic Sidebar',
-        category: 'general',
+        name: 'Corporate Sidebar',
+        category: 'professional',
         layout: 'sidebar',
         isPremium: false,
-        description: 'Light sidebar layout with clear sections.',
-        previewImage: '/templates/basic_sidebar.png',
-        recommendedFor: ['Experienced professionals'],
-    },
-    {
-        id: 'finance_simple',
-        name: 'Finance Simple',
-        category: 'finance',
-        layout: 'minimal',
-        isPremium: false,
-        description: 'Clean resume for finance and accounting roles.',
-        previewImage: '/templates/finance_simple.png',
-        recommendedFor: ['Accountant', 'Finance Executive'],
-    },
-    {
-        id: 'hr_profile',
-        name: 'HR Profile',
-        category: 'non-tech',
-        layout: 'modern',
-        isPremium: false,
-        description: 'Optimized for HR and recruiter roles.',
-        previewImage: '/templates/hr_profile.png',
-        recommendedFor: ['HR', 'Recruiters'],
-    },
-    {
-        id: 'teacher_basic',
-        name: 'Teacher Basic',
-        category: 'non-tech',
-        layout: 'minimal',
-        isPremium: false,
-        description: 'Simple resume for teaching professionals.',
-        previewImage: '/templates/teacher_basic.png',
-        recommendedFor: ['Teachers', 'Professors'],
-    },
-    {
-        id: 'operations_basic',
-        name: 'Operations Basic',
-        category: 'management',
-        layout: 'modern',
-        isPremium: false,
-        description: 'Operations and coordinator focused resume.',
-        previewImage: '/templates/operations_basic.png',
-        recommendedFor: ['Operations', 'Coordinators'],
+        description: 'Professional two-column layout.',
+        recommendedFor: ['MBA Freshers', 'Analysts'],
     },
 ];
 
 /* ======================================================
-   PREMIUM TEMPLATES (15)
+   PREMIUM TEMPLATES (High Impact)
    ====================================================== */
 
 export const PREMIUM_TEMPLATES: ResumeTemplate[] = [
     {
         id: 'tech_pro',
-        name: 'Tech Pro',
+        name: 'DevOps Terminal',
         category: 'tech',
-        layout: 'sidebar',
+        layout: 'code',
         isPremium: true,
-        description: 'Advanced tech resume with project emphasis.',
-        previewImage: '/templates/tech_pro.png',
-        recommendedFor: ['Senior Developers', 'Engineers'],
-    },
-    {
-        id: 'faang_ready',
-        name: 'FAANG Ready',
-        category: 'tech',
-        layout: 'executive',
-        isPremium: true,
-        description: 'Designed for top tech companies.',
-        previewImage: '/templates/faang_ready.png',
-        recommendedFor: ['FAANG aspirants'],
+        description: 'Dark-themed, code-style resume for serious devs.',
+        recommendedFor: ['Backend Devs', 'Full Stack', 'Geeks'],
     },
     {
         id: 'exec_elite',
         name: 'Executive Elite',
-        category: 'management',
+        category: 'professional',
         layout: 'executive',
         isPremium: true,
-        description: 'Premium executive-level resume.',
-        previewImage: '/templates/exec_elite.png',
-        recommendedFor: ['Managers', 'Directors'],
-    },
-    {
-        id: 'product_manager',
-        name: 'Product Manager',
-        category: 'management',
-        layout: 'modern',
-        isPremium: true,
-        description: 'Metrics-driven PM resume.',
-        previewImage: '/templates/product_manager.png',
-        recommendedFor: ['Product Managers'],
-    },
-    {
-        id: 'data_scientist',
-        name: 'Data Scientist',
-        category: 'tech',
-        layout: 'sidebar',
-        isPremium: true,
-        description: 'Data-focused resume with research layout.',
-        previewImage: '/templates/data_scientist.png',
-        recommendedFor: ['Data Scientists'],
+        description: 'High-authority serif design for leadership roles.',
+        recommendedFor: ['Management', 'Senior Roles'],
     },
     {
         id: 'uiux_designer',
-        name: 'UI/UX Designer',
-        category: 'design',
-        layout: 'creative',
-        isPremium: true,
-        description: 'Creative resume for designers.',
-        previewImage: '/templates/uiux_designer.png',
-        recommendedFor: ['UI Designers', 'UX Designers'],
-    },
-    {
-        id: 'marketing_growth',
-        name: 'Marketing Growth',
-        category: 'non-tech',
+        name: 'Creative Timeline',
+        category: 'creative',
         layout: 'modern',
         isPremium: true,
-        description: 'Growth and performance marketing resume.',
-        previewImage: '/templates/marketing_growth.png',
-        recommendedFor: ['Digital Marketers'],
-    },
-    {
-        id: 'finance_exec',
-        name: 'Finance Executive',
-        category: 'finance',
-        layout: 'executive',
-        isPremium: true,
-        description: 'Executive finance resume.',
-        previewImage: '/templates/finance_exec.png',
-        recommendedFor: ['CFO Track', 'Finance Heads'],
-    },
-    {
-        id: 'consultant_pro',
-        name: 'Consultant Pro',
-        category: 'management',
-        layout: 'executive',
-        isPremium: true,
-        description: 'Strategy and consulting focused resume.',
-        previewImage: '/templates/consultant_pro.png',
-        recommendedFor: ['Consultants'],
-    },
-    {
-        id: 'startup_founder',
-        name: 'Startup Founder',
-        category: 'management',
-        layout: 'creative',
-        isPremium: true,
-        description: 'Founder-style narrative resume.',
-        previewImage: '/templates/startup_founder.png',
-        recommendedFor: ['Founders', 'Entrepreneurs'],
-    },
-    {
-        id: 'sales_closer',
-        name: 'Sales Closer',
-        category: 'non-tech',
-        layout: 'modern',
-        isPremium: true,
-        description: 'Sales-focused with revenue metrics.',
-        previewImage: '/templates/sales_closer.png',
-        recommendedFor: ['Sales Professionals'],
-    },
-    {
-        id: 'legal_professional',
-        name: 'Legal Professional',
-        category: 'non-tech',
-        layout: 'minimal',
-        isPremium: true,
-        description: 'Formal resume for legal roles.',
-        previewImage: '/templates/legal_professional.png',
-        recommendedFor: ['Lawyers', 'Legal Advisors'],
-    },
-    {
-        id: 'hr_leader',
-        name: 'HR Leader',
-        category: 'non-tech',
-        layout: 'executive',
-        isPremium: true,
-        description: 'Senior HR leadership resume.',
-        previewImage: '/templates/hr_leader.png',
-        recommendedFor: ['HR Heads'],
-    },
-    {
-        id: 'ai_ml_engineer',
-        name: 'AI/ML Engineer',
-        category: 'tech',
-        layout: 'sidebar',
-        isPremium: true,
-        description: 'AI-centric resume with research highlights.',
-        previewImage: '/templates/ai_ml_engineer.png',
-        recommendedFor: ['ML Engineers'],
-    },
-    {
-        id: 'international_cv',
-        name: 'International CV',
-        category: 'general',
-        layout: 'executive',
-        isPremium: true,
-        description: 'Global CV format for overseas jobs.',
-        previewImage: '/templates/international_cv.png',
-        recommendedFor: ['Abroad Jobs'],
+        description: 'Visual timeline layout for creative professionals.',
+        recommendedFor: ['Designers', 'Architects'],
     },
 ];
 
@@ -299,3 +117,4 @@ export const ALL_TEMPLATES: ResumeTemplate[] = [
     ...FREE_TEMPLATES,
     ...PREMIUM_TEMPLATES,
 ];
+

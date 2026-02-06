@@ -37,8 +37,9 @@ const ATSChecker = () => {
       fd.append('file', file);
       fd.append('jd', jd);
 
-      // 🔥 FIX: Clean URL construction (remove double slashes)
-      const validUrl = `${import.meta.env.VITE_API_URL?.replace(/\/+$/, '')}/api/ats/check`;
+      // 🔥 FIX: Clean URL construction (remove double slashes AND double /api)
+      const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/+$/, '').replace(/\/api$/, '') || '';
+      const validUrl = `${baseUrl}/api/ats/check`;
 
       const res = await axios.post(validUrl, fd);
       setResult(res.data);
