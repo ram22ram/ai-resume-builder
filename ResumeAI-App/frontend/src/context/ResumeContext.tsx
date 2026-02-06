@@ -1,192 +1,37 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useCallback,
-  useEffect,
-} from 'react';
-import { ResumeData, ResumeSection } from '../types';
-import { parseResumeText } from '../utils/resumeParser';
+import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import { resumeReducer, initialResumeState, Action } from '../stores/resumeReducer';
+import { ResumeData } from '../types/resume';
 
 interface ResumeContextType {
   resume: ResumeData;
-  setResume: React.Dispatch<React.SetStateAction<ResumeData>>;
-  selectedTemplate: string;
-  setSelectedTemplate: (id: string) => void;
-  loadFromATS: (text: string) => void;
-  
-  // Dynamic Section Actions
-  addSection: (type: string, title: string) => void;
-  removeSection: (id: string) => void;
-  reorderSection: (startIndex: number, endIndex: number) => void;
-  updateSection: (id: string, content: any) => void;
+  dispatch: React.Dispatch<Action>;
 }
 
-const initialResume: ResumeData = {
-  template: 'simple',
-  theme: {
-    accentColor: '#3b82f6',
-    fontFamily: 'Outfit',
-    textColor: '#1e293b',
-    density: 'comfortable',
-    photoMode: 'round',
-  },
-  sections: [
-    {
-      id: 'personal',
-      type: 'personal',
-      title: 'Personal Info',
-      isVisible: true,
-      content: {
-        fullName: '',
-        email: '',
-        phone: '',
-        jobTitle: '',
-        address: '',
-      },
-    },
-    {
-      id: 'summary',
-      type: 'summary',
-      title: 'Summary',
-      isVisible: true,
-      content: '',
-    },
-    {
-      id: 'education',
-      type: 'education',
-      title: 'Education',
-      isVisible: true,
-      content: [],
-    },
-    {
-      id: 'skills',
-      type: 'skills',
-      title: 'Skills',
-      isVisible: true,
-      content: [],
-    },
-    {
-      id: 'projects',
-      type: 'projects',
-      title: 'Projects',
-      isVisible: true,
-      content: [],
-    },
-    {
-      id: 'experience',
-      type: 'experience',
-      title: 'Experience',
-      isVisible: true,
-      content: [],
-    },
-  ],
-};
-
-const ResumeContext = createContext<ResumeContextType | null>(null);
+const ResumeContext = createContext<ResumeContextType | undefined>(undefined);
 
 export const ResumeProvider = ({ children }: { children: ReactNode }) => {
-  const [resume, setResume] = useState<ResumeData>(() => {
-    const saved = localStorage.getItem('resume_draft_v2'); // New key for breaking change
-    return saved ? JSON.parse(saved) : initialResume;
+  // Initialize state from localStorage if available
+  const [resume, dispatch] = useReducer(resumeReducer, initialResumeState, (initial) => {
+    const saved = localStorage.getItem('resume_draft_v3');
+    return saved ? JSON.parse(saved) : initial;
   });
 
-  const [selectedTemplate, setSelectedTemplate] = useState(resume.template);
-
+  // Auto-save
   useEffect(() => {
-     localStorage.setItem('resume_draft_v2', JSON.stringify(resume));
+    localStorage.setItem('resume_draft_v3', JSON.stringify(resume));
   }, [resume]);
 
-  const handleTemplateChange = useCallback((id: string) => {
-    setSelectedTemplate(id);
-    setResume((prev) => ({ ...prev, template: id }));
-  }, []);
-
-  // --- Dynamic Section Handlers ---
-
-  const addSection = useCallback((type: string, title: string) => {
-      setResume((prev) => ({
-          ...prev,
-          sections: [
-              ...prev.sections,
-              {
-                  id: `${type}-${Date.now()}`,
-                  type: type as ResumeSection['type'],
-                  title,
-                  isVisible: true,
-                  content: type === 'summary' ? '' : [], // Default content based on type
-              }
-          ]
-      }));
-  }, []);
-
-  const removeSection = useCallback((id: string) => {
-      setResume((prev) => ({
-          ...prev,
-          sections: prev.sections.filter(s => s.id !== id)
-      }));
-  }, []);
-
-  const reorderSection = useCallback((startIndex: number, endIndex: number) => {
-      setResume((prev) => {
-          const result = Array.from(prev.sections);
-          const [removed] = result.splice(startIndex, 1);
-          result.splice(endIndex, 0, removed);
-          return { ...prev, sections: result };
-      });
-  }, []);
-
-  const updateSection = useCallback((id: string, content: any) => {
-      setResume((prev) => ({
-          ...prev,
-          sections: prev.sections.map((s) => 
-              s.id === id ? { ...s, content } : s
-          )
-      }));
-  }, []);
-
-
   return (
-    <ResumeContext.Provider
-      value={{
-        resume,
-        setResume,
-        selectedTemplate,
-        setSelectedTemplate: handleTemplateChange,
-        loadFromATS: (text: string) => {
-          console.log('Loading from ATS:', text);
-          const parsed = parseResumeText(text);
-          
-          setResume(prev => {
-              const newSections = prev.sections.map(s => {
-                  if (s.type === 'personal') {
-                      return { ...s, content: { ...s.content, ...parsed.personal } };
-                  }
-                  if (s.type === 'summary' && parsed.summary) {
-                      return { ...s, content: parsed.summary };
-                  }
-                  return s;
-              });
-              
-              return { ...prev, sections: newSections };
-          });
-        },
-        addSection,
-        removeSection,
-        reorderSection,
-        updateSection
-      }}
-    >
+    <ResumeContext.Provider value={{ resume, dispatch }}>
       {children}
     </ResumeContext.Provider>
   );
 };
 
 export const useResume = () => {
-  const ctx = useContext(ResumeContext);
-  if (!ctx) {
-    throw new Error('useResume must be used inside ResumeProvider');
+  const context = useContext(ResumeContext);
+  if (!context) {
+    throw new Error('useResume must be used within a ResumeProvider');
   }
-  return ctx;
+  return context;
 };

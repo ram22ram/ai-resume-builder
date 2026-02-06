@@ -1,0 +1,169 @@
+import React, { useState } from 'react';
+import { Box, Container, Typography, Grid, Paper, Chip, Button } from '@mui/material';
+import { TEMPLATES } from '../data/templates';
+import { useNavigate } from 'react-router-dom';
+import { useResume } from '../context/ResumeContext';
+import { Lock } from 'lucide-react';
+import Layout from '../components/Layout';
+// We will reuse the MiniResumePreview engine logic here directly or import it if compatible. 
+// For now, I will build a lightweight internal renderer to guarantee "Paper" look.
+
+const TemplateGalleryPage = () => {
+    const navigate = useNavigate();
+    const { dispatch } = useResume();
+    const [filter, setFilter] = useState('all');
+
+    const handleSelect = (templateId: string) => {
+        dispatch({ type: 'SET_TEMPLATE', payload: templateId });
+        navigate('/builder');
+    };
+
+    const categories = ['all', 'fresher', 'professional', 'modern', 'creative'];
+
+    const displayedTemplates = filter === 'all' 
+        ? TEMPLATES 
+        : TEMPLATES.filter(t => t.category === filter);
+
+    return (
+        <Layout>
+            <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh', py: 6 }}>
+                <Container maxWidth="xl">
+                    {/* Header */}
+                    <Box sx={{ textAlign: 'center', mb: 6 }}>
+                        <Typography variant="h3" fontWeight="800" sx={{ mb: 2, color: '#1e293b' }}>
+                            Choose Your Template
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: '#64748b', maxWidth: 600, mx: 'auto' }}>
+                            Professional, ATS-friendly templates designed for top-tier companies. 
+                            Select one to start building.
+                        </Typography>
+                    </Box>
+
+                    {/* Filters */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mb: 6, flexWrap: 'wrap' }}>
+                        {categories.map(cat => (
+                            <Chip 
+                                key={cat} 
+                                label={cat.charAt(0).toUpperCase() + cat.slice(1)} 
+                                onClick={() => setFilter(cat)}
+                                sx={{ 
+                                    textTransform: 'capitalize',
+                                    bgcolor: filter === cat ? '#3b82f6' : 'white',
+                                    color: filter === cat ? 'white' : '#64748b',
+                                    fontWeight: 600,
+                                    px: 2,
+                                    '&:hover': { bgcolor: filter === cat ? '#2563eb' : '#f1f5f9' }
+                                }}
+                            />
+                        ))}
+                    </Box>
+
+                    {/* Grid */}
+                    <Grid container spacing={4}>
+                        {displayedTemplates.map((item) => (
+                            <Grid key={item.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                                <Paper 
+                                    elevation={0}
+                                    sx={{ 
+                                        position: 'relative', 
+                                        overflow: 'hidden', 
+                                        borderRadius: 3,
+                                        transition: 'all 0.3s ease',
+                                        cursor: 'pointer',
+                                        group: 'hover',
+                                        '&:hover': {
+                                            transform: 'translateY(-8px)',
+                                            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                                        }
+                                    }}
+                                >
+                                    {/* A4 Preview Container */}
+                                    <Box 
+                                        className="group"
+                                        sx={{ 
+                                            bgcolor: '#e2e8f0', 
+                                            aspectRatio: '210/297', // A4 Ratio
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            position: 'relative'
+                                        }}
+                                    >
+                                        {/* Mock Paper Look */}
+                                        <Box sx={{ 
+                                            width: '85%', 
+                                            height: '90%', 
+                                            bgcolor: 'white', 
+                                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                                            p: 2,
+                                            overflow: 'hidden',
+                                            fontSize: '4px' // Tiny Base Font for Preview
+                                        }}>
+                                             {/* Mini Skeleton for VISUAL DEMO ONLY - Real render comes next */}
+                                             <Box sx={{ height: '10%' }} borderBottom="1px solid #eee">
+                                                <Box width="60%" height="4px" bgcolor={(item.defaultColor)} mb={1} />
+                                                <Box width="40%" height="2px" bgcolor="#94a3b8" />
+                                             </Box>
+                                             <Box mt={2}>
+                                                <Box width="30%" height="3px" bgcolor="#cbd5e1" mb={1} />
+                                                <Box width="100%" height="2px" bgcolor="#f1f5f9" mb={0.5} />
+                                                <Box width="90%" height="2px" bgcolor="#f1f5f9" mb={0.5} />
+                                                <Box width="80%" height="2px" bgcolor="#f1f5f9" mb={0.5} />
+                                             </Box>
+                                        </Box>
+
+                                        {/* Hover Overlay */}
+                                        <Box sx={{
+                                            position: 'absolute', inset: 0,
+                                            bgcolor: 'rgba(15, 23, 42, 0.6)',
+                                            display: 'flex', flexDirection: 'column',
+                                            alignItems: 'center', justifyContent: 'center',
+                                            gap: 2,
+                                            opacity: 0,
+                                            transition: 'opacity 0.2s',
+                                            '&:hover': { opacity: 1 }
+                                        }}>
+                                            <Button 
+                                                variant="contained" 
+                                                onClick={() => handleSelect(item.id)}
+                                                sx={{ bgcolor: '#3b82f6', fontWeight: 'bold' }}
+                                            >
+                                                Use Template
+                                            </Button>
+                                        </Box> 
+                                        
+                                        {/* Premium Badge */}
+                                        {item.isPremium && (
+                                            <Box sx={{ 
+                                                position: 'absolute', top: 12, right: 12, 
+                                                bgcolor: '#f59e0b', color: 'white', 
+                                                px: 1, py: 0.5, borderRadius: 1,
+                                                display: 'flex', alignItems: 'center', gap: 0.5,
+                                                fontSize: '0.75rem', fontWeight: 'bold',
+                                                zIndex: 10
+                                            }}>
+                                                <Lock size={12} /> Premium
+                                            </Box>
+                                        )}
+                                    </Box>
+
+                                    {/* Info */}
+                                    <Box sx={{ p: 2, bgcolor: 'white' }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            {item.name}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
+                                            {item.category} • {item.layout}
+                                        </Typography>
+                                    </Box>
+                                </Paper>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
+            </Box>
+        </Layout>
+    );
+};
+
+export default TemplateGalleryPage;

@@ -11,7 +11,8 @@ import { AuthProvider } from './context/AuthContext';
 /* ================= PAGES ================= */
 import HomePage from './components/HomePage';
 import Dashboard from './components/Dashboard';
-import ResumeBuilder from './components/ResumeBuilder';
+// import TemplateSelectPage from './pages/TemplateSelectPage';
+import BuilderPage from './pages/BuilderPage';
 
 import InterviewSimulator from './components/InterviewSimulator';
 import GithubConverter from './components/GithubConverter';
@@ -78,7 +79,7 @@ function App() {
                 path="/builder"
                 element={
                   // <ProtectedRoute>
-                    <ResumeBuilder />
+                    <BuilderPage />
                   // </ProtectedRoute>
                 }
               />
