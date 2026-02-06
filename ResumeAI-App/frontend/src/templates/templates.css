@@ -37,7 +37,7 @@
     backdrop-filter: blur(12px);
     padding: 6px;
     border-radius: 50px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
 }
 
@@ -55,7 +55,7 @@
 
 .filters button:hover {
     color: white;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .filters button.active {
@@ -83,8 +83,9 @@
     position: relative;
     border-radius: 12px;
     overflow: hidden;
-    background: #1e293b; /* Card fallback bg */
-    border: 1px solid rgba(255,255,255,0.1);
+    background: #1e293b;
+    /* Card fallback bg */
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     cursor: pointer;
 }
@@ -99,19 +100,39 @@
 .a4-aspect-ratio {
     position: relative;
     width: 100%;
-    padding-top: 141.4%; /* Height relative to width */
-    background: white; /* Paper color */
+    padding-top: 141.4%;
+    /* Height relative to width */
+    background: white;
+    /* Paper color */
 }
 
-/* Ensure MiniPreview fills the container */
-.a4-aspect-ratio > * {
+/* Ensure MiniPreview fills the container via scaling */
+.preview-scaler {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    transform: scale(1); /* Reset any scale if needed */
+    width: 595px;
+    /* Fixed A4 Width */
+    height: 842px;
+    /* Fixed A4 Height */
     transform-origin: top left;
+    transform: scale(0.47);
+    /* 280px / 595px approx */
+    pointer-events: none;
+    /* Let clicks pass to card */
+    background: white;
+}
+
+/* Adjust scale for different breakpoints if needed */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+
+    .preview-scaler {
+        transform: scale(0.4);
+        /* Adjust for smaller cards */
+    }
 }
 
 /* Badges */
@@ -133,7 +154,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     backdrop-filter: blur(4px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .badge.premium {
@@ -149,7 +170,7 @@
 }
 
 .badge.category {
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     color: white;
 }
 
@@ -157,7 +178,8 @@
 .card-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, 0.85); /* Slate-900 with opacity */
+    background: rgba(15, 23, 42, 0.85);
+    /* Slate-900 with opacity */
     opacity: 0;
     transition: opacity 0.2s ease;
     display: flex;
@@ -198,7 +220,7 @@
 /* Locked Template Styling */
 .lock-content {
     text-align: center;
-    color: #f59e0b; 
+    color: #f59e0b;
 }
 
 .lock-content p {

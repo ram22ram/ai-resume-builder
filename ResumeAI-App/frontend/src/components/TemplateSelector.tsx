@@ -76,9 +76,9 @@ const TemplateSelector: React.FC<Props> = ({ selected, onChange }) => {
                 {/* Thumbnail */}
                 <Box sx={{ height: 180, bgcolor: '#f3f4f6', borderBottom: '1px solid #eee', position: 'relative' }}>
                    <MiniResumePreview 
-                      layout={tpl.layout as any} 
-                      color={tpl.isPremium ? '#f59e0b' : '#3b82f6'} 
-                      isActive={isSelected} 
+                      layout={tpl.layout} 
+                      templateId={tpl.id} 
+                      scale={0.25} // Smaller scale for selector list
                    />
                    
                    {/* Premium Overlay */}

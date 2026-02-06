@@ -23,7 +23,16 @@ const TemplateCard: React.FC<Props> = ({
     <div className="template-card-container">
       <div className={`template-card-visual ${locked ? 'locked' : ''}`}>
         <div className="a4-aspect-ratio">
-           <MiniResumePreview layout={template.layout} />
+           {/* Scale the A4 preview (595px width) to fit container. 
+               CSS will handle container width, transform needs to match ratio 
+               (e.g. if card is 280px wide, scale is ~0.47)
+           */}
+           <div className="preview-scaler">
+               <MiniResumePreview 
+                  layout={template.layout} 
+                  templateId={template.id} 
+                />
+           </div>
         </div>
         
         {/* Badges */}
