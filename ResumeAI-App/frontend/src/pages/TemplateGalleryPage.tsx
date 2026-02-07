@@ -14,7 +14,17 @@ const TemplateGalleryPage = () => {
     const [filter, setFilter] = useState('all');
 
     const handleSelect = (templateId: string) => {
-        dispatch({ type: 'SET_TEMPLATE', payload: templateId });
+        const template = TEMPLATES.find(t => t.id === templateId);
+        if (template) {
+            dispatch({ type: 'SET_TEMPLATE', payload: templateId });
+            dispatch({ 
+                type: 'UPDATE_METADATA', 
+                payload: { 
+                    fontFamily: template.defaultFont, 
+                    accentColor: template.defaultColor 
+                } 
+            });
+        }
         navigate('/builder');
     };
 
