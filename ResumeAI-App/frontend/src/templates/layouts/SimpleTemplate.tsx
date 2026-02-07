@@ -15,17 +15,19 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
 
   const fullName = personal.fullName || `${personal.firstName || ''} ${personal.lastName || ''}`.trim() || 'Your Name';
 
+  const { fontFamily, accentColor } = data.metadata;
+  
   const styles = {
     headerBorder: {
-      borderBottom: '1px solid #e5e7eb',
+      borderBottom: `1px solid ${accentColor}`,
       paddingBottom: '20px',
       marginBottom: '20px',
     },
     name: {
       fontSize: '24pt',
-      fontFamily: standardStyles.fonts.sans,
+      fontFamily: fontFamily || standardStyles.fonts.sans,
       fontWeight: 'bold' as const,
-      color: '#111827',
+      color: accentColor || '#111827',
       marginBottom: '8px',
     },
     contact: {
@@ -199,7 +201,7 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <div style={{ ...standardStyles.page, fontFamily: standardStyles.fonts.sans }}>
+    <div style={{ ...standardStyles.page, fontFamily: data.metadata.fontFamily || standardStyles.fonts.sans }}>
       {/* HEADER */}
       <div style={styles.headerBorder}>
         <h1 style={{ ...styles.name, margin: 0 }}>{fullName}</h1>

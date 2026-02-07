@@ -20,8 +20,8 @@ const TemplateGalleryPage = () => {
             dispatch({ 
                 type: 'UPDATE_METADATA', 
                 payload: { 
-                    fontFamily: template.defaultFont, 
-                    accentColor: template.defaultColor 
+                    fontFamily: template.previewConfig?.fontFamily || template.defaultFont, 
+                    accentColor: template.previewConfig?.accentColor || template.defaultColor 
                 } 
             });
         }

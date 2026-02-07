@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types';
+import { ResumeData, ResumeSection } from '../../types/resume';
 import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
@@ -20,11 +20,15 @@ const PremiumTech: React.FC<Props> = ({ data }) => {
   
   const projects = getSectionItems('projects');
 
+  const { fontFamily, accentColor } = data.metadata;
+  // Default to teal/green if not provided, or use accentColor for highlights
+  const terminalHighlight = accentColor || '#4fd1c5';
+
   return (
     <div
       style={{
         ...standardStyles.page,
-        fontFamily: standardStyles.fonts.mono,
+        fontFamily: fontFamily || standardStyles.fonts.mono,
         color: '#2d3748',
         padding: 0, 
       }}
@@ -32,10 +36,10 @@ const PremiumTech: React.FC<Props> = ({ data }) => {
       {/* Header - Terminal Style */}
       <header style={{ 
         backgroundColor: '#1a202c', 
-        color: '#4fd1c5', 
+        color: terminalHighlight, 
         padding: '25mm 20mm 15mm 20mm',
-        fontFamily: standardStyles.fonts.mono,
-        borderBottom: '4px solid #48bb78'
+        fontFamily: fontFamily || standardStyles.fonts.mono,
+        borderBottom: `4px solid ${accentColor || '#48bb78'}`
       }}>
         <div style={{ opacity: 0.7, fontSize: '9pt', marginBottom: '5px' }}>// START_SESSION: {personal.jobTitle || 'DEVELOPER'}</div>
         <h1 style={{ margin: 0, fontSize: '26pt', color: '#fff', letterSpacing: '-0.5px' }}>

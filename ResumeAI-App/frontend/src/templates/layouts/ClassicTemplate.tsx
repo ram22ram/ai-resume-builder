@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types';
+import { ResumeData, ResumeSection } from '../../types/resume';
 import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
@@ -30,7 +30,8 @@ const ClassicTemplate: React.FC<Props> = ({ data }) => {
       fontSize: '12pt',
       fontWeight: 'bold',
       textTransform: 'uppercase' as const,
-      borderBottom: '1px solid #000',
+      borderBottom: `1px solid ${data.metadata.accentColor || '#000'}`,
+      color: data.metadata.accentColor || '#000',
       marginBottom: '8px',
       paddingBottom: '2px',
       letterSpacing: '0.5px',
@@ -46,11 +47,14 @@ const ClassicTemplate: React.FC<Props> = ({ data }) => {
     }
   };
 
+  const { fontFamily, accentColor } = data.metadata;
+
   return (
     <div
       style={{
         ...standardStyles.page,
-        fontFamily: standardStyles.fonts.serif,
+        fontFamily: fontFamily || standardStyles.fonts.serif,
+        color: accentColor ? '#000' : 'inherit' // Keep text black, use accent for headers if needed
       }}
     >
       {/* 1. Header: Name & Contact - Centered */}

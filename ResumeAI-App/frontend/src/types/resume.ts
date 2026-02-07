@@ -56,4 +56,10 @@ export interface TemplateConfig {
     defaultFont: string;
     defaultColor: string;
     structure: SectionType[]; // Default order
+    previewConfig?: {
+        fontFamily: string;
+        accentColor: string;
+        headlineWeight: number;
+        sidebarSide?: 'left' | 'right';
+    };
 }

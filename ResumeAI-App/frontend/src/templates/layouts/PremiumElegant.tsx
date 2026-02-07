@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types';
+import { ResumeData, ResumeSection } from '../../types/resume';
 import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
@@ -19,11 +19,14 @@ const PremiumElegant: React.FC<Props> = ({ data }) => {
   const rawSkills = getSectionItems('skills');
   const skills = rawSkills.map((s: any) => s.name || s);
 
+  const { fontFamily, accentColor } = data.metadata;
+  const themeColor = accentColor || '#4a4a4a';
+
   return (
     <div
       style={{
         ...standardStyles.page,
-        fontFamily: '"Lato", "Verdana", sans-serif',
+        fontFamily: fontFamily || '"Lato", "Verdana", sans-serif',
         color: '#4a4a4a',
         display: 'flex',
         flexDirection: 'column'
@@ -65,7 +68,7 @@ const PremiumElegant: React.FC<Props> = ({ data }) => {
                                      height: '9px', 
                                      borderRadius: '50%', 
                                      backgroundColor: '#fff', 
-                                     border: '2px solid #888' 
+                                     border: `2px solid ${themeColor}` 
                                  }}></div>
                                  
                                  <div style={{ fontSize: '12pt', fontWeight: 700, color: '#222' }}>{exp.position}</div>

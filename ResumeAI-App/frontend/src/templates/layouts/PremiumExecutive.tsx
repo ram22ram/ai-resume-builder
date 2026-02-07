@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types';
+import { ResumeData, ResumeSection } from '../../types/resume';
 import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
@@ -20,16 +20,19 @@ const PremiumExecutive: React.FC<Props> = ({ data }) => {
   const skills = rawSkills.map((s: any) => s.name || s);
 
 
+  const { fontFamily, accentColor } = data.metadata;
+  const themeColor = accentColor || '#b49b57'; // Gold/Bronze default
+
   const styles = {
     header: {
         textAlign: 'center' as const,
         marginBottom: '30px',
-        borderBottom: 'double 4px #000',
+        borderBottom: `double 4px ${themeColor}`,
         paddingBottom: '20px',
     },
     name: {
         fontSize: '28pt',
-        fontFamily: standardStyles.fonts.serif,
+        fontFamily: fontFamily || standardStyles.fonts.serif,
         textTransform: 'uppercase' as const,
         letterSpacing: '3px',
         fontWeight: 'normal' as const,
@@ -41,7 +44,8 @@ const PremiumExecutive: React.FC<Props> = ({ data }) => {
         textTransform: 'uppercase' as const,
         letterSpacing: '2px',
         marginBottom: '10px',
-        fontWeight: 600
+        fontWeight: 600,
+        color: themeColor
     },
     sectionTitle: {
         textAlign: 'center' as const,
@@ -56,13 +60,13 @@ const PremiumExecutive: React.FC<Props> = ({ data }) => {
     separator: {
         width: '40px',
         height: '2px',
-        backgroundColor: '#b49b57', // Gold/Bronze
+        backgroundColor: themeColor,
         margin: '5px auto 20px auto'
     }
   };
 
   return (
-    <div style={{ ...standardStyles.page, fontFamily: 'Georgia, serif' }}>
+    <div style={{ ...standardStyles.page, fontFamily: fontFamily || 'Georgia, serif' }}>
       
       {/* Header */}
       <header style={styles.header}>

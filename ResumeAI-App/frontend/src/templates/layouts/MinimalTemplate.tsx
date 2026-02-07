@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types';
+import { ResumeData, ResumeSection } from '../../types/resume';
 import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
@@ -16,18 +16,18 @@ const MinimalTemplate: React.FC<Props> = ({ data }) => {
   const experience = getSectionItems('experience');
   const education = getSectionItems('education');
   
-  // Skills in Reducer are items [{id, name, level}]. 
-  // MinimalTemplate line 75 expects string[] or map.
-  // We should map items to names.
   const rawSkills = getSectionItems('skills');
   const skills = rawSkills.map((s: any) => s.name || s);
+
+  const { fontFamily, accentColor } = data.metadata;
+  const themeColor = accentColor || '#000';
 
   const styles = {
     headerOneLine: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'baseline',
-      borderBottom: '2px solid #000',
+      borderBottom: `2px solid ${themeColor}`,
       paddingBottom: '10px',
       marginBottom: '15px',
     },
@@ -36,6 +36,7 @@ const MinimalTemplate: React.FC<Props> = ({ data }) => {
       fontWeight: 800,
       margin: 0,
       letterSpacing: '-0.5px',
+      color: themeColor,
     },
     contactSmall: {
       fontSize: '9pt',
@@ -58,7 +59,7 @@ const MinimalTemplate: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <div style={{ ...standardStyles.page, fontFamily: standardStyles.fonts.modern, padding: '15mm' }}>
+    <div style={{ ...standardStyles.page, fontFamily: fontFamily || standardStyles.fonts.modern, padding: '15mm' }}>
       {/* 1. Header - Ultra Compact */}
       <header style={styles.headerOneLine}>
         <div>

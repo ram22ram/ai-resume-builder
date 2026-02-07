@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types';
+import { ResumeData, ResumeSection } from '../../types/resume';
 import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
@@ -21,10 +21,11 @@ const ModernTemplate: React.FC<Props> = ({ data }) => {
   
   const projects = getSectionItems('projects');
 
-  const accentColor = standardStyles.colors.accent.teal; // Teal/Emerald
+  const accentColor = data.metadata.accentColor || standardStyles.colors.accent.teal;
+  const fontFamily = data.metadata.fontFamily || standardStyles.fonts.modern;
 
   return (
-    <div style={{ ...standardStyles.page, fontFamily: standardStyles.fonts.modern, color: '#1f2937' }}>
+    <div style={{ ...standardStyles.page, fontFamily, color: '#1f2937' }}>
       
       {/* Header */}
       <header style={{ borderLeft: `6px solid ${accentColor}`, paddingLeft: '18px', marginBottom: '30px' }}>
