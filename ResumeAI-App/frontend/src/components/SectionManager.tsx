@@ -56,7 +56,7 @@ const SectionManager = ({ open, onClose }: { open: boolean; onClose: () => void 
                     Reorder or hide sections.
                 </Typography>
                 
-                <List sx={{ bgcolor: '#f8fafc', borderRadius: 2, mb: 3 }}>
+                <List sx={{ bgcolor: 'background.default', borderRadius: 2, mb: 3 }}>
                     {resume.sections.map((section, index) => (
                         <ListItem 
                             key={section.id} 

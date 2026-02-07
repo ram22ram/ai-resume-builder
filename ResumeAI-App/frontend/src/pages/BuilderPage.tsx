@@ -61,13 +61,13 @@ const BuilderPage = () => {
                 <ResumeRenderer template={resume.templateId} data={resume} />
             </div>
 
-            <Box sx={{ height: 'calc(100vh - 64px)', display: 'flex', overflow: 'hidden', bgcolor: '#f8fafc' }}>
+            <Box sx={{ height: 'calc(100vh - 64px)', display: 'flex', overflow: 'hidden', bgcolor: 'background.default' }}>
                 
                 {/* --- LEFT PANEL: EDITOR (40-50%) --- */}
-                <Box sx={{ width: '45%', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', bgcolor: 'white' }}>
+                <Box sx={{ width: '45%', borderRight: 1, borderColor: 'divider', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
                     
                     {/* Toolbar */}
-                    <Box sx={{ p: 2, borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                          <Button startIcon={<LayoutIcon size={16}/>} onClick={() => navigate('/templates')} size="small" color="inherit">
                              Change Template
                          </Button>
@@ -91,7 +91,7 @@ const BuilderPage = () => {
                     </Box>
 
                     {/* Navigation Footer */}
-                    <Box sx={{ p: 2, borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', flexDirection: 'column', gap: 2 }}>
+                    <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider', display: 'flex', justifyContent: 'space-between', flexDirection: 'column', gap: 2 }}>
                          <Button 
                             variant="outlined" 
                             color="secondary" 
