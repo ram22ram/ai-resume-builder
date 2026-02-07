@@ -2,7 +2,7 @@ import { ResumeData } from '../types/resume';
 
 export const DUMMY_RESUME: ResumeData = {
   id: 'dummy',
-  templateId: 'classic',
+  templateId: 'pro_classic_1',
   isPremium: false,
   metadata: {
     fontFamily: 'Roboto',

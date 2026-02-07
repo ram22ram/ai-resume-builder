@@ -58,6 +58,7 @@ const TemplateRenderer: React.FC<Props> = ({ template, data }) => {
     // 4. MODERN (Layout: ModernTemplate)
     // =================================================================
     case 'fresher_tech':
+    case 'modern_1': // Legacy fallback for existing users
     case 'pro_modern_1':
     case 'modern_teal':
     case 'modern_ruby':

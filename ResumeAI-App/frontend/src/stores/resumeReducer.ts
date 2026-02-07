@@ -17,7 +17,7 @@ export type Action =
 
 export const initialResumeState: ResumeData = {
     id: 'draft',
-    templateId: 'modern_1',
+    templateId: 'pro_modern_1',
     isPremium: false,
     metadata: {
         fontFamily: 'Inter',
