@@ -7,15 +7,22 @@ interface Props {
 }
 
 const ClassicTemplate: React.FC<Props> = ({ data }) => {
-  const getSection = (type: ResumeSection['type']) =>
-    data.sections.find((s) => s.type === type && s.isVisible)?.content;
+  const getSectionItems = (type: ResumeSection['type']) =>
+    data.sections.find((s: any) => s.type === type && s.isVisible)?.items || [];
 
-  const personal = getSection('personal') || {};
+  const personal = getSectionItems('personal')[0] || {} as any;
 
-  const experience = getSection('experience') || [];
-  const education = getSection('education') || [];
-  const skills = getSection('skills') || [];
-  const projects = getSection('projects') || [];
+
+  const experience = getSectionItems('experience');
+  const education = getSectionItems('education');
+  const skills = getSectionItems('skills'); // Assuming skills is array of objects {name, level} or just array
+  // Note: Old code treated skills as strings or array. Reducer has items: []. items are SectionItem.
+  // We need to map skills items?
+  // Reducer: items: [] initially.
+  // SkillsForm (Step 886 view?) - Let's assume skills items have 'name' property.
+  // Existing ClassicTemplate line 113 maps it via join if array.
+  
+  const projects = getSectionItems('projects');
 
   // Helper styles
   const styles = {
@@ -110,7 +117,8 @@ const ClassicTemplate: React.FC<Props> = ({ data }) => {
              {/* Note: In a real "classic" resume, we might categorize. 
                  Since data is a flat list, we join them clearly. */}
              <strong>Core Competencies: </strong> 
-             {Array.isArray(skills) ? skills.join(', ') : skills}
+             {/* Handle object array from reducer */}
+             {skills.map((s: any) => s.name || s).join(', ')}
           </div>
         </section>
       )}

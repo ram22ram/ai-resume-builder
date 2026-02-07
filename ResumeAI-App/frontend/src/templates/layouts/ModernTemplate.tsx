@@ -8,14 +8,18 @@ interface Props {
 
 // "The Modern Tech" - Projects First, Skill Tags, Clean Sans
 const ModernTemplate: React.FC<Props> = ({ data }) => {
-  const getSection = (type: ResumeSection['type']) =>
-    data.sections.find((s) => s.type === type && s.isVisible)?.content;
+  const getSectionItems = (type: ResumeSection['type']) =>
+    data.sections.find((s) => s.type === type && s.isVisible)?.items || [];
 
-  const personal = getSection('personal') || {};
-  const experience = getSection('experience') || [];
-  const education = getSection('education') || [];
-  const skills = getSection('skills') || [];
-  const projects = getSection('projects') || [];
+  const personal = getSectionItems('personal')[0] || {} as any;
+  const experience = getSectionItems('experience');
+  const education = getSectionItems('education');
+  
+  // Flatten skills if needed
+  const rawSkills = getSectionItems('skills');
+  const skills = rawSkills.map((s: any) => s.name || s);
+  
+  const projects = getSectionItems('projects');
 
   const accentColor = standardStyles.colors.accent.teal; // Teal/Emerald
 

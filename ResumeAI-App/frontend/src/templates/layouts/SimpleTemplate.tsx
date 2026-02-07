@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResumeData } from '../../types';
+import { ResumeData } from '../../types/resume';
 import { standardStyles } from '../styles/standardStyles';
 
 interface Props {
@@ -7,8 +7,13 @@ interface Props {
 }
 
 const SimpleTemplate: React.FC<Props> = ({ data }) => {
-  const personal = data.sections.find(s => s.type === 'personal')?.content || {};
+  // Fix: Access "items" not "content"
+  const personalSection = data.sections.find(s => s.type === 'personal');
+  const personal = personalSection?.items?.[0] || {} as any;
+  
   const bodySections = data.sections.filter(s => s.type !== 'personal' && s.isVisible);
+
+  const fullName = personal.fullName || `${personal.firstName || ''} ${personal.lastName || ''}`.trim() || 'Your Name';
 
   const styles = {
     headerBorder: {
@@ -56,8 +61,9 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
   };
 
   const renderSection = (section: any) => {
-      const items = Array.isArray(section.content) ? section.content : [];
-      const hasContent = items.length > 0 || (typeof section.content === 'string' && section.content.trim().length > 0);
+      // Fix: Access "items"
+      const items = section.items || [];
+      const hasContent = items.length > 0;
       
       const EmptyState = () => (
           <div style={{ padding: '10px 0', border: '1px dashed #ccc', borderRadius: '4px', background: '#f9fafb', textAlign: 'center' }}>
@@ -69,18 +75,19 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
 
       // SUMMARY
       if (section.type === 'summary') {
+           const summaryItem = items[0] || {};
            return (
              <section key={section.id}>
                <div style={styles.sectionHeader}>{section.title}</div>
-               {section.content ? (
-                   <p style={{ margin: 0, color: '#4b5563', lineHeight: 1.6 }}>{section.content}</p>
+               {summaryItem.description ? (
+                   <p style={{ margin: 0, color: '#4b5563', lineHeight: 1.6 }}>{summaryItem.description}</p>
                ) : <EmptyState />}
              </section>
            );
       }
 
       // GENERIC EMPTY CHECK FOR LISTS
-      if (!hasContent && section.type !== 'summary') {
+      if (!hasContent) {
           return (
               <section key={section.id}>
                   <div style={styles.sectionHeader}>{section.title}</div>
@@ -195,12 +202,12 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
     <div style={{ ...standardStyles.page, fontFamily: standardStyles.fonts.sans }}>
       {/* HEADER */}
       <div style={styles.headerBorder}>
-        <h1 style={{ ...styles.name, margin: 0 }}>{personal.fullName || 'Your Name'}</h1>
+        <h1 style={{ ...styles.name, margin: 0 }}>{fullName}</h1>
         <div style={{ fontSize: '11pt', color: '#4b5563', marginBottom: '8px' }}>
           {personal.jobTitle}
         </div>
         <div style={styles.contact}>
-          {[personal.email, personal.phone, personal.address].filter(Boolean).join('  •  ')}
+          {[personal.email, personal.phone, personal.city, personal.country].filter(Boolean).join('  •  ')}
         </div>
       </div>
 

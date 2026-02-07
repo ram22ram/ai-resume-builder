@@ -58,7 +58,7 @@ const BuilderPage = () => {
         <Layout>
             {/* PRINT CONTAINER (Hidden on Screen) */}
             <div id="print-container">
-                <ResumeRenderer template={resume.templateId} data={resume} />
+                <ResumeRenderer key={resume.templateId} template={resume.templateId} data={resume} />
             </div>
 
             <Box sx={{ height: 'calc(100vh - 64px)', display: 'flex', overflow: 'hidden', bgcolor: 'background.default' }}>
@@ -147,7 +147,7 @@ const BuilderPage = () => {
                             overflow: 'hidden' 
                         }}
                     >
-                        <ResumeRenderer template={resume.templateId} data={resume} />
+                        <ResumeRenderer key={resume.templateId} template={resume.templateId} data={resume} />
                     </Box>
 
                     {/* Floating Action Button for Download (Mobile/Desktop) */}

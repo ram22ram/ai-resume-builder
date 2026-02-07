@@ -8,14 +8,16 @@ interface Props {
 
 // "The Executive" - Center aligned, serif, elegant, high hierarchy
 const PremiumExecutive: React.FC<Props> = ({ data }) => {
-  const getSection = (type: ResumeSection['type']) =>
-    data.sections.find((s) => s.type === type && s.isVisible)?.content;
+  const getSectionItems = (type: ResumeSection['type']) =>
+    data.sections.find((s: any) => s.type === type && s.isVisible)?.items || [];
 
-  const personal = getSection('personal') || {};
-  const summary = getSection('summary') || '';
-  const experience = getSection('experience') || [];
-  const education = getSection('education') || [];
-  const skills = getSection('skills') || [];
+  const personal = getSectionItems('personal')[0] || {} as any;
+  const summary = getSectionItems('summary')[0]?.description || '';
+  const experience = getSectionItems('experience');
+  const education = getSectionItems('education');
+  
+  const rawSkills = getSectionItems('skills');
+  const skills = rawSkills.map((s: any) => s.name || s);
 
 
   const styles = {
