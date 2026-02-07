@@ -10,6 +10,10 @@ import SkillsForm from './forms/SkillsForm';
 
 import ProjectsForm from './forms/ProjectsForm';
 
+import CertificationsForm from './forms/CertificationsForm';
+import AwardsForm from './forms/AwardsForm';
+import CustomSectionForm from './forms/CustomSectionForm';
+
 interface Props {
     type: SectionType;
     sectionId: string; // To handle multiple custom sections in future
@@ -30,6 +34,12 @@ const SectionEditor: React.FC<Props> = ({ type, sectionId }) => {
             return <SkillsForm sectionId={sectionId} />;
         case 'projects':
             return <ProjectsForm sectionId={sectionId} />;
+        case 'certifications':
+            return <CertificationsForm sectionId={sectionId} />;
+        case 'awards':
+            return <AwardsForm sectionId={sectionId} />;
+        case 'custom':
+            return <CustomSectionForm sectionId={sectionId} />;
         default:
             return (
                 <Box sx={{ p: 4, textAlign: 'center', color: 'text.secondary' }}>

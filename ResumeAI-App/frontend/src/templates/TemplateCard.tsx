@@ -47,21 +47,15 @@ const TemplateCard: React.FC<Props> = ({
 
         {/* Hover Overlay */}
         <div className="card-overlay">
-            {locked ? (
-                <div className="lock-content">
-                    <Lock size={32} />
-                    <p>Upgrade to Unlock</p>
-                    <button className="btn-upgrade" onClick={(e) => { e.stopPropagation(); onUpgrade(); }}>
-                        Upgrade Pro
-                    </button>
-                </div>
-            ) : (
                 <div className="action-buttons">
-                    <button className="btn-use" onClick={() => onSelect(template)}>
-                        Use Template
+                    <button 
+                        className="btn-use" 
+                        onClick={() => onSelect(template)}
+                        style={{ backgroundColor: template.isPremium ? '#f59e0b' : undefined }}
+                    >
+                        {template.isPremium ? 'Try Template (Premium)' : 'Use Template'}
                     </button>
                 </div>
-            )}
         </div>
       </div>
 

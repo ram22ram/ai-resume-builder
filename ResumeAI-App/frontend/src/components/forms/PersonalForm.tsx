@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, TextField, Typography, Button } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
 
 const PersonalForm = ({ sectionId }: { sectionId: string }) => {
@@ -7,7 +7,25 @@ const PersonalForm = ({ sectionId }: { sectionId: string }) => {
     const section = resume.sections.find(s => s.id === sectionId);
     const item = section?.items[0];
 
-    if (!item) return null;
+    if (!item) {
+        return (
+            <Box sx={{ p: 3 }}>
+                <Typography color="error">Personal Details data is missing.</Typography>
+                <Button 
+                    variant="contained" 
+                    onClick={() => dispatch({ 
+                        type: 'ADD_ITEM', 
+                        payload: { 
+                            sectionId, 
+                            item: { id: '1', firstName: '', lastName: '', email: '', phone: '', city: '', country: '' } 
+                        } 
+                    })}
+                >
+                    Initialize Personal Details
+                </Button>
+            </Box>
+        );
+    }
 
     const handleChange = (field: string, value: string) => {
         dispatch({

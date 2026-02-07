@@ -28,6 +28,13 @@ const BuilderPage = () => {
     // This will eventually be mapped to the `resume.sections`
     const steps = resume.sections.filter(s => s.isVisible);
 
+    // Sync activeStep if steps change (removed or reordered)
+    React.useEffect(() => {
+        if (activeStep >= steps.length && steps.length > 0) {
+            setActiveStep(steps.length - 1);
+        }
+    }, [steps.length, activeStep]);
+
     const handleDownload = () => {
         // 1. Check Auth
         if (!isAuthenticated) {
@@ -76,6 +83,7 @@ const BuilderPage = () => {
                     <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 0 }}>
                          {steps[activeStep] && (
                              <SectionEditor 
+                                 key={steps[activeStep].id}
                                  type={steps[activeStep].type} 
                                  sectionId={steps[activeStep].id} 
                              />

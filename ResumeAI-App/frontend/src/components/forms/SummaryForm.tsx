@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, TextField, Typography, Button } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
 
 const SummaryForm = ({ sectionId }: { sectionId: string }) => {
@@ -7,7 +7,24 @@ const SummaryForm = ({ sectionId }: { sectionId: string }) => {
     const section = resume.sections.find(s => s.id === sectionId);
     const item = section?.items[0];
 
-    if (!item) return null;
+    if (!item) {
+         return (
+            <Box sx={{ p: 3 }}>
+                <Button 
+                    variant="contained" 
+                    onClick={() => dispatch({ 
+                        type: 'ADD_ITEM', 
+                        payload: { 
+                            sectionId, 
+                            item: { id: '1', description: '' } 
+                        } 
+                    })}
+                >
+                    Add Summary
+                </Button>
+            </Box>
+        );
+    }
 
     const handleChange = (value: string) => {
         dispatch({
