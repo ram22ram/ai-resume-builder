@@ -4,12 +4,12 @@ import Layout from '../components/Layout';
 import { useResume } from '../context/ResumeContext';
 import { Download, ChevronRight, ChevronLeft, Layout as LayoutIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ResumeRenderer from '../components/TemplateRenderer';
+import ResumeRenderer from '../components/renderer/ResumeRenderer';
 import SectionEditor from '../components/SectionEditor';
 
 import SectionManager from '../components/SectionManager';
 import { useAuth } from '../context/AuthContext';
-import { getTemplate } from '../data/templates';
+import { getTemplateConfig } from '../templates/TemplateRegistry';
 
 import LoginModal from '../components/LoginModal';
 import PremiumModal from '../components/PremiumModal';
@@ -43,9 +43,9 @@ const BuilderPage = () => {
         }
 
         // 2. Check Premium
-        const templateConfig = getTemplate(resume.templateId);
+        const templateConfig = getTemplateConfig(resume.templateId);
         
-        if (templateConfig.isPremium && !user?.isPremium) {
+        if (templateConfig?.isPremium && !user?.isPremium) {
             setIsPremiumOpen(true);
             return;
         }

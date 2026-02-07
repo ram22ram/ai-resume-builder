@@ -1,6 +1,6 @@
 import React from 'react';
 import { ResumeData } from '../../types/resume';
-import TemplateRenderer from '../TemplateRenderer';
+import { getTemplateComponent } from '../../templates/templateRegistry'
 
 interface Props {
     data: ResumeData;
@@ -9,9 +9,12 @@ interface Props {
 
 const ResumeRenderer: React.FC<Props> = ({ data, template }) => {
     // Fallback to data.templateId if prop not passed
-    const activeTemplate = template || data.templateId || 'simple_clean';
+    const activeTemplateId = template || data.templateId || 'simple_clean';
     
-    return <TemplateRenderer template={activeTemplate} data={data} />;
+    // STRICT REGISTRY LOOKUP
+    const TemplateComponent = getTemplateComponent(activeTemplateId);
+
+    return <TemplateComponent data={data} />;
 };
 
 export default ResumeRenderer;
