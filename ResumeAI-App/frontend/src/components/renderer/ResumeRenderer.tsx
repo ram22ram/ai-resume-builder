@@ -16,9 +16,9 @@ const ResumeRenderer: React.FC<Props> = ({ data }) => {
     const education = data.sections.find(s => s.id === 'education');
     const skills = data.sections.find(s => s.id === 'skills');
     
-    // Default Styling (Classic)
-    const fontFamily = 'Georgia, serif';
-    const accentColor = '#222';
+    // Dynamic Styling from Metadata
+    const fontFamily = data.metadata.fontFamily || 'Arial, sans-serif';
+    const accentColor = data.metadata.accentColor || '#000000';
     
     const styles = {
         container: {

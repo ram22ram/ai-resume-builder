@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useResume } from '../context/ResumeContext';
 import { Lock } from 'lucide-react';
 import Layout from '../components/Layout';
-// We will reuse the MiniResumePreview engine logic here directly or import it if compatible. 
-// For now, I will build a lightweight internal renderer to guarantee "Paper" look.
+import ResumeRenderer from '../components/renderer/ResumeRenderer';
+import { DUMMY_RESUME } from '../data/dummyResume';
 
 const TemplateGalleryPage = () => {
     const navigate = useNavigate();
@@ -89,26 +89,35 @@ const TemplateGalleryPage = () => {
                                             position: 'relative'
                                         }}
                                     >
-                                        {/* Mock Paper Look */}
+                                        {/* Mock Paper Look - NOW LIVE PREVIEW */}
                                         <Box sx={{ 
-                                            width: '85%', 
-                                            height: '90%', 
+                                            width: '100%', 
+                                            height: '100%', 
                                             bgcolor: 'white', 
                                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                                            p: 2,
                                             overflow: 'hidden',
-                                            fontSize: '4px' // Tiny Base Font for Preview
+                                            position: 'relative'
                                         }}>
-                                             {/* Mini Skeleton for VISUAL DEMO ONLY - Real render comes next */}
-                                             <Box sx={{ height: '10%' }} borderBottom="1px solid #eee">
-                                                <Box width="60%" height="4px" bgcolor={(item.defaultColor)} mb={1} />
-                                                <Box width="40%" height="2px" bgcolor="#94a3b8" />
-                                             </Box>
-                                             <Box mt={2}>
-                                                <Box width="30%" height="3px" bgcolor="#cbd5e1" mb={1} />
-                                                <Box width="100%" height="2px" bgcolor="#f1f5f9" mb={0.5} />
-                                                <Box width="90%" height="2px" bgcolor="#f1f5f9" mb={0.5} />
-                                                <Box width="80%" height="2px" bgcolor="#f1f5f9" mb={0.5} />
+                                             {/* 
+                                                Scaling Container: 
+                                                Render the resume at a larger fixed width (e.g. 800px) 
+                                                and scale it down to fit the card.
+                                             */}
+                                             <Box sx={{
+                                                 width: '800px', // A4-ish width
+                                                 height: '1132px', // A4-ish height
+                                                 transform: 'scale(0.35)', // Fixed scale for thumbnail
+                                                 transformOrigin: 'top left',
+                                                 bgcolor: 'white'
+                                             }}>
+                                                 <ResumeRenderer data={{
+                                                     ...DUMMY_RESUME,
+                                                     metadata: {
+                                                         ...DUMMY_RESUME.metadata,
+                                                         fontFamily: item.defaultFont,
+                                                         accentColor: item.defaultColor
+                                                     }
+                                                 }} />
                                              </Box>
                                         </Box>
 

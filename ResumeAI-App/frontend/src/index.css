@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+
+    /* Hide everything by default */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Hide the root app container explicitly to avoid layout issues */
+    #root {
+        display: none;
+    }
+
+    /* Show only the print container and its children */
+    #print-container,
+    #print-container * {
+        visibility: visible;
+        display: block;
+    }
+
+    /* Position the print container at the top left */
+    #print-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: white;
+    }
+
+    /* Reset any transformations or shadows */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+}
+
+/* Hide print container on screen */
+@media screen {
+    #print-container {
+        display: none;
+    }
+}
+
+@media print {
+    .print-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .print-section {
+        break-inside: auto;
+        /* Allow sections to span pages */
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+}

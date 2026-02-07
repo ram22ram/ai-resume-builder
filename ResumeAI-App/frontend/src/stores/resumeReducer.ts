@@ -11,6 +11,7 @@ export type Action =
     | { type: 'ADD_ITEM'; payload: { sectionId: string; item: SectionItem } }
     | { type: 'UPDATE_ITEM'; payload: { sectionId: string; itemId: string; data: Partial<SectionItem> } }
     | { type: 'REMOVE_ITEM'; payload: { sectionId: string; itemId: string } }
+    | { type: 'TOGGLE_SECTION_VISIBILITY'; payload: string } // sectionId
     | { type: 'LOAD_DATA'; payload: ResumeData }
     | { type: 'RESET' };
 
@@ -86,6 +87,14 @@ export function resumeReducer(state: ResumeData, action: Action): ResumeData {
 
         case 'REORDER_SECTIONS':
             return { ...state, sections: action.payload };
+
+        case 'TOGGLE_SECTION_VISIBILITY':
+            return {
+                ...state,
+                sections: state.sections.map(s =>
+                    s.id === action.payload ? { ...s, isVisible: !s.isVisible } : s
+                )
+            };
 
         case 'ADD_ITEM':
             return {

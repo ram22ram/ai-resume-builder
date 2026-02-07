@@ -1,119 +1,91 @@
-// src/data/dummyResume.ts
+import { ResumeData } from '../types/resume';
 
-export const DUMMY_RESUME_DATA = {
+export const DUMMY_RESUME: ResumeData = {
+  id: 'dummy',
+  templateId: 'classic',
+  isPremium: false,
+  metadata: {
+    fontFamily: 'Roboto',
+    accentColor: '#000000',
+    lineHeight: 1.5,
+    jobTitle: 'Software Engineer'
+  },
   sections: [
-    // ===================== PERSONAL =====================
     {
+      id: 'personal',
       type: 'personal',
-      content: {
-        fullName: 'John Smith',
-        jobTitle: 'Senior Full Stack Engineer | M.Tech (CS)',
-        email: 'john.smith@resume-ai.co.in',
-        phone: '+91 70000 12345',
-        address: 'New York, USA',
-        linkedin: 'linkedin.com/in/john-smith-ai',
-        portfolio: 'resume-ai.co.in',
-        photo: null
-      }
+      title: 'Personal Details',
+      isVisible: true,
+      items: [{
+        id: '1',
+        firstName: 'Alex',
+        lastName: 'Morgan',
+        email: 'alex.morgan@example.com',
+        phone: '+1 (555) 123-4567',
+        city: 'San Francisco',
+        country: 'CA',
+        title: 'Senior Product Designer'
+      }]
     },
-
-    // ===================== SUMMARY =====================
     {
+      id: 'summary',
       type: 'summary',
-      content:
-        'Visionary Full Stack Developer with an M.Tech in Computer Science and 5+ years of experience building high-performance SaaS platforms. Specialized in React, Node.js, and Generative AI integrations. Passionate about creating ATS-optimized career tools and scalable systems.'
+      title: 'Summary',
+      isVisible: true,
+      items: [{
+        id: '1',
+        description: 'Creative and detail-oriented Product Designer with 5+ years of experience building user-centric digital products. Proven track record of improving user engagement and streamlining complex workflows.'
+      }]
     },
-
-    // ===================== EXPERIENCE =====================
     {
+      id: 'experience',
       type: 'experience',
-      content: [
+      title: 'Experience',
+      isVisible: true,
+      items: [
         {
-          id: 1,
-          title: 'Lead Product Engineer',
-          company: 'ResumeAI Systems',
-          location: 'Remote / Jabalpur',
-          startDate: '2022-06-01',
-          endDate: '',
-          isPresent: true,
-          description:
-            'Engineered an AI-powered resume parsing engine with 95% accuracy. Optimized frontend performance by 40% using React memoization and code-splitting. Scaled the platform to 10k+ active users.'
+          id: 'exp1',
+          title: 'Senior UX Designer',
+          subtitle: 'TechFlow Inc.',
+          date: '2021 - Present',
+          description: 'Led the redesign of the core mobile app, resulting in a 25% increase in user retention. Mentored junior designers and established a comprehensive design system.',
+          location: 'San Francisco, CA'
         },
         {
-          id: 2,
-          title: 'Senior Software Developer',
-          company: 'FinTech Innovations',
-          location: 'Bangalore, India',
-          startDate: '2019-05-01',
-          endDate: '2022-05-15',
-          isPresent: false,
-          description:
-            'Built real-time banking dashboards using micro-frontend architecture. Implemented CI/CD pipelines reducing deployment time by 50%. Mentored junior developers.'
+          id: 'exp2',
+          title: 'Product Designer',
+          subtitle: 'Creative Solutions',
+          date: '2018 - 2021',
+          description: 'Collaborated with cross-functional teams to launch 3 successful SaaS products. Conducted user research and usability testing to inform design decisions.',
+          location: 'Austin, TX'
         }
       ]
     },
-
-    // ===================== EDUCATION =====================
     {
+      id: 'education',
       type: 'education',
-      content: [
+      title: 'Education',
+      isVisible: true,
+      items: [
         {
-          id: 1,
-          school: 'Indian Institute of Technology (IIT)',
-          degree: 'M.Tech in Computer Science & Engineering',
-          location: 'Mumbai, India',
-          startDate: '2017-07-01',
-          endDate: '2019-05-01',
-          grade: '9.8 CGPA / Gold Medalist'
-        },
-        {
-          id: 2,
-          school: 'Government Engineering College',
-          degree: 'B.Tech in Information Technology',
-          location: 'Jabalpur, MP',
-          startDate: '2013-08-01',
-          endDate: '2017-06-01',
-          grade: '8.5 CGPA'
+          id: 'edu1',
+          title: 'BFA in Interaction Design',
+          subtitle: 'California College of the Arts',
+          date: '2014 - 2018',
+          description: 'Graduated with Honors. specialized in Human-Computer Interaction.'
         }
       ]
     },
-
-    // ===================== PROJECTS =====================
     {
-      type: 'projects',
-      content: [
-        {
-          id: 1,
-          title: 'AI Interview Simulator',
-          description:
-            'Voice-based AI interview coach providing real-time feedback on confidence, tone, and content.',
-          techStack: 'React, Web Speech API, Express, OpenAI'
-        },
-        {
-          id: 2,
-          title: 'GitHub to Impact CV',
-          description:
-            'Automated tool that converts GitHub repositories into professional resume bullet points.',
-          techStack: 'GitHub API, NLP, React'
-        }
-      ]
-    },
-
-    // ===================== SKILLS =====================
-    {
+      id: 'skills',
       type: 'skills',
-      content: [
-        'React.js',
-        'Next.js',
-        'TypeScript',
-        'Node.js',
-        'Python',
-        'OpenAI API',
-        'AWS (EC2, S3)',
-        'Docker',
-        'PostgreSQL',
-        'Redis',
-        'System Design'
+      title: 'Skills',
+      isVisible: true,
+      items: [
+        { id: 's1', title: 'Figma', subtitle: 'Expert' },
+        { id: 's2', title: 'Prototyping', subtitle: 'Expert' },
+        { id: 's3', title: 'HTML/CSS', subtitle: 'Intermediate' },
+        { id: 's4', title: 'User Research', subtitle: 'Advanced' }
       ]
     }
   ]

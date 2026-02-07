@@ -1,21 +1,59 @@
 import React, { useState } from 'react';
-import { Box, Button, Container, Grid, Typography, IconButton } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import Layout from '../components/Layout';
 import { useResume } from '../context/ResumeContext';
 import { Download, ChevronRight, ChevronLeft, Layout as LayoutIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ResumeRenderer from '../components/renderer/ResumeRenderer';
+import ResumeRenderer from '../components/TemplateRenderer';
+import SectionEditor from '../components/SectionEditor';
+
+import SectionManager from '../components/SectionManager';
+import { useAuth } from '../context/AuthContext';
+import { getTemplate } from '../data/templates';
+
+import LoginModal from '../components/LoginModal';
+import PremiumModal from '../components/PremiumModal';
 
 const BuilderPage = () => {
     const { resume } = useResume();
+    const { user, isAuthenticated } = useAuth(); 
     const navigate = useNavigate();
     const [activeStep, setActiveStep] = useState(0);
+    const [isManagerOpen, setIsManagerOpen] = useState(false);
+    
+    // Modal States
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [isPremiumOpen, setIsPremiumOpen] = useState(false);
 
     // This will eventually be mapped to the `resume.sections`
     const steps = resume.sections.filter(s => s.isVisible);
 
+    const handleDownload = () => {
+        // 1. Check Auth
+        if (!isAuthenticated) {
+            setIsLoginOpen(true);
+            return;
+        }
+
+        // 2. Check Premium
+        const templateConfig = getTemplate(resume.templateId);
+        
+        if (templateConfig.isPremium && !user?.isPremium) {
+            setIsPremiumOpen(true);
+            return;
+        }
+
+        // 3. Trigger Print
+        window.print();
+    };
+
     return (
         <Layout>
+            {/* PRINT CONTAINER (Hidden on Screen) */}
+            <div id="print-container">
+                <ResumeRenderer template={resume.templateId} data={resume} />
+            </div>
+
             <Box sx={{ height: 'calc(100vh - 64px)', display: 'flex', overflow: 'hidden', bgcolor: '#f8fafc' }}>
                 
                 {/* --- LEFT PANEL: EDITOR (40-50%) --- */}
@@ -35,32 +73,51 @@ const BuilderPage = () => {
                     </Box>
 
                     {/* Step Navigator (Scrollable) */}
-                    <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 4 }}>
-                         {/* DYNAMIC FORM COMPONENT WILL GO HERE */}
-                         <Box sx={{ textAlign: 'center', py: 10, color: '#94a3b8' }}>
-                             Form for: {steps[activeStep]?.title}
-                             <br/>
-                             (Coming in Phase 4)
-                         </Box>
+                    <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 0 }}>
+                         {steps[activeStep] && (
+                             <SectionEditor 
+                                 type={steps[activeStep].type} 
+                                 sectionId={steps[activeStep].id} 
+                             />
+                         )}
                     </Box>
 
                     {/* Navigation Footer */}
-                    <Box sx={{ p: 2, borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between' }}>
-                        <Button 
-                            disabled={activeStep === 0} 
-                            onClick={() => setActiveStep(p => p - 1)}
-                            startIcon={<ChevronLeft />}
+                    <Box sx={{ p: 2, borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', flexDirection: 'column', gap: 2 }}>
+                         <Button 
+                            variant="outlined" 
+                            color="secondary" 
+                            fullWidth 
+                            onClick={() => setIsManagerOpen(true)}
+                            sx={{ borderStyle: 'dashed' }}
                         >
-                            Back
+                            Manage Sections (Reorder / Add)
                         </Button>
-                        <Button 
-                            variant="contained" 
-                            onClick={() => setActiveStep(p => Math.min(p + 1, steps.length - 1))}
-                            endIcon={<ChevronRight />}
-                        >
-                            Next Step
-                        </Button>
+                        
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                            <Button 
+                                disabled={activeStep === 0} 
+                                onClick={() => setActiveStep(p => p - 1)}
+                                startIcon={<ChevronLeft />}
+                            >
+                                Back
+                            </Button>
+                            <Button 
+                                variant="contained" 
+                                onClick={() => setActiveStep(p => Math.min(p + 1, steps.length - 1))}
+                                endIcon={<ChevronRight />}
+                            >
+                                Next Step
+                            </Button>
+                        </Box>
                     </Box>
+
+                    {/* Section Manager Modal */}
+                    <SectionManager open={isManagerOpen} onClose={() => setIsManagerOpen(false)} />
+                    
+                    {/* Auth & Premium Modals */}
+                    <LoginModal open={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+                    <PremiumModal open={isPremiumOpen} onClose={() => setIsPremiumOpen(false)} />
                 </Box>
 
 
@@ -82,7 +139,7 @@ const BuilderPage = () => {
                             overflow: 'hidden' 
                         }}
                     >
-                        <ResumeRenderer data={resume} />
+                        <ResumeRenderer template={resume.templateId} data={resume} />
                     </Box>
 
                     {/* Floating Action Button for Download (Mobile/Desktop) */}
@@ -90,6 +147,7 @@ const BuilderPage = () => {
                         variant="contained"
                         color="success"
                         startIcon={<Download />}
+                        onClick={handleDownload}
                         sx={{ position: 'fixed', bottom: 30, right: 30, borderRadius: 10, px: 4, py: 1.5, zIndex: 50 }}
                     >
                         Download PDF

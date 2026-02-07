@@ -95,7 +95,7 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
              <section key={section.id}>
                <div style={styles.sectionHeader}>{section.title}</div>
                {items.map((edu: any, i: number) => (
-                 <div key={i} style={{ marginBottom: '12px' }}>
+                 <div key={i} className="print-item" style={{ marginBottom: '12px' }}>
                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                      <div style={styles.itemTitle}>{edu.institution}</div>
                      <div style={styles.date}>{edu.date || edu.year || `${edu.startDate || ''} - ${edu.endDate || ''}`}</div>
@@ -116,7 +116,7 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
              <section key={section.id}>
                <div style={styles.sectionHeader}>{section.title}</div>
                {items.map((exp: any, i: number) => (
-                 <div key={i} style={{ marginBottom: '15px' }}>
+                 <div key={i} className="print-item" style={{ marginBottom: '15px' }}>
                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                      <div style={styles.itemTitle}>{exp.role || exp.position}</div>
                      <div style={styles.date}>{exp.date || `${exp.startDate || ''} - ${exp.endDate || ''}`}</div>
@@ -139,7 +139,7 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
              <section key={section.id}>
                <div style={styles.sectionHeader}>{section.title}</div>
                {items.map((proj: any, i: number) => (
-                 <div key={i} style={{ marginBottom: '12px' }}>
+                 <div key={i} className="print-item" style={{ marginBottom: '12px' }}>
                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                      <div style={styles.itemTitle}>
                          {proj.title} {proj.link && <a href={proj.link} style={{ fontSize: '9pt', color: '#2563eb', fontWeight: 'normal' }}>(Link)</a>}
