@@ -1,12 +1,12 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types/resume';
-import { standardStyles } from '../styles/standardStyles';
+import { ResumeData, ResumeSection } from '../../../types/resume';
+import { standardStyles } from '../../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
 }
 
-const ClassicTemplate: React.FC<Props> = ({ data }) => {
+const ProClassic1: React.FC<Props> = ({ data }) => {
   const getSectionItems = (type: ResumeSection['type']) =>
     data.sections.find((s: any) => s.type === type && s.isVisible)?.items || [];
 
@@ -20,7 +20,7 @@ const ClassicTemplate: React.FC<Props> = ({ data }) => {
   // We need to map skills items?
   // Reducer: items: [] initially.
   // SkillsForm (Step 886 view?) - Let's assume skills items have 'name' property.
-  // Existing ClassicTemplate line 113 maps it via join if array.
+  // Existing ProClassic1 line 113 maps it via join if array.
   
   const projects = getSectionItems('projects');
 
@@ -183,4 +183,4 @@ const ClassicTemplate: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default ClassicTemplate;
+export default ProClassic1;

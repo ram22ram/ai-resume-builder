@@ -1,6 +1,6 @@
 import React from 'react';
 import { ResumeData } from '../../types/resume';
-import { getTemplateComponent } from '../../templates/TemplateRegistry.ts';
+import { getTemplateComponent } from '../../templates/TemplateRegistry';
 
 interface Props {
     data: ResumeData;

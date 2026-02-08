@@ -1,13 +1,13 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types/resume';
-import { standardStyles } from '../styles/standardStyles';
+import { ResumeData, ResumeSection } from '../../../types/resume';
+import { standardStyles } from '../../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
 }
 
 // "The Modern Tech" - Projects First, Skill Tags, Clean Sans
-const ModernTemplate: React.FC<Props> = ({ data }) => {
+const CreativeViolet: React.FC<Props> = ({ data }) => {
   const getSectionItems = (type: ResumeSection['type']) =>
     data.sections.find((s) => s.type === type && s.isVisible)?.items || [];
 
@@ -139,4 +139,4 @@ const ModernTemplate: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default ModernTemplate;
+export default CreativeViolet;

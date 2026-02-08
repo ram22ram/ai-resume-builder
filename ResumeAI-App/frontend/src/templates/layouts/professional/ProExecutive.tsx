@@ -1,13 +1,13 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types/resume';
-import { standardStyles } from '../styles/standardStyles';
+import { ResumeData, ResumeSection } from '../../../types/resume';
+import { standardStyles } from '../../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
 }
 
 // "The Executive" - Center aligned, serif, elegant, high hierarchy
-const PremiumExecutive: React.FC<Props> = ({ data }) => {
+const ProExecutive: React.FC<Props> = ({ data }) => {
   const getSectionItems = (type: ResumeSection['type']) =>
     data.sections.find((s: any) => s.type === type && s.isVisible)?.items || [];
 
@@ -143,4 +143,4 @@ const PremiumExecutive: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default PremiumExecutive;
+export default ProExecutive;

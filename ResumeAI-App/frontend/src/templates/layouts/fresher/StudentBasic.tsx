@@ -1,13 +1,13 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types/resume';
-import { standardStyles } from '../styles/standardStyles';
+import { ResumeData, ResumeSection } from '../../../types/resume';
+import { standardStyles } from '../../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
 }
 
 // "The Space Saver" - High density, Inter font, Grid-like
-const MinimalTemplate: React.FC<Props> = ({ data }) => {
+const StudentBasic: React.FC<Props> = ({ data }) => {
   const getSectionItems = (type: ResumeSection['type']) =>
     data.sections.find((s) => s.type === type && s.isVisible)?.items || [];
 
@@ -148,4 +148,4 @@ const MinimalTemplate: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default MinimalTemplate;
+export default StudentBasic;

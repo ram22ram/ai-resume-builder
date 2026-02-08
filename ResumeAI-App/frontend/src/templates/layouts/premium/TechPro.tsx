@@ -1,13 +1,13 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../types/resume';
-import { standardStyles } from '../styles/standardStyles';
+import { ResumeData, ResumeSection } from '../../../types/resume';
+import { standardStyles } from '../../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
 }
 
 // "The DevOps" - Dark accents, Code typography, Terminal feel
-const PremiumTech: React.FC<Props> = ({ data }) => {
+const TechPro: React.FC<Props> = ({ data }) => {
   const getSectionItems = (type: ResumeSection['type']) =>
     data.sections.find((s) => s.type === type && s.isVisible)?.items || [];
 
@@ -140,4 +140,4 @@ const PremiumTech: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default PremiumTech;
+export default TechPro;

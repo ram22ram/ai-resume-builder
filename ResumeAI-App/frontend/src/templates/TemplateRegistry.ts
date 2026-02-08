@@ -1,15 +1,75 @@
 import React from 'react';
 import { TemplateConfig } from '../types/resume';
 
-// LAYOUT IMPORTS
-import ClassicTemplate from './layouts/ClassicTemplate';
-import CorporateTemplate from './layouts/CorporateTemplate';
-import MinimalTemplate from './layouts/MinimalTemplate';
-import ModernTemplate from './layouts/ModernTemplate';
-import PremiumElegant from './layouts/PremiumElegant';
-import PremiumExecutive from './layouts/PremiumExecutive';
-import PremiumTech from './layouts/PremiumTech';
-import SimpleTemplate from './layouts/SimpleTemplate';
+// --- FRESHER TEMPLATES ---
+import FresherBasic from './layouts/fresher/FresherBasic';
+import FresherClean from './layouts/fresher/FresherClean';
+import FresherMinimal from './layouts/fresher/FresherMinimal';
+import FresherAcademic from './layouts/fresher/FresherAcademic';
+import FresherTech from './layouts/fresher/FresherTech';
+import FresherCreative from './layouts/fresher/FresherCreative';
+import FresherBold from './layouts/fresher/FresherBold';
+import FresherSoft from './layouts/fresher/FresherSoft';
+import FresherElegant from './layouts/fresher/FresherElegant';
+import FresherCompact from './layouts/fresher/FresherCompact';
+import SimpleClean from './layouts/fresher/SimpleClean';
+import StudentBasic from './layouts/fresher/StudentBasic';
+import Free4 from './layouts/fresher/Free4';
+
+// --- PROFESSIONAL TEMPLATES ---
+import ProClassic1 from './layouts/professional/ProClassic1';
+import ProModern1 from './layouts/professional/ProModern1';
+import ProSimple from './layouts/professional/ProSimple';
+import ProExecutive from './layouts/professional/ProExecutive';
+import ProGray from './layouts/professional/ProGray';
+import Free1 from './layouts/professional/Free1';
+import Free2 from './layouts/professional/Free2';
+import Free5 from './layouts/professional/Free5';
+import BasicSidebar from './layouts/professional/BasicSidebar';
+import NontechClassic from './layouts/professional/NontechClassic';
+
+// --- MODERN TEMPLATES ---
+import ModernTeal from './layouts/modern/ModernTeal';
+import ModernRuby from './layouts/modern/ModernRuby';
+import ModernDark from './layouts/modern/ModernDark';
+import Free3 from './layouts/modern/Free3';
+import Modern1 from './layouts/modern/Modern1';
+import TechStarter from './layouts/modern/TechStarter';
+
+// --- CREATIVE TEMPLATES ---
+import CreativeOrange from './layouts/creative/CreativeOrange';
+import CreativeViolet from './layouts/creative/CreativeViolet';
+
+// --- PREMIUM TEMPLATES ---
+import PremCorp1 from './layouts/premium/PremCorp1';
+import PremCorp2 from './layouts/premium/PremCorp2';
+import PremCorp3 from './layouts/premium/PremCorp3';
+import PremCorp4 from './layouts/premium/PremCorp4';
+import PremCorp5 from './layouts/premium/PremCorp5';
+import PremMod1 from './layouts/premium/PremMod1';
+import PremMod2 from './layouts/premium/PremMod2';
+import PremMod3 from './layouts/premium/PremMod3';
+import PremMod4 from './layouts/premium/PremMod4';
+import PremMod5 from './layouts/premium/PremMod5';
+import PremCreat1 from './layouts/premium/PremCreat1';
+import PremCreat2 from './layouts/premium/PremCreat2';
+import PremCreat3 from './layouts/premium/PremCreat3';
+import PremCreat4 from './layouts/premium/PremCreat4';
+import PremCreat5 from './layouts/premium/PremCreat5';
+import PremMisc1 from './layouts/premium/PremMisc1';
+import PremMisc2 from './layouts/premium/PremMisc2';
+import PremMisc3 from './layouts/premium/PremMisc3';
+import PremMisc4 from './layouts/premium/PremMisc4';
+import PremMisc5 from './layouts/premium/PremMisc5';
+import PremMisc6 from './layouts/premium/PremMisc6';
+import PremMisc7 from './layouts/premium/PremMisc7';
+import PremMisc8 from './layouts/premium/PremMisc8';
+import PremMisc9 from './layouts/premium/PremMisc9';
+import PremMisc10 from './layouts/premium/PremMisc10';
+import TechPro from './layouts/premium/TechPro';
+import ExecElite from './layouts/premium/ExecElite';
+import UiuxDesigner from './layouts/premium/UiuxDesigner';
+
 
 // 1. TEMPLATE CONFIGURATION (Single Source of Truth)
 export const TEMPLATES: TemplateConfig[] = [
@@ -93,87 +153,79 @@ export const TEMPLATES: TemplateConfig[] = [
     { id: 'nontech_classic', name: 'Classic Legacy', thumbnail: 'classic', isPremium: false, category: 'professional', layout: 'single', defaultFont: 'Roboto', defaultColor: '#000', structure: [] }
 ];
 
-// 2. COMPONENT REGISTRY (The 1:1 Mapping)
+// 2. COMPONENT REGISTRY (Strict 1:1 Mapping)
 const REGISTRY: Record<string, React.FC<any>> = {
     // FRESHER
-    'fresher_basic': SimpleTemplate,
-    'fresher_clean': SimpleTemplate,
-    'fresher_minimal': SimpleTemplate,
-    'fresher_academic': PremiumElegant,
-    'fresher_tech': ModernTemplate,
-    'fresher_creative': PremiumElegant,
-    'fresher_bold': PremiumTech,
-    'fresher_soft': PremiumElegant,
-    'fresher_elegant': PremiumElegant,
-    'fresher_compact': MinimalTemplate,
+    'fresher_basic': FresherBasic,
+    'fresher_clean': FresherClean,
+    'fresher_minimal': FresherMinimal,
+    'fresher_academic': FresherAcademic,
+    'fresher_tech': FresherTech,
+    'fresher_creative': FresherCreative,
+    'fresher_bold': FresherBold,
+    'fresher_soft': FresherSoft,
+    'fresher_elegant': FresherElegant,
+    'fresher_compact': FresherCompact,
+    'simple_clean': SimpleClean,
+    'student_basic': StudentBasic,
+    'free_4': Free4,
 
     // PROFESSIONAL
-    'pro_classic_1': ClassicTemplate,
-    'pro_modern_1': ModernTemplate,
-    'pro_simple': SimpleTemplate,
-    'pro_executive': PremiumExecutive,
-    'pro_gray': MinimalTemplate,
+    'pro_classic_1': ProClassic1,
+    'pro_modern_1': ProModern1,
+    'pro_simple': ProSimple,
+    'pro_executive': ProExecutive,
+    'pro_gray': ProGray,
+    'free_1': Free1,
+    'free_2': Free2,
+    'free_5': Free5,
+    'basic_sidebar': BasicSidebar,
+    'nontech_classic': NontechClassic,
 
     // MODERN
-    'modern_teal': ModernTemplate,
-    'modern_ruby': ModernTemplate,
-    'modern_dark': ModernTemplate,
-    'creative_orange': PremiumElegant,
-    'creative_violet': ModernTemplate,
+    'modern_teal': ModernTeal,
+    'modern_ruby': ModernRuby,
+    'modern_dark': ModernDark,
+    'free_3': Free3,
+    'modern_1': Modern1,
+    'tech_starter': TechStarter,
 
-    // FREE EXTRAS
-    'free_1': ClassicTemplate,
-    'free_2': ClassicTemplate,
-    'free_3': ModernTemplate,
-    'free_4': SimpleTemplate,
-    'free_5': ClassicTemplate,
+    // CREATIVE
+    'creative_orange': CreativeOrange,
+    'creative_violet': CreativeViolet,
 
-    // PREMIUM CORPORATE
-    'prem_corp_1': CorporateTemplate,
-    'prem_corp_2': PremiumExecutive,
-    'prem_corp_3': PremiumExecutive,
-    'prem_corp_4': PremiumExecutive,
-    'prem_corp_5': CorporateTemplate,
-
-    // PREMIUM MODERN
-    'prem_mod_1': MinimalTemplate,
-    'prem_mod_2': PremiumTech,
-    'prem_mod_3': ModernTemplate,
-    'prem_mod_4': ModernTemplate, // Check layout? Mapping to Modern for now
-    'prem_mod_5': ModernTemplate,
-
-    // PREMIUM CREATIVE
-    'prem_creat_1': PremiumElegant,
-    'prem_creat_2': PremiumElegant,
-    'prem_creat_3': PremiumElegant,
-    'prem_creat_4': PremiumElegant,
-    'prem_creat_5': PremiumElegant,
-
-    // PREMIUM MISC
-    'prem_misc_1': ModernTemplate,
-    'prem_misc_2': ClassicTemplate,
-    'prem_misc_3': ClassicTemplate,
-    'prem_misc_4': ClassicTemplate,
-    'prem_misc_5': CorporateTemplate,
-    'prem_misc_6': ClassicTemplate,
-    'prem_misc_7': ModernTemplate,
-    'prem_misc_8': ClassicTemplate,
-    'prem_misc_9': PremiumElegant,
-    'prem_misc_10': CorporateTemplate,
-
-    // LEGACY MAPPING
-    'simple_clean': SimpleTemplate,
-    'modern_1': ModernTemplate,
-    'student_basic': MinimalTemplate,
-    'tech_starter': ModernTemplate,
-    'basic_sidebar': CorporateTemplate,
-    'tech_pro': PremiumTech,
-    'exec_elite': PremiumExecutive,
-    'uiux_designer': PremiumElegant,
-    'nontech_classic': ClassicTemplate
+    // PREMIUM
+    'prem_corp_1': PremCorp1,
+    'prem_corp_2': PremCorp2,
+    'prem_corp_3': PremCorp3,
+    'prem_corp_4': PremCorp4,
+    'prem_corp_5': PremCorp5,
+    'prem_mod_1': PremMod1,
+    'prem_mod_2': PremMod2,
+    'prem_mod_3': PremMod3,
+    'prem_mod_4': PremMod4,
+    'prem_mod_5': PremMod5,
+    'prem_creat_1': PremCreat1,
+    'prem_creat_2': PremCreat2,
+    'prem_creat_3': PremCreat3,
+    'prem_creat_4': PremCreat4,
+    'prem_creat_5': PremCreat5,
+    'prem_misc_1': PremMisc1,
+    'prem_misc_2': PremMisc2,
+    'prem_misc_3': PremMisc3,
+    'prem_misc_4': PremMisc4,
+    'prem_misc_5': PremMisc5,
+    'prem_misc_6': PremMisc6,
+    'prem_misc_7': PremMisc7,
+    'prem_misc_8': PremMisc8,
+    'prem_misc_9': PremMisc9,
+    'prem_misc_10': PremMisc10,
+    'tech_pro': TechPro,
+    'exec_elite': ExecElite,
+    'uiux_designer': UiuxDesigner
 };
 
-// 3. GETTERS
+// 3. STRICT GETTERS
 export const getTemplateComponent = (id: string): React.FC<any> => {
     const Component = REGISTRY[id];
     if (!Component) {

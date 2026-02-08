@@ -1,12 +1,12 @@
 import React from 'react';
-import { ResumeData } from '../../types/resume';
-import { standardStyles } from '../styles/standardStyles';
+import { ResumeData } from '../../../types/resume';
+import { standardStyles } from '../../styles/standardStyles';
 
 interface Props {
   data: ResumeData;
 }
 
-const SimpleTemplate: React.FC<Props> = ({ data }) => {
+const FresherClean: React.FC<Props> = ({ data }) => {
   // Fix: Access "items" not "content"
   const personalSection = data.sections.find(s => s.type === 'personal');
   const personal = personalSection?.items?.[0] || {} as any;
@@ -219,4 +219,4 @@ const SimpleTemplate: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default SimpleTemplate;
+export default FresherClean;
