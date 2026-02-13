@@ -9,7 +9,9 @@ const SplitHighlightTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const p = get('personal')[0] || {};
   const summary = get('summary')[0]?.description || '';
   const exp = get('experience');
-  const skills = get('skills').map((s: any) => s.name || s);
+  const skills = get('skills').map((s: any) =>
+  typeof s === "string" ? s : s.title || s.name || ""
+);
   const projects = get('projects');
   const edu = get('education');
 

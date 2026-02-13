@@ -9,7 +9,9 @@ const MinimalAuthorityTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const p = get('personal')[0] || {};
   const exp = get('experience');
   const projects = get('projects');
-  const skills = get('skills').map((s: any) => s.name || s);
+  const skills = get('skills').map((s: any) =>
+  typeof s === "string" ? s : s.title || s.name || ""
+);
   const edu = get('education');
 
   return (

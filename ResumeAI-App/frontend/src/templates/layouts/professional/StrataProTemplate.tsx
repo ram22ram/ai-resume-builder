@@ -10,7 +10,9 @@ const StrataProTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const summary = get('summary')[0]?.description;
   const experience = get('experience');
   const education = get('education');
-  const skills = get('skills').map((s: any) => s.name || s);
+  const skills = get('skills').map((s: any) =>
+  typeof s === "string" ? s : s.title || s.name || ""
+);
 
   return (
     <div style={{ ...standardStyles.page, fontFamily: 'Georgia, serif' }}>

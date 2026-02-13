@@ -8,7 +8,9 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
 
   const personal = get('personal')[0] || {};
   const experience = get('experience');
-  const skills = get('skills').map((s: any) => s.name || s);
+  const skills = get('skills').map((s: any) =>
+  typeof s === "string" ? s : s.title || s.name || ""
+);
 
   const accent = data.metadata.accentColor || '#0f172a';
 

@@ -7,7 +7,9 @@ const StepOneGridTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
   const personal = get('personal')[0] || {};
-  const skills = get('skills').map((s: any) => s.name || s);
+  const skills = get('skills').map((s: any) =>
+  typeof s === "string" ? s : s.title || s.name || ""
+);
   const education = get('education');
   const projects = get('projects');
   const experience = get('experience');

@@ -11,7 +11,9 @@ const VerticalAccentProTemplate: React.FC<{ data: ResumeData }> = ({ data }) => 
   const experience = get('experience');
   const projects = get('projects');
   const education = get('education');
-  const skills = get('skills').map((s: any) => s.name || s);
+  const skills = get('skills').map((s: any) =>
+  typeof s === "string" ? s : s.title || s.name || ""
+);
 
   const accent = data.metadata.accentColor || '#2563eb';
 

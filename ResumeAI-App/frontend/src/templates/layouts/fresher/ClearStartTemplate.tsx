@@ -8,7 +8,9 @@ const ClearStartTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
   const personal = get('personal')[0] || {};
   const education = get('education');
-  const skills = get('skills').map((s: any) => s.name || s);
+  const skills = get('skills').map((s: any) =>
+  typeof s === "string" ? s : s.title || s.name || ""
+);
   const projects = get('projects');
   const experience = get('experience');
 
