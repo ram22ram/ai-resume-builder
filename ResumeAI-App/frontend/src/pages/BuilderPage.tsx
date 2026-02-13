@@ -9,7 +9,7 @@ import SectionEditor from '../components/SectionEditor';
 
 import SectionManager from '../components/SectionManager';
 import { useAuth } from '../context/AuthContext';
-import { getTemplateConfig } from '../templates/TemplateRegistry';
+import { PREMIUM_TEMPLATES } from '../templates/TemplateRegistry'
 
 import LoginModal from '../components/LoginModal';
 import PremiumModal from '../components/PremiumModal';
@@ -43,12 +43,13 @@ const BuilderPage = () => {
         }
 
         // 2. Check Premium
-        const templateConfig = getTemplateConfig(resume.templateId);
         
-        if (templateConfig?.isPremium && !user?.isPremium) {
-            setIsPremiumOpen(true);
-            return;
+                if (PREMIUM_TEMPLATES.has(resume.templateId) && !user?.isPremium) {
+        setIsPremiumOpen(true);
+        return;
         }
+
+
 
         // 3. Trigger Print
         window.print();
@@ -58,7 +59,7 @@ const BuilderPage = () => {
         <Layout>
             {/* PRINT CONTAINER (Hidden on Screen) */}
             <div id="print-container">
-                <ResumeRenderer key={resume.templateId} template={resume.templateId} data={resume} />
+                <ResumeRenderer key={resume.templateId} templateId={resume.templateId} data={resume} />
             </div>
 
             <Box sx={{ height: 'calc(100vh - 64px)', display: 'flex', overflow: 'hidden', bgcolor: 'background.default' }}>
@@ -147,7 +148,7 @@ const BuilderPage = () => {
                             overflow: 'hidden' 
                         }}
                     >
-                        <ResumeRenderer key={resume.templateId} template={resume.templateId} data={resume} />
+                        <ResumeRenderer key={resume.templateId} templateId={resume.templateId} data={resume} />
                     </Box>
 
                     {/* Floating Action Button for Download (Mobile/Desktop) */}

@@ -1,20 +1,15 @@
 import React from 'react';
-import { ResumeData } from '../../types/resume';
 import { getTemplateComponent } from '../../templates/TemplateRegistry';
+import { ResumeData } from '../../types/resume';
 
 interface Props {
-    data: ResumeData;
-    template?: string; // Optional because legacy usage might not pass it, but BuilderPage does.
+  data: ResumeData;
+  templateId: string;
 }
 
-const ResumeRenderer: React.FC<Props> = ({ data, template }) => {
-    // Fallback to data.templateId if prop not passed
-    const activeTemplateId = template || data.templateId || 'simple_clean';
-    
-    // STRICT REGISTRY LOOKUP
-    const TemplateComponent = getTemplateComponent(activeTemplateId);
-
-    return <TemplateComponent data={data} />;
+const ResumeRenderer: React.FC<Props> = ({ data, templateId }) => {
+  const TemplateComponent = getTemplateComponent(templateId);
+  return <TemplateComponent data={data} />;
 };
 
 export default ResumeRenderer;

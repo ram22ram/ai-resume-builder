@@ -14,25 +14,29 @@ const TemplateSelectPage = () => {
     const [filter, setFilter] = useState('all');
 
     const handleSelect = (templateId: string) => {
-        const template = TEMPLATES.find(t => t.id === templateId);
-        if (template) {
-            dispatch({ type: 'SET_TEMPLATE', payload: templateId });
-            dispatch({ 
-                type: 'UPDATE_METADATA', 
-                payload: { 
-                    fontFamily: template.previewConfig?.fontFamily || template.defaultFont, 
-                    accentColor: template.previewConfig?.accentColor || template.defaultColor 
-                } 
-            });
-        }
-        navigate('/builder');
-    };
+  const template = TEMPLATES.find((t: any) => t.id === templateId);
+
+  if (template) {
+    dispatch({ type: 'SET_TEMPLATE', payload: templateId });
+
+    dispatch({
+      type: 'UPDATE_METADATA',
+      payload: {
+        fontFamily: template.defaultFont,
+        accentColor: template.defaultColor
+      }
+    });
+  }
+
+  navigate('/builder');
+};
+
 
     const categories = ['all', 'fresher', 'professional', 'modern', 'creative'];
 
     const displayedTemplates = filter === 'all' 
         ? TEMPLATES 
-        : TEMPLATES.filter(t => t.category === filter);
+        : TEMPLATES.filter((t: any) => t.category === filter);
 
     return (
         <Layout>
@@ -70,7 +74,7 @@ const TemplateSelectPage = () => {
 
                     {/* Grid */}
                     <Grid container spacing={4}>
-                        {displayedTemplates.map((item) => (
+                        {displayedTemplates.map((item: any) => (
                             <Grid key={item.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
                                 <Paper 
                                     elevation={0}
@@ -119,14 +123,18 @@ const TemplateSelectPage = () => {
                                                  transformOrigin: 'top left',
                                                  bgcolor: 'white'
                                              }}>
-                                                 <ResumeRenderer data={{
-                                                     ...DUMMY_RESUME,
-                                                     metadata: {
-                                                         ...DUMMY_RESUME.metadata,
-                                                         fontFamily: item.defaultFont,
-                                                         accentColor: item.defaultColor
-                                                     }
-                                                 }} />
+                                                <ResumeRenderer
+                                                        templateId={item.id}
+                                                        data={{
+                                                            ...DUMMY_RESUME,
+                                                            templateId: item.id,
+                                                            metadata: {
+                                                            ...DUMMY_RESUME.metadata,
+                                                            fontFamily: item.defaultFont,
+                                                            accentColor: item.defaultColor
+                                                            }
+                                                        }}
+                                                        />
                                              </Box>
                                         </Box>
 
