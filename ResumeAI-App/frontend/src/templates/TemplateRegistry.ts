@@ -119,11 +119,15 @@ const REGISTRY: Record<string, React.FC<any>> = {
 
 export const getTemplateComponent = (id: string): React.FC<any> => {
     const Component = REGISTRY[id];
+
     if (!Component) {
-        throw new Error(`Template "${id}" not found in registry.`);
+        console.warn(`Template "${id}" not found. Falling back.`);
+        return REGISTRY['BankPOFormatTemplate']; // default safe template
     }
+
     return Component;
 };
+
 
 // ================= TEMPLATE METADATA =================
 

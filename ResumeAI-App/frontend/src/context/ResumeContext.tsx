@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { resumeReducer, initialResumeState, Action } from '../stores/resumeReducer';
 import { ResumeData } from '../types/resume';
+import { getTemplateComponent } from '../templates/TemplateRegistry';
 
 interface ResumeContextType {
   resume: ResumeData;
@@ -10,11 +11,33 @@ interface ResumeContextType {
 const ResumeContext = createContext<ResumeContextType | undefined>(undefined);
 
 export const ResumeProvider = ({ children }: { children: ReactNode }) => {
-  // Initialize state from localStorage if available
-  const [resume, dispatch] = useReducer(resumeReducer, initialResumeState, (initial) => {
-    const saved = localStorage.getItem('resume_draft_v3');
-    return saved ? JSON.parse(saved) : initial;
-  });
+
+  const [resume, dispatch] = useReducer(
+    resumeReducer,
+    initialResumeState,
+    (initial) => {
+      const saved = localStorage.getItem('resume_draft_v3');
+
+      if (!saved) return initial;
+
+      try {
+        const parsed: ResumeData = JSON.parse(saved);
+
+        // ✅ Validate templateId exists in registry
+        try {
+          getTemplateComponent(parsed.templateId);
+        } catch {
+          console.warn('Invalid templateId found in localStorage. Resetting to default.');
+          parsed.templateId = initial.templateId;
+        }
+
+        return parsed;
+      } catch (error) {
+        console.warn('Corrupted resume_draft_v3 found. Resetting to default.');
+        return initial;
+      }
+    }
+  );
 
   // Auto-save
   useEffect(() => {
