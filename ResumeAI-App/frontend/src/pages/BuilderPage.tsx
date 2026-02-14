@@ -62,7 +62,7 @@ const BuilderPage = () => {
                 <ResumeRenderer key={resume.templateId} templateId={resume.templateId} data={resume} />
             </div>
 
-            <Box sx={{ height: 'calc(100vh - 64px)', display: 'flex', overflow: 'hidden', bgcolor: 'background.default' }}>
+            <Box sx={{ height: 'calc(100vh - 80px)', display: 'flex', overflow: 'hidden', bgcolor: 'background.default' }}>
                 
                 {/* --- LEFT PANEL: EDITOR (40-50%) --- */}
                 <Box sx={{ width: '45%', borderRight: 1, borderColor: 'divider', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
