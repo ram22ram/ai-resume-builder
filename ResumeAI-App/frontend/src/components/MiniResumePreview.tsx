@@ -11,9 +11,9 @@ interface Props {
   data?: ResumeData;
 }
 
-// A4 Dimensions (Standard)
-const A4_WIDTH = 595; // px (at 72 DPI approx)
-const A4_HEIGHT = 842;
+// A4 Dimensions (Standard at 96 DPI)
+const A4_WIDTH = 794; 
+const A4_HEIGHT = 1123;
 
 const MiniResumePreview: React.FC<Props> = ({ 
     templateId, 
@@ -30,9 +30,7 @@ const MiniResumePreview: React.FC<Props> = ({
 
     const updateScale = () => {
         if (containerRef.current) {
-            const parentWidth = containerRef.current.offsetWidth;
-            // Add a small buffer/padding calculation if needed, 
-            // but usually direct ratio is best for "fit width"
+            const parentWidth = containerRef.current.clientWidth; // Use clientWidth to exclude borders/scrollbar
             const newScale = parentWidth / A4_WIDTH;
             setScale(newScale);
         }
@@ -94,15 +92,14 @@ const MiniResumePreview: React.FC<Props> = ({
         {/* Scaled Container */}
         <Box sx={{
             width: A4_WIDTH,
-            height: A4_HEIGHT,
+            minHeight: A4_HEIGHT,
             transform: `scale(${scale})`,
             transformOrigin: 'top center', // Scale from top center
             bgcolor: 'white',
             boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
             overflow: 'hidden', 
+            // Ensure no pointer events blocking scroll if needed, though this is a preview
             pointerEvents: 'none',
-            // If we are fitting container, we might want a margin top if it scales down a lot, 
-            // but usually filling the card is the goal.
         }}>
             <TemplateComponent data={resumeData} />
         </Box>

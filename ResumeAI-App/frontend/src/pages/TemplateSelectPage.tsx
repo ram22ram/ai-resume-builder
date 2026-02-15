@@ -94,7 +94,7 @@ const TemplateSelectPage = () => {
                                     <Box 
                                         className="group"
                                         sx={{ 
-                                            bgcolor: '#e2e8f0', 
+                                            // bgcolor: '#e2e8f0',  // Removing gray bg to avoid gaps
                                             aspectRatio: '210/297', // A4 Ratio
                                             display: 'flex',
                                             justifyContent: 'center',
