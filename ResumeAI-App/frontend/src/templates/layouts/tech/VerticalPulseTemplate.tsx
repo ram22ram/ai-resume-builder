@@ -1,16 +1,14 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem, SkillItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const VerticalPulseTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const experience = get('experience');
-  const skills = get('skills').map((s: any) =>
-  typeof s === "string" ? s : s.title || s.name || ""
-);
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const experience = get('experience') as ExperienceItem[];
+  const skills = (get('skills') as SkillItem[]).map(s => s.name);
 
   return (
     <div style={{ ...standardStyles.page, fontFamily: 'Inter, sans-serif', padding: 40 }}>
@@ -33,7 +31,7 @@ const VerticalPulseTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
           backgroundColor: '#e5e7eb'
         }} />
 
-        {experience.map((exp: any, i: number) => (
+        {experience.map((exp, i) => (
           <div key={i} style={{ marginBottom: 25, position: 'relative' }}>
             
             {/* Dot */}
@@ -50,9 +48,13 @@ const VerticalPulseTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
             <div style={{ marginLeft: 20 }}>
               <strong>{exp.position}</strong>
               <div style={{ fontSize: 11 }}>
-                {exp.company} • {exp.startDate} - {exp.endDate}
+                {exp.company} • {exp.date}
               </div>
-              <p style={{ fontSize: 12 }}>{exp.description}</p>
+              <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                  {exp.description.map((desc, idx) => (
+                    <li key={idx} style={{ fontSize: 12 }}>{desc}</li>
+                  ))}
+              </ul>
             </div>
 
           </div>

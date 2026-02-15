@@ -1,15 +1,15 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, SummaryItem, ExperienceItem, EducationItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const GlobalExecutiveLuxe: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const summary = get('summary')[0]?.description || '';
-  const experience = get('experience');
-  const education = get('education');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const summary = ((get('summary')[0] || {}) as SummaryItem).description || '';
+  const experience = get('experience') as ExperienceItem[];
+  const education = get('education') as EducationItem[];
 
   const accent = data.metadata.accentColor || '#b45309';
 
@@ -66,17 +66,19 @@ const GlobalExecutiveLuxe: React.FC<{ data: ResumeData }> = ({ data }) => {
           margin: '10px auto 20px'
         }} />
 
-        {experience.map((exp: any, i: number) => (
+        {experience.map((exp, i) => (
           <div key={i} style={{ marginBottom: 20 }}>
             <div style={{ fontWeight: 'bold' }}>
               {exp.position}
             </div>
             <div style={{ fontSize: 13 }}>
-              {exp.company} | {exp.startDate} - {exp.endDate}
+              {exp.company} | {exp.date}
             </div>
-            <div style={{ marginTop: 6, lineHeight: 1.6 }}>
-              {exp.description}
-            </div>
+            <ul style={{ paddingLeft: 16, margin: '6px 0', display: 'inline-block', textAlign: 'left' }}>
+                {exp.description.map((desc, idx) => (
+                  <li key={idx} style={{ marginTop: 6, lineHeight: 1.6 }}>{desc}</li>
+                ))}
+            </ul>
           </div>
         ))}
       </section>
@@ -90,7 +92,7 @@ const GlobalExecutiveLuxe: React.FC<{ data: ResumeData }> = ({ data }) => {
           margin: '10px auto 20px'
         }} />
 
-        {education.map((edu: any, i: number) => (
+        {education.map((edu, i) => (
           <div key={i} style={{ marginBottom: 12 }}>
             <div style={{ fontWeight: 'bold' }}>{edu.institution}</div>
             <div>{edu.degree}</div>

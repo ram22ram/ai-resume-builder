@@ -1,7 +1,7 @@
 import React from 'react';
 import { getTemplateComponent } from '../../templates/TemplateRegistry';
 import { ResumeData } from '../../types/resume';
-import { normalizeResumeData } from '../../utils/normalizeResumeData';
+
 
 interface Props {
   data: ResumeData;
@@ -11,11 +11,7 @@ interface Props {
 const ResumeRenderer: React.FC<Props> = ({ data, templateId }) => {
   const TemplateComponent = getTemplateComponent(templateId);
 
-  const normalizedData = React.useMemo(() => {
-    return normalizeResumeData(data);
-  }, [data]);
-
-  return <TemplateComponent data={normalizedData} />;
+  return <TemplateComponent data={data} />;
 };
 
 export default ResumeRenderer;

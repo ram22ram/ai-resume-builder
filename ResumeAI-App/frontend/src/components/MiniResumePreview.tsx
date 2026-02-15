@@ -32,12 +32,13 @@ const DUMMY_DATA: ResumeData = {
                 id: "p1",
                 firstName: "Rahul",
                 lastName: "Sharma",
+                fullName: "Rahul Sharma",
                 email: "rahul@example.com",
                 phone: "+91 98765 43210",
                 city: "Bangalore",
                 country: "India",
                 jobTitle: "Software Engineer",
-                summary: "Passionate developer with 3+ years of experience in building scalable web apps using React and Node.js."
+                // summary is not in PersonalItem, separate section
             }]
         },
         {
@@ -58,21 +59,17 @@ const DUMMY_DATA: ResumeData = {
             items: [
                 { 
                     id: "exp1",
-                    role: "Senior Developer", 
+                    position: "Senior Developer", 
                     company: "TechCorp", 
                     date: "2023 - Present",
-                    startDate: "2023-01", 
-                    endDate: "Present", 
-                    description: "Led frontend team of 5. Improved site speed by 40%. Implemented CI/CD pipelines." 
+                    description: ["Led frontend team of 5.", "Improved site speed by 40%.", "Implemented CI/CD pipelines."] 
                 },
                 { 
                     id: "exp2",
-                    role: "Software Engineer", 
+                    position: "Software Engineer", 
                     company: "StartupInc", 
                     date: "2021 - 2023",
-                    startDate: "2021-06", 
-                    endDate: "2022-12", 
-                    description: "Built MVP from scratch using MERN stack. Integrated payment gateways." 
+                    description: ["Built MVP from scratch using MERN stack.", "Integrated payment gateways."] 
                 }
             ]
         },
@@ -86,10 +83,8 @@ const DUMMY_DATA: ResumeData = {
                     id: "edu1",
                     degree: "B.Tech Computer Science", 
                     institution: "IIT Delhi", 
-                    date: "2021",
-                    startDate: "2017",
-                    endDate: "2021",
-                    score: "8.5 CGPA"
+                    date: "2017 - 2021",
+                    description: "8.5 CGPA"
                 }
             ]
         },
@@ -101,23 +96,23 @@ const DUMMY_DATA: ResumeData = {
             items: [
                 {
                     name: "React", level: "Expert",
-                    id: ''
+                    id: 'sk1'
                 },
                 {
                     name: "Node.js", level: "Advanced",
-                    id: ''
+                    id: 'sk2'
                 },
                 {
                     name: "TypeScript",
-                    id: ''
+                    id: 'sk3'
                 },
                 {
                     name: "AWS",
-                    id: ''
+                    id: 'sk4'
                 },
                 {
                     name: "Figma",
-                    id: ''
+                    id: 'sk5'
                 }
             ],
             columns: 2
@@ -131,8 +126,8 @@ const DUMMY_DATA: ResumeData = {
                 {
                     id: "proj1",
                     title: "E-Commerce Platform",
-                    description: "A full-featured shopping platform with cart and checkout.",
-                    tech: "React, Node.js, MongoDB",
+                    description: ["A full-featured shopping platform with cart and checkout."],
+                    technologies: "React, Node.js, MongoDB",
                     link: "github.com/rahul/shop"
                 }
             ]

@@ -1,19 +1,17 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, SummaryItem, ProjectItem, ExperienceItem, SkillItem, EducationItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const AuroraCanvasTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const summary = get('summary')[0]?.description;
-  const projects = get('projects');
-  const experience = get('experience');
-  const skills = get('skills').map((s: any) =>
-  typeof s === "string" ? s : s.title || s.name || ""
-);
-  const education = get('education');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const summary = ((get('summary')[0] || {}) as SummaryItem).description;
+  const projects = get('projects') as ProjectItem[];
+  const experience = get('experience') as ExperienceItem[];
+  const skills = (get('skills') as SkillItem[]).map(s => s.name);
+  const education = get('education') as EducationItem[];
 
   return (
     <div style={{ ...standardStyles.page, display: 'flex', fontFamily: 'Poppins, sans-serif' }}>
@@ -37,19 +35,29 @@ const AuroraCanvasTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
         <section>
           <h3>Selected Projects</h3>
-          {projects.map((p: any, i: number) => (
+          {projects.map((p, i) => (
             <div key={i}>
               <strong>{p.title}</strong>
-              <p>{p.description}</p>
+              <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                  {p.description.map((desc, idx) => (
+                    <li key={idx} style={{ fontSize: '9pt' }}>{desc}</li>
+                  ))}
+              </ul>
             </div>
           ))}
         </section>
 
         <section>
           <h3>Experience</h3>
-          {experience.map((e: any, i: number) => (
+          {experience.map((e, i) => (
             <div key={i}>
               <strong>{e.position}</strong> — {e.company}
+              <div style={{ fontSize: '9pt', color: '#666' }}>{e.date}</div>
+              <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                  {e.description.map((desc, idx) => (
+                    <li key={idx} style={{ fontSize: '9pt' }}>{desc}</li>
+                  ))}
+              </ul>
             </div>
           ))}
         </section>
@@ -61,8 +69,8 @@ const AuroraCanvasTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
         <section>
           <h3>Education</h3>
-          {education.map((e: any, i: number) => (
-            <div key={i}>{e.degree}</div>
+          {education.map((e, i) => (
+            <div key={i}>{e.degree} — {e.institution}</div>
           ))}
         </section>
       </main>

@@ -1,16 +1,14 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem, SkillItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const experience = get('experience');
-  const skills = get('skills').map((s: any) =>
-  typeof s === "string" ? s : s.title || s.name || ""
-);
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const experience = get('experience') as ExperienceItem[];
+  const skills = (get('skills') as SkillItem[]).map(s => s.name);
 
   const accent = data.metadata.accentColor || '#0f172a';
 
@@ -42,17 +40,19 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
           <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15 }}>
             PROFESSIONAL EXPERIENCE
           </h2>
-          {experience.map((exp: any, i: number) => (
+          {experience.map((exp, i) => (
             <div key={i} style={{ marginBottom: 20 }}>
               <div style={{ fontWeight: 600 }}>
                 {exp.position}
               </div>
               <div style={{ fontSize: 12 }}>
-                {exp.company} • {exp.startDate} - {exp.endDate}
+                {exp.company} • {exp.date}
               </div>
-              <div style={{ fontSize: 13, marginTop: 5 }}>
-                {exp.description}
-              </div>
+              <ul style={{ paddingLeft: 16, margin: '6px 0' }}>
+                  {exp.description.map((desc, idx) => (
+                    <li key={idx} style={{ fontSize: 13, marginTop: 5 }}>{desc}</li>
+                  ))}
+              </ul>
             </div>
           ))}
         </section>
@@ -67,7 +67,7 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
             flexWrap: 'wrap',
             gap: 15
           }}>
-            {skills.map((s: string, i: number) => (
+            {skills.map((s, i) => (
               <div
                 key={i}
                 style={{

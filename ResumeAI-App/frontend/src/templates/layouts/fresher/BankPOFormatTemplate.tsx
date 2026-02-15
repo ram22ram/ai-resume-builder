@@ -1,17 +1,15 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, EducationItem, SkillItem, ExperienceItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const BankPOFormatTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const education = get('education');
-  const skills = get('skills').map((s: any) =>
-  typeof s === "string" ? s : s.title || s.name || ""
-);
-  const experience = get('experience');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const education = get('education') as EducationItem[];
+  const skills = (get('skills') as SkillItem[]).map(s => s.name);
+  const experience = get('experience') as ExperienceItem[];
 
   const sectionTitle = {
     borderBottom: '1px solid #000',
@@ -34,16 +32,16 @@ const BankPOFormatTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
       <section>
         <div style={sectionTitle}>Education</div>
-        {education.map((e: any, i: number) => (
+        {education.map((e, i) => (
           <div key={i} style={{ marginBottom: 6 }}>
-            {e.degree} — {e.institution} ({e.year})
+            {e.degree} — {e.institution} ({e.date})
           </div>
         ))}
       </section>
 
       <section>
         <div style={sectionTitle}>Professional Experience</div>
-        {experience.map((e: any, i: number) => (
+        {experience.map((e, i) => (
           <div key={i} style={{ marginBottom: 6 }}>
             <strong>{e.position}</strong> - {e.company}
           </div>
@@ -53,7 +51,7 @@ const BankPOFormatTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
       <section>
         <div style={sectionTitle}>Key Skills</div>
         <ul>
-          {skills.map((s: string, i: number) => (
+          {skills.map((s, i) => (
             <li key={i}>{s}</li>
           ))}
         </ul>

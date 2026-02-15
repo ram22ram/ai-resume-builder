@@ -1,10 +1,11 @@
 import { Box, TextField, Typography, Button } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
+import { SummaryItem } from '../../types/resume';
 
 const SummaryForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
     const section = resume.sections.find(s => s.id === sectionId);
-    const item = section?.items[0];
+    const item = section?.items[0] as SummaryItem | undefined;
 
     if (!item) {
          return (
@@ -15,7 +16,7 @@ const SummaryForm = ({ sectionId }: { sectionId: string }) => {
                         type: 'ADD_ITEM', 
                         payload: { 
                             sectionId, 
-                            item: { id: '1', description: '' } 
+                            item: { id: '1', description: '' } as SummaryItem
                         } 
                     })}
                 >

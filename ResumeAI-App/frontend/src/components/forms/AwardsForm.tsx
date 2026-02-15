@@ -1,6 +1,7 @@
 import { Box, Button, TextField, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
 import { Plus, Trash2, ChevronDown } from 'lucide-react';
+import { AwardItem } from '../../types/resume';
 
 const AwardsForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
@@ -8,7 +9,7 @@ const AwardsForm = ({ sectionId }: { sectionId: string }) => {
 
     if (!section) return null;
 
-    const items = section.items;
+    const items = section.items as AwardItem[];
 
     const handleAdd = () => {
         dispatch({
@@ -18,15 +19,15 @@ const AwardsForm = ({ sectionId }: { sectionId: string }) => {
                 item: {
                     id: Date.now().toString(),
                     title: '', // Award Name
-                    subtitle: '', // Issuer
+                    issuer: '', // Issuer
                     date: '',
                     description: ''
-                }
+                } as AwardItem
             }
         });
     };
 
-    const handleUpdate = (itemId: string, field: string, value: string) => {
+    const handleUpdate = (itemId: string, field: keyof AwardItem, value: string) => {
         dispatch({
             type: 'UPDATE_ITEM',
             payload: {
@@ -53,7 +54,7 @@ const AwardsForm = ({ sectionId }: { sectionId: string }) => {
                     <AccordionSummary expandIcon={<ChevronDown />}>
                         <Box>
                             <Typography fontWeight="bold">{item.title || '(No Award Name)'}</Typography>
-                            <Typography variant="caption" color="text.secondary">{item.subtitle || '(No Issuer)'}</Typography>
+                            <Typography variant="caption" color="text.secondary">{item.issuer || '(No Issuer)'}</Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -67,8 +68,8 @@ const AwardsForm = ({ sectionId }: { sectionId: string }) => {
                             <TextField
                                 fullWidth
                                 label="Issuer / Organization"
-                                value={item.subtitle || ''}
-                                onChange={(e) => handleUpdate(item.id, 'subtitle', e.target.value)}
+                                value={item.issuer || ''}
+                                onChange={(e) => handleUpdate(item.id, 'issuer', e.target.value)}
                             />
                             <TextField
                                 fullWidth

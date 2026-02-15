@@ -1,6 +1,7 @@
 import { Box, Button, TextField, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
 import { Plus, Trash2, ChevronDown } from 'lucide-react';
+import { ProjectItem } from '../../types/resume';
 
 const ProjectsForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
@@ -8,7 +9,7 @@ const ProjectsForm = ({ sectionId }: { sectionId: string }) => {
 
     if (!section) return null;
 
-    const items = section.items;
+    const items = section.items as ProjectItem[];
 
     const handleAdd = () => {
         dispatch({
@@ -18,16 +19,15 @@ const ProjectsForm = ({ sectionId }: { sectionId: string }) => {
                 item: {
                     id: Date.now().toString(),
                     title: '',
-                    subtitle: '', // Role or Technologies
-                    date: '',
-                    description: '',
-                    url: '' // Custom field
-                }
+                    technologies: '', 
+                    description: [],
+                    link: ''
+                } as ProjectItem
             }
         });
     };
 
-    const handleUpdate = (itemId: string, field: string, value: string) => {
+    const handleUpdate = (itemId: string, field: keyof ProjectItem, value: string | string[]) => {
         dispatch({
             type: 'UPDATE_ITEM',
             payload: {
@@ -52,6 +52,11 @@ const ProjectsForm = ({ sectionId }: { sectionId: string }) => {
         });
     };
 
+    const handleDescriptionChange = (itemId: string, value: string) => {
+         const points = value.split('\n');
+         handleUpdate(itemId, 'description', points);
+    }
+
     return (
         <Box sx={{ p: 3 }}>
              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -73,7 +78,7 @@ const ProjectsForm = ({ sectionId }: { sectionId: string }) => {
                     <AccordionSummary expandIcon={<ChevronDown />}>
                         <Box>
                             <Typography fontWeight="bold">{item.title || '(No Project Name)'}</Typography>
-                            <Typography variant="caption" color="text.secondary">{item.subtitle || '(No Role/Tech)'}</Typography>
+                            <Typography variant="caption" color="text.secondary">{item.technologies || '(No Tech)'}</Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -86,34 +91,27 @@ const ProjectsForm = ({ sectionId }: { sectionId: string }) => {
                             />
                             <TextField
                                 fullWidth
-                                label="Role / Tech Stack"
-                                value={item.subtitle || ''}
-                                onChange={(e) => handleUpdate(item.id, 'subtitle', e.target.value)}
+                                label="Tech Stack"
+                                value={item.technologies || ''}
+                                onChange={(e) => handleUpdate(item.id, 'technologies', e.target.value)}
                             />
                              <Box sx={{ display: 'flex', gap: 2 }}>
                                 <TextField
                                     fullWidth
-                                    label="Date / Duration"
-                                    placeholder="e.g. Jan 2023 - Mar 2023"
-                                    value={item.date || ''}
-                                    onChange={(e) => handleUpdate(item.id, 'date', e.target.value)}
-                                />
-                                <TextField
-                                    fullWidth
                                     label="Project URL"
                                     placeholder="e.g. github.com/username/project"
-                                    value={item.url || ''} // Custom field "url"
-                                    onChange={(e) => handleUpdate(item.id, 'url', e.target.value)}
+                                    value={item.link || ''} 
+                                    onChange={(e) => handleUpdate(item.id, 'link', e.target.value)}
                                 />
                             </Box>
                             <TextField
                                 fullWidth
                                 multiline
                                 rows={4}
-                                label="Description"
-                                placeholder="What did you build? What technologies did you use?"
-                                value={item.description || ''}
-                                onChange={(e) => handleUpdate(item.id, 'description', e.target.value)}
+                                label="Description (Bullet points)"
+                                placeholder="What did you build? What technologies did you use? (One per line)"
+                                value={Array.isArray(item.description) ? item.description.join('\n') : item.description}
+                                onChange={(e) => handleDescriptionChange(item.id, e.target.value)}
                             />
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                 <Button 

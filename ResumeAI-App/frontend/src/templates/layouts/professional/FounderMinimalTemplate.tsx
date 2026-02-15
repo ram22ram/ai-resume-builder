@@ -1,17 +1,15 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ProjectItem, ExperienceItem, SkillItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const FounderMinimalTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const projects = get('projects');
-  const experience = get('experience');
-  const skills = get('skills').map((s: any) =>
-  typeof s === "string" ? s : s.title || s.name || ""
-);
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const projects = get('projects') as ProjectItem[];
+  const experience = get('experience') as ExperienceItem[];
+  const skills = (get('skills') as SkillItem[]).map(s => s.name);
 
   return (
     <div style={{ ...standardStyles.page, fontFamily: 'Inter, sans-serif', color: '#111' }}>
@@ -27,20 +25,29 @@ const FounderMinimalTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
       <section style={{ marginBottom: 24 }}>
         <h2 style={{ fontSize: 18, marginBottom: 10 }}>Selected Projects</h2>
-        {projects.map((p: any, i: number) => (
+        {projects.map((p, i) => (
           <div key={i} style={{ marginBottom: 12 }}>
             <strong>{p.title}</strong>
-            <div style={{ fontSize: 12, color: '#444' }}>{p.description}</div>
+            <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                {p.description.map((desc, idx) => (
+                  <li key={idx} style={{ fontSize: 12, color: '#444' }}>{desc}</li>
+                ))}
+            </ul>
           </div>
         ))}
       </section>
 
       <section style={{ marginBottom: 24 }}>
         <h2 style={{ fontSize: 18, marginBottom: 10 }}>Experience</h2>
-        {experience.map((e: any, i: number) => (
+        {experience.map((e, i) => (
           <div key={i} style={{ marginBottom: 12 }}>
             <strong>{e.position}</strong> — {e.company}
-            <div style={{ fontSize: 12, color: '#555' }}>{e.startDate} - {e.endDate}</div>
+            <div style={{ fontSize: 12, color: '#555' }}>{e.date}</div>
+            <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                {e.description.map((desc, idx) => (
+                  <li key={idx} style={{ fontSize: 12, color: '#444' }}>{desc}</li>
+                ))}
+            </ul>
           </div>
         ))}
       </section>

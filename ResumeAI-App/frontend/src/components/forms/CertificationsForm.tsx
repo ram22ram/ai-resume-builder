@@ -1,6 +1,7 @@
 import { Box, Button, TextField, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
 import { Plus, Trash2, ChevronDown } from 'lucide-react';
+import { CertificationItem } from '../../types/resume';
 
 const CertificationsForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
@@ -8,7 +9,7 @@ const CertificationsForm = ({ sectionId }: { sectionId: string }) => {
 
     if (!section) return null;
 
-    const items = section.items;
+    const items = section.items as CertificationItem[];
 
     const handleAdd = () => {
         dispatch({
@@ -18,15 +19,15 @@ const CertificationsForm = ({ sectionId }: { sectionId: string }) => {
                 item: {
                     id: Date.now().toString(),
                     title: '', // Certification Name
-                    subtitle: '', // Issuing Organization
+                    issuer: '', // Issuing Organization
                     date: '',
                     url: '' // Credential URL
-                }
+                } as CertificationItem
             }
         });
     };
 
-    const handleUpdate = (itemId: string, field: string, value: string) => {
+    const handleUpdate = (itemId: string, field: keyof CertificationItem, value: string) => {
         dispatch({
             type: 'UPDATE_ITEM',
             payload: {
@@ -53,7 +54,7 @@ const CertificationsForm = ({ sectionId }: { sectionId: string }) => {
                     <AccordionSummary expandIcon={<ChevronDown />}>
                         <Box>
                             <Typography fontWeight="bold">{item.title || '(No Certification Name)'}</Typography>
-                            <Typography variant="caption" color="text.secondary">{item.subtitle || '(No Organization)'}</Typography>
+                            <Typography variant="caption" color="text.secondary">{item.issuer || '(No Organization)'}</Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -67,8 +68,8 @@ const CertificationsForm = ({ sectionId }: { sectionId: string }) => {
                             <TextField
                                 fullWidth
                                 label="Issuing Organization"
-                                value={item.subtitle || ''}
-                                onChange={(e) => handleUpdate(item.id, 'subtitle', e.target.value)}
+                                value={item.issuer || ''}
+                                onChange={(e) => handleUpdate(item.id, 'issuer', e.target.value)}
                             />
                              <Box sx={{ display: 'flex', gap: 2 }}>
                                 <TextField

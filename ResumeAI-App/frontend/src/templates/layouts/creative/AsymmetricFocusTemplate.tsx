@@ -1,19 +1,17 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, SummaryItem, ExperienceItem, SkillItem, ProjectItem, EducationItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const AsymmetricFocusTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const p = get('personal')[0] || {};
-  const summary = get('summary')[0]?.description || '';
-  const exp = get('experience');
-  const skills = get('skills').map((s: any) =>
-  typeof s === "string" ? s : s.title || s.name || ""
-);
-  const projects = get('projects');
-  const edu = get('education');
+  const p = (get('personal')[0] || {}) as PersonalItem;
+  const summary = ((get('summary')[0] || {}) as SummaryItem).description || '';
+  const exp = get('experience') as ExperienceItem[];
+  const skills = (get('skills') as SkillItem[]).map(s => s.name);
+  const projects = get('projects') as ProjectItem[];
+  const edu = get('education') as EducationItem[];
 
   return (
     <div style={{ ...standardStyles.page, fontFamily: 'Inter, sans-serif' }}>
@@ -26,10 +24,15 @@ const AsymmetricFocusTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
       <section>
         <h2>Experience</h2>
-        {exp.map((e: any, i: number) => (
+        {exp.map((e, i) => (
           <div key={i} style={{ marginBottom: 14 }}>
             <strong>{e.position}</strong> — {e.company}
-            <p>{e.description}</p>
+            <div style={{ fontSize: '9pt', color: '#666' }}>{e.date}</div>
+            <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                {e.description.map((desc, idx) => (
+                  <li key={idx} style={{ fontSize: '9pt' }}>{desc}</li>
+                ))}
+            </ul>
           </div>
         ))}
       </section>
@@ -37,7 +40,7 @@ const AsymmetricFocusTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
       <section>
         <h2>Skills</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {skills.map((s: string, i: number) => (
+          {skills.map((s, i) => (
             <span key={i} style={{ border: '1px solid #ddd', padding: '4px 8px' }}>{s}</span>
           ))}
         </div>
@@ -45,14 +48,21 @@ const AsymmetricFocusTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
       <section>
         <h2>Projects</h2>
-        {projects.map((p: any, i: number) => (
-          <div key={i}>{p.title}</div>
+        {projects.map((p, i) => (
+          <div key={i}>
+            <strong>{p.title}</strong>
+            <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                {p.description.map((desc, idx) => (
+                  <li key={idx} style={{ fontSize: '9pt' }}>{desc}</li>
+                ))}
+            </ul>
+          </div>
         ))}
       </section>
 
       <section>
         <h2>Education</h2>
-        {edu.map((e: any, i: number) => (
+        {edu.map((e, i) => (
           <div key={i}>{e.degree} — {e.institution}</div>
         ))}
       </section>

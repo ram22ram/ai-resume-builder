@@ -6,7 +6,7 @@ import { useResume } from '../context/ResumeContext';
 import { Lock } from 'lucide-react';
 import Layout from '../components/Layout';
 import ResumeRenderer from '../components/renderer/ResumeRenderer';
-import { DUMMY_RESUME } from '../data/dummyResume';
+import { PREVIEW_RESUME } from '../data/previewResume';
 
 const TemplateSelectPage = () => {
     const navigate = useNavigate();
@@ -123,17 +123,17 @@ const TemplateSelectPage = () => {
                                                  transformOrigin: 'top left',
                                                  bgcolor: 'white'
                                              }}>
-                                                <ResumeRenderer
-                                                        templateId={item.id}
-                                                        data={{
-                                                            ...DUMMY_RESUME,
-                                                            templateId: item.id,
-                                                            metadata: {
-                                                            ...DUMMY_RESUME.metadata,
-                                                            fontFamily: item.defaultFont,
-                                                            accentColor: item.defaultColor
-                                                            }
-                                                        }}
+                                                        <ResumeRenderer
+                                                            templateId={item.id}
+                                                            data={{
+                                                                ...PREVIEW_RESUME,
+                                                                templateId: item.id,
+                                                                metadata: {
+                                                                    ...PREVIEW_RESUME.metadata,
+                                                                    fontFamily: item.defaultFont,
+                                                                    accentColor: item.defaultColor
+                                                                }
+                                                            }}
                                                         />
                                              </Box>
                                         </Box>

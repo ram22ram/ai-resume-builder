@@ -1,6 +1,7 @@
 import { Box, Button, TextField, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
 import { Plus, Trash2, ChevronDown } from 'lucide-react';
+import { EducationItem } from '../../types/resume';
 
 const EducationForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
@@ -8,7 +9,7 @@ const EducationForm = ({ sectionId }: { sectionId: string }) => {
 
     if (!section) return null;
 
-    const items = section.items;
+    const items = section.items as EducationItem[];
 
     const handleAdd = () => {
         dispatch({
@@ -17,16 +18,16 @@ const EducationForm = ({ sectionId }: { sectionId: string }) => {
                 sectionId,
                 item: {
                     id: Date.now().toString(),
-                    title: '',
-                    subtitle: '',
+                    degree: '',
+                    institution: '',
                     date: '',
                     description: ''
-                }
+                } as EducationItem
             }
         });
     };
 
-    const handleUpdate = (itemId: string, field: string, value: string) => {
+    const handleUpdate = (itemId: string, field: keyof EducationItem, value: string) => {
         dispatch({
             type: 'UPDATE_ITEM',
             payload: {
@@ -69,8 +70,8 @@ const EducationForm = ({ sectionId }: { sectionId: string }) => {
                 <Accordion key={item.id} defaultExpanded={index === items.length - 1} sx={{ mb: 2, '&:before': { display: 'none' }, boxShadow: 1 }}>
                      <AccordionSummary expandIcon={<ChevronDown />}>
                         <Box>
-                            <Typography fontWeight="bold">{item.subtitle || '(No School)'}</Typography>
-                            <Typography variant="caption" color="text.secondary">{item.title || '(No Degree)'}</Typography>
+                            <Typography fontWeight="bold">{item.institution || '(No School)'}</Typography>
+                            <Typography variant="caption" color="text.secondary">{item.degree || '(No Degree)'}</Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -78,14 +79,14 @@ const EducationForm = ({ sectionId }: { sectionId: string }) => {
                             <TextField
                                 fullWidth
                                 label="School / University"
-                                value={item.subtitle || ''} // Subtitle = School for Education
-                                onChange={(e) => handleUpdate(item.id, 'subtitle', e.target.value)}
+                                value={item.institution || ''} 
+                                onChange={(e) => handleUpdate(item.id, 'institution', e.target.value)}
                             />
                             <TextField
                                 fullWidth
                                 label="Degree / Major"
-                                value={item.title || ''} // Title = Degree
-                                onChange={(e) => handleUpdate(item.id, 'title', e.target.value)}
+                                value={item.degree || ''}
+                                onChange={(e) => handleUpdate(item.id, 'degree', e.target.value)}
                             />
                             <TextField
                                 fullWidth

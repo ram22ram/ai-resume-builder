@@ -1,13 +1,13 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const DynamicTimelineFlow: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const experience = get('experience');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const experience = get('experience') as ExperienceItem[];
 
   const accent = data.metadata.accentColor || '#2563eb';
 
@@ -40,7 +40,7 @@ const DynamicTimelineFlow: React.FC<{ data: ResumeData }> = ({ data }) => {
           background: accent
         }} />
 
-        {experience.map((exp: any, i: number) => (
+        {experience.map((exp, i) => (
           <div key={i} style={{ marginBottom: 40, position: 'relative' }}>
 
             {/* Circle Node */}
@@ -59,10 +59,14 @@ const DynamicTimelineFlow: React.FC<{ data: ResumeData }> = ({ data }) => {
               {exp.position}
             </div>
             <div style={{ fontSize: 13, color: '#555' }}>
-              {exp.company} • {exp.startDate} - {exp.endDate}
+              {exp.company} • {exp.date}
             </div>
             <div style={{ marginTop: 6 }}>
-              {exp.description}
+              <ul style={{ paddingLeft: 16, margin: '6px 0' }}>
+                  {exp.description.map((desc, idx) => (
+                    <li key={idx} style={{ fontSize: 13 }}>{desc}</li>
+                  ))}
+              </ul>
             </div>
 
           </div>

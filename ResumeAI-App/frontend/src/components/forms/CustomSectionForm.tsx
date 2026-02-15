@@ -1,6 +1,7 @@
 import { Box, Button, TextField, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
 import { Plus, Trash2, ChevronDown } from 'lucide-react';
+import { CustomItem } from '../../types/resume';
 
 const CustomSectionForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
@@ -8,7 +9,7 @@ const CustomSectionForm = ({ sectionId }: { sectionId: string }) => {
 
     if (!section) return null;
 
-    const items = section.items;
+    const items = section.items as CustomItem[];
 
     const handleTitleChange = (value: string) => {
         dispatch({
@@ -28,12 +29,12 @@ const CustomSectionForm = ({ sectionId }: { sectionId: string }) => {
                     subtitle: '',
                     date: '',
                     description: ''
-                }
+                } as CustomItem
             }
         });
     };
 
-    const handleUpdate = (itemId: string, field: string, value: string) => {
+    const handleUpdate = (itemId: string, field: keyof CustomItem, value: string) => {
         dispatch({
             type: 'UPDATE_ITEM',
             payload: {
@@ -53,25 +54,24 @@ const CustomSectionForm = ({ sectionId }: { sectionId: string }) => {
 
     return (
         <Box sx={{ p: 3 }}>
-             <Box sx={{ mb: 3 }}>
-                 <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>Section Settings</Typography>
-                 <TextField
-                    fullWidth
-                    label="Section Title"
-                    value={section.title || ''}
-                    onChange={(e) => handleTitleChange(e.target.value)}
-                    variant="outlined"
-                    margin="normal"
-                />
-            </Box>
+             <Typography variant="h6" gutterBottom>{section.title || 'Custom Section'}</Typography>
 
-             <Typography variant="h6" gutterBottom>Items</Typography>
+             <TextField
+                fullWidth
+                label="Section Title"
+                value={section.title || ''}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                variant="outlined"
+                size="small"
+                sx={{ mb: 3 }}
+            />
             
             {items.map((item, index) => (
                 <Accordion key={item.id} defaultExpanded={index === items.length - 1} sx={{ mb: 2, '&:before': { display: 'none' }, boxShadow: 1 }}>
                     <AccordionSummary expandIcon={<ChevronDown />}>
                         <Box>
-                            <Typography fontWeight="bold">{item.title || '(No Item Title)'}</Typography>
+                            <Typography fontWeight="bold">{item.title || '(No Title)'}</Typography>
+                            <Typography variant="caption" color="text.secondary">{item.subtitle || '(No Subtitle)'}</Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -90,8 +90,7 @@ const CustomSectionForm = ({ sectionId }: { sectionId: string }) => {
                             />
                             <TextField
                                 fullWidth
-                                label="Date"
-                                placeholder="e.g. 2023"
+                                label="Date / Duration"
                                 value={item.date || ''}
                                 onChange={(e) => handleUpdate(item.id, 'date', e.target.value)}
                             />

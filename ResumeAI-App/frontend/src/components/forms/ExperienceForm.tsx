@@ -1,6 +1,7 @@
 import { Box, Button, TextField, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
 import { Plus, Trash2, ChevronDown } from 'lucide-react';
+import { ExperienceItem } from '../../types/resume';
 
 const ExperienceForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
@@ -8,7 +9,7 @@ const ExperienceForm = ({ sectionId }: { sectionId: string }) => {
 
     if (!section) return null;
 
-    const items = section.items;
+    const items = section.items as ExperienceItem[];
 
     const handleAdd = () => {
         dispatch({
@@ -17,17 +18,17 @@ const ExperienceForm = ({ sectionId }: { sectionId: string }) => {
                 sectionId,
                 item: {
                     id: Date.now().toString(),
-                    title: '',
-                    subtitle: '',
+                    position: '',
+                    company: '',
                     date: '',
-                    description: '',
+                    description: [],
                     location: ''
-                }
+                } as ExperienceItem
             }
         });
     };
 
-    const handleUpdate = (itemId: string, field: string, value: string) => {
+    const handleUpdate = (itemId: string, field: keyof ExperienceItem, value: string | string[]) => {
         dispatch({
             type: 'UPDATE_ITEM',
             payload: {
@@ -52,6 +53,12 @@ const ExperienceForm = ({ sectionId }: { sectionId: string }) => {
         });
     };
 
+    const handleDescriptionChange = (itemId: string, value: string) => {
+         // Split by newline and filter empty strings for better bullet point handling
+         const points = value.split('\n');
+         handleUpdate(itemId, 'description', points);
+    }
+
     return (
         <Box sx={{ p: 3 }}>
              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -72,8 +79,8 @@ const ExperienceForm = ({ sectionId }: { sectionId: string }) => {
                 <Accordion key={item.id} defaultExpanded={index === items.length - 1} sx={{ mb: 2, '&:before': { display: 'none' }, boxShadow: 1 }}>
                     <AccordionSummary expandIcon={<ChevronDown />}>
                         <Box>
-                            <Typography fontWeight="bold">{item.title || '(No Job Title)'}</Typography>
-                            <Typography variant="caption" color="text.secondary">{item.subtitle || '(No Company)'}</Typography>
+                            <Typography fontWeight="bold">{item.position || '(No Job Title)'}</Typography>
+                            <Typography variant="caption" color="text.secondary">{item.company || '(No Company)'}</Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -81,14 +88,14 @@ const ExperienceForm = ({ sectionId }: { sectionId: string }) => {
                             <TextField
                                 fullWidth
                                 label="Job Title"
-                                value={item.title || ''}
-                                onChange={(e) => handleUpdate(item.id, 'title', e.target.value)}
+                                value={item.position || ''}
+                                onChange={(e) => handleUpdate(item.id, 'position', e.target.value)}
                             />
                             <TextField
                                 fullWidth
                                 label="Company"
-                                value={item.subtitle || ''}
-                                onChange={(e) => handleUpdate(item.id, 'subtitle', e.target.value)}
+                                value={item.company || ''}
+                                onChange={(e) => handleUpdate(item.id, 'company', e.target.value)}
                             />
                              <Box sx={{ display: 'flex', gap: 2 }}>
                                 <TextField
@@ -102,7 +109,7 @@ const ExperienceForm = ({ sectionId }: { sectionId: string }) => {
                                     fullWidth
                                     label="Location"
                                     placeholder="e.g. New York, NY"
-                                    value={item.location || ''} // Using custom prop 'location' but typed as [key: string]: any
+                                    value={item.location || ''} 
                                     onChange={(e) => handleUpdate(item.id, 'location', e.target.value)}
                                 />
                             </Box>
@@ -110,10 +117,10 @@ const ExperienceForm = ({ sectionId }: { sectionId: string }) => {
                                 fullWidth
                                 multiline
                                 rows={4}
-                                label="Description"
-                                placeholder="Achievements and responsibilities..."
-                                value={item.description || ''}
-                                onChange={(e) => handleUpdate(item.id, 'description', e.target.value)}
+                                label="Description (Bullet points)"
+                                placeholder="Achievements and responsibilities... (One per line)"
+                                value={Array.isArray(item.description) ? item.description.join('\n') : item.description}
+                                onChange={(e) => handleDescriptionChange(item.id, e.target.value)}
                             />
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                 <Button 

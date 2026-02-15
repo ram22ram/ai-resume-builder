@@ -1,14 +1,14 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem, SummaryItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const VerticalIdentityStripeTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const experience = get('experience');
-  const summary = get('summary')[0]?.description || '';
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const experience = get('experience') as ExperienceItem[];
+  const summary = ((get('summary')[0] || {}) as SummaryItem).description || '';
 
   const accent = data.metadata.accentColor || '#1e3a8a';
 
@@ -50,13 +50,17 @@ const VerticalIdentityStripeTemplate: React.FC<{ data: ResumeData }> = ({ data }
 
         <section>
           <h3 style={{ fontSize: 13, marginBottom: 20 }}>EXPERIENCE</h3>
-          {experience.map((exp: any, i: number) => (
+          {experience.map((exp, i) => (
             <div key={i} style={{ marginBottom: 25 }}>
               <div style={{ fontWeight: 600 }}>{exp.position}</div>
               <div style={{ fontSize: 12 }}>
-                {exp.company} • {exp.startDate} - {exp.endDate}
+                {exp.company} • {exp.date}
               </div>
-              <div style={{ fontSize: 13 }}>{exp.description}</div>
+              <ul style={{ paddingLeft: 16, margin: '6px 0' }}>
+                  {exp.description.map((desc, idx) => (
+                    <li key={idx} style={{ fontSize: 13 }}>{desc}</li>
+                  ))}
+              </ul>
             </div>
           ))}
         </section>

@@ -1,14 +1,14 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem, SkillItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const MatrixMinimalGrid: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const experience = get('experience');
-  const skills = get('skills');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const experience = get('experience') as ExperienceItem[];
+  const skills = get('skills') as SkillItem[];
 
   const accent = data.metadata.accentColor || '#111827';
 
@@ -36,12 +36,17 @@ const MatrixMinimalGrid: React.FC<{ data: ResumeData }> = ({ data }) => {
           paddingTop: 15
         }}>
           <h3>Experience</h3>
-          {experience.map((exp: any, i: number) => (
+          {experience.map((exp, i) => (
             <div key={i} style={{ marginBottom: 12 }}>
               <strong>{exp.position}</strong>
               <div style={{ fontSize: 13 }}>
                 {exp.company}
               </div>
+              <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                  {exp.description.map((desc, idx) => (
+                    <li key={idx} style={{ fontSize: 12 }}>{desc}</li>
+                  ))}
+              </ul>
             </div>
           ))}
         </div>
@@ -53,13 +58,13 @@ const MatrixMinimalGrid: React.FC<{ data: ResumeData }> = ({ data }) => {
         }}>
           <h3>Skills</h3>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {skills.map((s: any, i: number) => (
+            {skills.map((s, i) => (
               <span key={i} style={{
                 border: '1px solid #ddd',
                 padding: '4px 8px',
                 fontSize: 12
               }}>
-                {s.name || s}
+                {s.name}
               </span>
             ))}
           </div>

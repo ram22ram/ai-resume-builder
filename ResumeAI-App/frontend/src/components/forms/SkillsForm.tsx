@@ -1,6 +1,7 @@
 import { useState, KeyboardEvent } from 'react';
 import { Box, Button, TextField, Typography, Chip } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
+import { SkillItem } from '../../types/resume';
 
 const SkillsForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
@@ -11,7 +12,7 @@ const SkillsForm = ({ sectionId }: { sectionId: string }) => {
 
     if (!section) return null;
 
-    const items = section.items;
+    const items = section.items as SkillItem[];
 
     const handleAdd = () => {
         if (!newItem.trim()) return;
@@ -22,8 +23,9 @@ const SkillsForm = ({ sectionId }: { sectionId: string }) => {
                 sectionId,
                 item: {
                     id: Date.now().toString(),
-                    name: newItem.trim(), // Storing skill name in name
-                }
+                    name: newItem.trim(), 
+                    level: 'Experienced' // Default level
+                } as SkillItem
             }
         });
         setNewItem('');
@@ -83,7 +85,7 @@ const SkillsForm = ({ sectionId }: { sectionId: string }) => {
                 {items.map((item) => (
                     <Chip
                         key={item.id}
-                        label={item.title} // Displaying title as the skill name
+                        label={item.name} 
                         onDelete={() => handleRemove(item.id)}
                         sx={{ fontSize: '0.9rem', py: 2 }}
                     />

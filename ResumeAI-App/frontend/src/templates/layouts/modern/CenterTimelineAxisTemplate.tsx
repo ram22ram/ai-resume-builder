@@ -1,13 +1,13 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const CenterTimelineAxisTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const experience = get('experience');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const experience = get('experience') as ExperienceItem[];
 
   const accent = data.metadata.accentColor || '#111';
 
@@ -38,7 +38,7 @@ const CenterTimelineAxisTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
 
       {/* Experience Blocks */}
       <section>
-        {experience.map((exp: any, i: number) => {
+        {experience.map((exp, i) => {
           const isLeft = i % 2 === 0;
 
           return (
@@ -56,11 +56,19 @@ const CenterTimelineAxisTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
               }}>
                 <div style={{ fontWeight: 600 }}>{exp.position}</div>
                 <div style={{ fontSize: 12 }}>
-                  {exp.company} • {exp.startDate} - {exp.endDate}
+                  {exp.company} • {exp.date}
                 </div>
-                <div style={{ fontSize: 13, marginTop: 6 }}>
-                  {exp.description}
-                </div>
+                <ul style={{ 
+                    paddingLeft: isLeft ? 0 : 16, 
+                    paddingRight: isLeft ? 16 : 0,
+                    margin: '8px 0', 
+                    listStylePosition: isLeft ? 'inside' : 'outside',
+                    textAlign: isLeft ? 'right' : 'left'
+                }}>
+                    {exp.description.map((desc, idx) => (
+                        <li key={idx} style={{ marginTop: 4, fontSize: 13 }}>{desc}</li>
+                    ))}
+                </ul>
               </div>
             </div>
           );

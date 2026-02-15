@@ -1,15 +1,15 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, SummaryItem, ExperienceItem, EducationItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const EditorialSerifTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const summary = get('summary')[0]?.description || '';
-  const experience = get('experience');
-  const education = get('education');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const summary = ((get('summary')[0] || {}) as SummaryItem).description || '';
+  const experience = get('experience') as ExperienceItem[];
+  const education = get('education') as EducationItem[];
 
   return (
     <div
@@ -47,17 +47,19 @@ const EditorialSerifTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
         <h2 style={{ fontSize: 14, letterSpacing: 2, marginBottom: 20 }}>
           EXPERIENCE
         </h2>
-        {experience.map((exp: any, i: number) => (
+        {experience.map((exp, i) => (
           <div key={i} style={{ marginBottom: 30 }}>
             <div style={{ fontWeight: 600, fontSize: 15 }}>
               {exp.position}
             </div>
             <div style={{ fontSize: 12, marginBottom: 6 }}>
-              {exp.company} | {exp.startDate} - {exp.endDate}
+              {exp.company} | {exp.date}
             </div>
-            <div style={{ fontSize: 13, lineHeight: 1.6 }}>
-              {exp.description}
-            </div>
+            <ul style={{ paddingLeft: 16, margin: '6px 0' }}>
+                {exp.description.map((desc, idx) => (
+                  <li key={idx} style={{ fontSize: 13, lineHeight: 1.6 }}>{desc}</li>
+                ))}
+            </ul>
           </div>
         ))}
       </section>
@@ -67,11 +69,11 @@ const EditorialSerifTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
         <h2 style={{ fontSize: 14, letterSpacing: 2, marginBottom: 20 }}>
           EDUCATION
         </h2>
-        {education.map((edu: any, i: number) => (
+        {education.map((edu, i) => (
           <div key={i} style={{ marginBottom: 20 }}>
             <div style={{ fontWeight: 600 }}>{edu.institution}</div>
             <div style={{ fontSize: 12 }}>
-              {edu.degree} • {edu.startDate} - {edu.endDate}
+              {edu.degree} • {edu.date}
             </div>
           </div>
         ))}

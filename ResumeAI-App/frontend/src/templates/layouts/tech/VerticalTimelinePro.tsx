@@ -1,13 +1,13 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const VerticalTimelinePro: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const experience = get('experience');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const experience = get('experience') as ExperienceItem[];
 
   const accent = data.metadata.accentColor || '#7c3aed';
 
@@ -24,7 +24,7 @@ const VerticalTimelinePro: React.FC<{ data: ResumeData }> = ({ data }) => {
           borderLeft: `3px solid ${accent}`, 
           paddingLeft: 30 
         }}>
-          {experience.map((exp: any, i: number) => (
+          {experience.map((exp, i) => (
             <div key={i} style={{ marginBottom: 35, position: 'relative' }}>
               
               {/* Dot */}
@@ -39,7 +39,7 @@ const VerticalTimelinePro: React.FC<{ data: ResumeData }> = ({ data }) => {
               }} />
 
               <div style={{ fontSize: 13, color: '#666' }}>
-                {exp.startDate} - {exp.endDate}
+                {exp.date}
               </div>
 
               <div style={{ fontWeight: 700, fontSize: 16 }}>
@@ -50,9 +50,11 @@ const VerticalTimelinePro: React.FC<{ data: ResumeData }> = ({ data }) => {
                 {exp.company}
               </div>
 
-              <div style={{ lineHeight: 1.6 }}>
-                {exp.description}
-              </div>
+              <ul style={{ paddingLeft: 16, margin: '4px 0', lineHeight: 1.6 }}>
+                  {exp.description.map((desc, idx) => (
+                    <li key={idx}>{desc}</li>
+                  ))}
+              </ul>
 
             </div>
           ))}

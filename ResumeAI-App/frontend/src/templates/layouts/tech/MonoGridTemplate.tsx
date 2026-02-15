@@ -1,18 +1,16 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem, ProjectItem, SkillItem, EducationItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const MonoGridTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const experience = get('experience');
-  const projects = get('projects');
-  const skills = get('skills').map((s: any) =>
-  typeof s === "string" ? s : s.title || s.name || ""
-);
-  const education = get('education');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const experience = get('experience') as ExperienceItem[];
+  const projects = get('projects') as ProjectItem[];
+  const skills = (get('skills') as SkillItem[]).map(s => s.name);
+  const education = get('education') as EducationItem[];
 
   return (
     <div style={{ ...standardStyles.page, fontFamily: 'Inter, sans-serif', color: '#111' }}>
@@ -23,7 +21,7 @@ const MonoGridTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
       <section>
         <h4>Experience</h4>
-        {experience.map((e: any, i: number) => (
+        {experience.map((e, i) => (
           <div key={i}>
             <strong>{e.company}</strong> — {e.position}
           </div>
@@ -32,7 +30,7 @@ const MonoGridTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
       <section>
         <h4>Projects</h4>
-        {projects.map((p: any, i: number) => (
+        {projects.map((p, i) => (
           <div key={i}>{p.title}</div>
         ))}
       </section>
@@ -40,7 +38,7 @@ const MonoGridTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
       <section>
         <h4>Skills</h4>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
-          {skills.map((s: string, i: number) => (
+          {skills.map((s, i) => (
             <div key={i}>{s}</div>
           ))}
         </div>
@@ -48,7 +46,7 @@ const MonoGridTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
 
       <section>
         <h4>Education</h4>
-        {education.map((e: any, i: number) => (
+        {education.map((e, i) => (
           <div key={i}>{e.institution}</div>
         ))}
       </section>

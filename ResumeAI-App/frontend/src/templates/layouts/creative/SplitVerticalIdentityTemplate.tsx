@@ -1,14 +1,14 @@
 import React from 'react';
-import { ResumeData, ResumeSection } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem, EducationItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 
 const SplitVerticalIdentityTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
     data.sections.find(s => s.type === t && s.isVisible)?.items || [];
 
-  const personal = get('personal')[0] || {};
-  const experience = get('experience');
-  const education = get('education');
+  const personal = (get('personal')[0] || {}) as PersonalItem;
+  const experience = get('experience') as ExperienceItem[];
+  const education = get('education') as EducationItem[];
 
   const accent = data.metadata.accentColor || '#1e293b';
 
@@ -40,24 +40,28 @@ const SplitVerticalIdentityTemplate: React.FC<{ data: ResumeData }> = ({ data })
 
         <section style={{ marginTop: 40 }}>
           <h3>EXPERIENCE</h3>
-          {experience.map((exp: any, i: number) => (
+          {experience.map((exp, i) => (
             <div key={i} style={{ marginBottom: 25 }}>
               <div style={{ fontWeight: 600 }}>{exp.position}</div>
               <div style={{ fontSize: 12 }}>
-                {exp.company} • {exp.startDate} - {exp.endDate}
+                {exp.company} • {exp.date}
               </div>
-              <div>{exp.description}</div>
+              <ul style={{ paddingLeft: 16, margin: '6px 0' }}>
+                  {exp.description.map((desc, idx) => (
+                    <li key={idx}>{desc}</li>
+                  ))}
+              </ul>
             </div>
           ))}
         </section>
 
         <section style={{ marginTop: 40 }}>
           <h3>EDUCATION</h3>
-          {education.map((edu: any, i: number) => (
+          {education.map((edu, i) => (
             <div key={i} style={{ marginBottom: 20 }}>
               <div style={{ fontWeight: 600 }}>{edu.degree}</div>
               <div style={{ fontSize: 12 }}>
-                {edu.institution} • {edu.startDate} - {edu.endDate}
+                {edu.institution} • {edu.date}
               </div>
             </div>
           ))}
