@@ -13,7 +13,7 @@ import Layout from './Layout';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
-import { SEO } from './SEO';
+import SEO from './SEO';
 
 const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
 

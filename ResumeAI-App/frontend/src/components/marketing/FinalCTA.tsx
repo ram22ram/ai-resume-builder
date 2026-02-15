@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Container, Typography, Button, Stack } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom'; // Router link for navigation
-import GoogleIcon from '@mui/icons-material/Google'; // Google icon for better UX
 
 const FinalCTA: React.FC = () => {
   return (

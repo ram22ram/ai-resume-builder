@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { 
   Box, Typography, Button, Container, Paper, 
   Grid, Stack, Chip, useTheme, useMediaQuery
-} from '@mui/material'; 
-
+} from '@mui/material';
 import { 
   Layout as LayoutIcon, Mic, Github, Mail, 
   CheckCircle2, XCircle, Code, Zap, Target,
   ArrowRight, Sparkles
 } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+import SEO from './SEO';
 import Layout from './Layout'; 
-import { useAuth } from '../context/AuthContext'; // ✅ AUTH IMPORT ADDED
-import { useNavigate } from 'react-router-dom';   // ✅ NAVIGATE IMPORT ADDED
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import Dashboard from './Dashboard';
 
 // === CONFIGURATION ===
@@ -64,10 +63,10 @@ const HomePage: React.FC = () => {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Journey to Hired | AI Career Copilot</title>
-        <meta name="description" content="The unfair advantage for your job search. AI Resume Builder, Interview Coach, and Portfolio Analyzer." />
-      </Helmet>
+      <SEO 
+        title="Journey to Hired | AI Career Copilot"
+        description="The unfair advantage for your job search. AI Resume Builder, Interview Coach, and Portfolio Analyzer."
+      />
 
       {/* === GLOBAL STYLES === */}
       <style>{`

@@ -13,7 +13,7 @@ import {
 // @ts-ignore
 import { generateContent } from '../utils/aiService';
 import Layout from './Layout';
-import { SEO } from './SEO';
+import SEO from './SEO';
 
 const ColdEmail = () => {
   const [jd, setJd] = useState('');

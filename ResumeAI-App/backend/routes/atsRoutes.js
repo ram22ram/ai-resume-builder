@@ -18,7 +18,9 @@ const extractKeywords = (text = '') => {
     );
 };
 
-router.post('/check', upload.single('file'), async (req, res) => {
+const requireAuth = require('../middleware/requireAuth');
+
+router.post('/check', requireAuth, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ success: false, message: 'No resume uploaded' });

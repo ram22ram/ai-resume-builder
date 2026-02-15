@@ -22,7 +22,7 @@ const BackButton = styled(Button)(({ theme }) => ({
   padding: '10px 16px',
 }));
 
-const SaveButton = styled(Button)(({ theme }) => ({
+const SaveButton = styled(Button)(() => ({
   color: 'white',
   fontWeight: 'bold',
   background: 'linear-gradient(to right, #a855f7, #9333ea)',
@@ -34,7 +34,7 @@ const SaveButton = styled(Button)(({ theme }) => ({
   }
 }));
 
-const DownloadButton = styled(Button)(({ theme }) => ({
+const DownloadButton = styled(Button)(() => ({
   color: 'white',
   fontWeight: 'bold',
   background: 'linear-gradient(to right, #16a34a, #15803d)',

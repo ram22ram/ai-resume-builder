@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useResume } from '../context/ResumeContext';
-import { ALL_TEMPLATES } from '../templates/templates.config';
+import { TEMPLATES } from '../templates/TemplateRegistry';
 
 export const useDownloadGuard = () => {
     const { user } = useAuth();
-    const { selectedTemplate } = useResume();
+    const { resume } = useResume();
     const navigate = useNavigate();
 
     const handleDownload = (downloadFn: () => void) => {
-        const template = ALL_TEMPLATES.find(
-            (t) => t.id === selectedTemplate
+        const template = TEMPLATES.find(
+            (t) => t.id === resume.templateId
         );
 
         const isPremiumTemplate = template?.isPremium;

@@ -2,7 +2,9 @@ const dotenv = require('dotenv');
 const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const crypto = require('crypto');
+const mongoose = require('mongoose');
 
 const connectDB = require('./config/db.js');
 const authRoutes = require('./routes/authRoutes.js');
@@ -76,14 +78,19 @@ app.post(
 );
 
 /* ======================================================
-   1. CORS MIDDLEWARE
+   1. CORS MIDDLEWARE (STRICT PRODUCTION)
    ====================================================== */
 app.use((req, res, next) => {
   const allowedOrigins = [
     'https://resume-ai.co.in',
-    'https://www.resume-ai.co.in',
-    'http://localhost:5173',
+    'https://www.resume-ai.co.in'
   ];
+
+  // Allow localhost only in development
+  if (process.env.NODE_ENV !== 'production') {
+    allowedOrigins.push('http://localhost:5173');
+    allowedOrigins.push('http://localhost:3000');
+  }
 
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -132,20 +139,27 @@ app.get('/api/health', (req, res) => {
     status: 'OK',
     timestamp: new Date().toISOString(),
     service: 'ResumeAI Backend',
+    dbState: mongoose.connection.readyState
   });
 });
 
 /* ======================================================
-   5. SESSION SETUP
+   5. SESSION SETUP (MONGODB STORE)
    ====================================================== */
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'secret',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: 'sessions',
+      ttl: 14 * 24 * 60 * 60, // 14 days
+      autoRemove: 'native'
+    }),
     cookie: {
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' required for cross-site cookie if frontend/backend distinct domains, else 'lax'
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     },
@@ -160,12 +174,7 @@ app.use(passport.session());
 require('./config/passport.js')(passport);
 
 /* ======================================================
-   7. DATABASE CONNECT
-   ====================================================== */
-connectDB();
-
-/* ======================================================
-   8. ROUTES
+   7. ROUTES
    ====================================================== */
 app.use('/api/auth', authRoutes);
 app.use('/api/resume', resumeRoutes);
@@ -173,7 +182,7 @@ app.use('/api/ats', atsRoutes);
 app.use('/api/payment', paymentRoutes);
 
 /* ======================================================
-   9. ERROR HANDLER
+   8. ERROR HANDLER
    ====================================================== */
 app.use((err, req, res, next) => {
   console.error('🚨 Server Error:', err.message);
@@ -184,7 +193,7 @@ app.use((err, req, res, next) => {
 });
 
 /* ======================================================
-   10. 404 HANDLER
+   9. 404 HANDLER
    ====================================================== */
 app.use((req, res) => {
   res.status(404).json({
@@ -194,13 +203,26 @@ app.use((req, res) => {
 });
 
 /* ======================================================
-   11. START SERVER
+   10. START SERVER (DB FIRST)
    ====================================================== */
 const PORT = process.env.PORT || 5001;
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Backend running on port ${PORT}`);
-});
 
-server.timeout = 120000;
+const startServer = async () => {
+  try {
+    await connectDB();
+    console.log('✅ MongoDB Connected');
+
+    const server = app.listen(PORT, () => {
+      console.log(`🚀 Backend running on port ${PORT}`);
+    });
+
+    server.timeout = 120000;
+  } catch (error) {
+    console.error('❌ Failed to connect to DB:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 module.exports = app;

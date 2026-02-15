@@ -39,6 +39,19 @@
         box-shadow: none !important;
         text-shadow: none !important;
     }
+
+    .watermark {
+        position: fixed;
+        bottom: 5mm;
+        right: 10mm;
+        font-size: 10pt;
+        color: #94a3b8;
+        /* slate-400 */
+        font-family: sans-serif;
+        pointer-events: none;
+        z-index: 9999;
+        display: block !important;
+    }
 }
 
 /* Hide print container on screen */

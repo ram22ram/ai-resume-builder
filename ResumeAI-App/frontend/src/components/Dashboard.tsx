@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
-  Sparkles, FileText, Activity, BookOpen, 
-  Lightbulb, AlertCircle, Map, Download, Upload 
+  Sparkles, FileText, Activity, 
+  Map as MapIcon, Download, Upload 
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -114,7 +114,7 @@ const Dashboard: React.FC = () => {
       <div className="grid">
         {/* LEFT: Journey */}
         <section className="card journey">
-          <h2><Map size={20} color="#818cf8"/> Your Application Journey</h2>
+          <h2><MapIcon size={20} color="#818cf8"/> Your Application Journey</h2>
           <div style={{ position: 'relative', marginTop: '20px' }}>
             <div style={{ position: 'absolute', left: '6px', top: '10px', bottom: '40px', width: '2px', background: 'rgba(255,255,255,0.05)' }} />
             {journeySteps.map(step => (
@@ -125,6 +125,20 @@ const Dashboard: React.FC = () => {
 
         {/* CENTER: Template */}
         <section className="card template">
+          {/* ✅ UPGRADE BANNER (New) */}
+          {!user?.isPremium && (
+            <div style={{
+              background: 'linear-gradient(45deg, #f59e0b, #d97706)',
+              borderRadius: '8px', padding: '12px', marginBottom: '20px',
+              color: 'white', textAlign: 'center', cursor: 'pointer'
+            }} onClick={() => navigate('/pricing')}>
+              <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <Sparkles size={16} fill="white" /> Upgrade to Pro
+              </h4>
+              <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.9 }}>Unlock Premium Templates & AI Writer</p>
+            </div>
+          )}
+
           <div className="template-head">
             <h2><Sparkles size={20} color="#eab308"/> Template of the Week</h2>
             <span className="badge">Trending</span>
@@ -144,17 +158,6 @@ const Dashboard: React.FC = () => {
           <button onClick={() => navigate('/builder')} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px'}}>
             <Download size={18} /> Use This Template
           </button>
-
-          <div className="mini-cards">
-            <div className="mini green">
-              <h4 style={{ color: '#22c55e', display: 'flex', alignItems: 'center', gap: '5px' }}><Lightbulb size={14} /> Quick Tip</h4>
-              <p>Using numbers like “Improved sales by 20%” increases hiring chances.</p>
-            </div>
-            <div className="mini red">
-              <h4 style={{ color: '#ef4444', display: 'flex', alignItems: 'center', gap: '5px' }}><AlertCircle size={14} /> ATS Myth</h4>
-              <p>Tables & columns often confuse ATS bots.</p>
-            </div>
-          </div>
         </section>
 
         {/* RIGHT: Tools */}
@@ -168,13 +171,19 @@ const Dashboard: React.FC = () => {
             </button>
           </div>
 
-          <div className="resources">
-            <h2><BookOpen size={20} color="#f97316"/> Recent Resources</h2>
-            <ul>
-              <li onClick={() => navigate('/blog/1')} style={{cursor: 'pointer'}}>Top 10 Interview Questions <span>5 min</span></li>
-              <li onClick={() => navigate('/blog/2')} style={{cursor: 'pointer'}}>Beat the ATS System <span>8 min</span></li>
-              <li onClick={() => navigate('/blog/3')} style={{cursor: 'pointer'}}>Standout Summary Tips <span>6 min</span></li>
-            </ul>
+          {/* ✅ DOWNLOAD HISTORY (New) */}
+          <div className="resources" style={{ marginTop: '20px' }}>
+            <h2><Download size={20} color="#10b981"/> Recent Downloads</h2>
+            {(user?.resumesCreated ?? 0) > 0 ? (
+              <ul style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                <li style={{ fontSize: '13px', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span style={{ color: 'white' }}>Minimalist Resume.pdf</span>
+                  <br/><span style={{ fontSize: '11px', color: '#64748b' }}>Just now</span>
+                </li>
+              </ul>
+            ) : (
+                <p style={{ fontSize: '13px', color: '#64748b', textAlign: 'center', padding: '10px' }}>No downloads yet</p>
+            )}
           </div>
         </section>
       </div>

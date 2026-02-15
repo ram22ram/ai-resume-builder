@@ -1,14 +1,13 @@
 import React from 'react';
-import { Box, Container, Typography, Button, Paper, Stack } from '@mui/material';
-import { ArrowLeft, ShieldCheck } from 'lucide-react';
+import { Box, Container, Typography, Paper, Stack } from '@mui/material';
+import { ShieldCheck } from 'lucide-react';
 import Layout from './Layout';
 
 interface TermsConditionsProps {
-  onBack?: () => void;
   onNavigate?: (page: string) => void;
 }
 
-const TermsConditions: React.FC<TermsConditionsProps> = ({ onBack }) => {
+const TermsConditions: React.FC<TermsConditionsProps> = () => {
   return (
   <Layout>
     <Box sx={{ flexGrow: 1, py: 6 }}>

@@ -14,7 +14,6 @@ import {
   Card,
   CardContent,
   Stack,
-  Divider,
   TextField,
   SelectChangeEvent,
   Button,
@@ -27,12 +26,9 @@ import {
   Palette, 
   FontDownload, 
   DensitySmall, 
-  PhotoCamera, 
   Visibility,
   AutoFixHigh,
-  Close,
-  Share,
-  Download
+  Close
 } from '@mui/icons-material';
 
 // --- INTERFACE UPDATE ---
@@ -147,7 +143,7 @@ const templateOptions = [
                 rows={3}
                 placeholder="Ask AI to improve your resume, suggest changes, or roast it..."
                 value={aiPrompt}
-                onChange={(e) =>  handlers.handleTemplateChange(e, e.target.value)}
+                onChange={(e) => setAiPrompt(e.target.value)}
                 sx={{ 
                   mb: 2,
                   '& .MuiInputBase-root': {

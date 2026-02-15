@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, TextField, Typography, Button, Chip, Autocomplete } from '@mui/material';
 import { PREDEFINED_SKILL_LIST } from '../../utils/constants';
 import { Plus, X } from 'lucide-react';
 
-const StepSkills = ({ resumeData, handlers, errors = {} }: any) => {
+const StepSkills = ({ resumeData, handlers }: any) => {
   // ✅ Skills array check
   const skills = Array.isArray(resumeData) ? resumeData : (resumeData?.skills || []);
   // ✅ MATCHED HANDLERS

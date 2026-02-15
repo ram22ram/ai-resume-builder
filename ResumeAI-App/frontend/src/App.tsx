@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import { useMemo, Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, CircularProgress, Box } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { HelmetProvider } from 'react-helmet-async';
@@ -9,30 +9,44 @@ import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './context/AuthContext';
 import { ResumeProvider } from './context/ResumeContext';
 
-/* ================= PAGES ================= */
+/* ================= COMPONENT IMPORTS (STATIC) ================= */
+// Keep HomePage static for instant LCP (Largest Contentful Paint)
 import HomePage from './components/HomePage';
-import Dashboard from './components/Dashboard';
-// import TemplateSelectPage from './pages/TemplateSelectPage';
-import BuilderPage from './pages/BuilderPage';
 
-import InterviewSimulator from './components/InterviewSimulator';
-import GithubConverter from './components/GithubConverter';
-import ColdEmail from './components/ColdEmail';
+/* ================= LAZY LOADED PAGES ================= */
+const Dashboard = lazy(() => import('./components/Dashboard'));
+const BuilderPage = lazy(() => import('./pages/BuilderPage'));
+const TemplateSelectPage = lazy(() => import('./pages/TemplateSelectPage'));
+const AuthSuccess = lazy(() => import('./pages/AuthSuccess'));
+const MarketingPage = lazy(() => import('./pages/MarketingPage'));
 
-import PrivacyPolicy from './components/PrivacyPolicy';
-import TermsConditions from './components/TermsConditions';
-import RefundPolicy from './components/RefundPolicy';
+// Premium Tools
+const InterviewSimulator = lazy(() => import('./components/InterviewSimulator'));
+const GithubConverter = lazy(() => import('./components/GithubConverter'));
+const ColdEmail = lazy(() => import('./components/ColdEmail'));
 
-import AuthSuccess from './pages/AuthSuccess';
-import MarketingPage from './pages/MarketingPage';
-import TemplateSelectPage from './pages/TemplateSelectPage';
+// Legal
+const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
+const TermsConditions = lazy(() => import('./components/TermsConditions'));
+const RefundPolicy = lazy(() => import('./components/RefundPolicy'));
 
 /* ================= ROUTE GUARDS ================= */
 import ProtectedRoute from './components/ProtectedRoute';
 import PremiumGate from './components/PremiumGate';
 import ATSChecker from './components/ATSChecker';
 
+// Simple Loading Component
+const LoadingFallback = () => (
+  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', bgcolor: 'background.default' }}>
+    <CircularProgress color="primary" />
+  </Box>
+);
+
+import { usePageTracking } from './hooks/usePageTracking';
+
 function App() {
+  usePageTracking();
+  
   const theme = useMemo(
     () =>
       createTheme({
@@ -56,90 +70,91 @@ function App() {
           <CssBaseline />
           <AuthProvider>
             <ResumeProvider>
-              <Routes>
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
 
-              {/* ================= PUBLIC ================= */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/start" element={<MarketingPage />} />
-              <Route path="/auth-success" element={<AuthSuccess />} />
+                  {/* ================= PUBLIC ================= */}
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/start" element={<MarketingPage />} />
+                  <Route path="/auth-success" element={<AuthSuccess />} />
 
-              {/* ================= DASHBOARD ================= */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
+                  {/* ================= DASHBOARD ================= */}
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
 
-              {/* ================= TEMPLATES ================= */}
-              <Route path="/templates" element={<TemplateSelectPage />} />
+                  {/* ================= TEMPLATES ================= */}
+                  <Route path="/templates" element={<TemplateSelectPage />} />
 
-              {/* ================= RESUME BUILDER (CORE) ================= */}
-              <Route
-                path="/builder"
-                element={
-                  // <ProtectedRoute>
-                    <BuilderPage />
-                  // </ProtectedRoute>
-                }
-              />
+                  {/* ================= RESUME BUILDER (CORE) ================= */}
+                  <Route
+                    path="/builder"
+                    element={
+                      // <ProtectedRoute>
+                      <BuilderPage />
+                      // </ProtectedRoute>
+                    }
+                  />
 
-              {/* ================= PREMIUM TOOLS ================= */}
-              <Route
-                path="/interview"
-                element={
-                  <PremiumGate>
-                    <InterviewSimulator />
-                  </PremiumGate>
-                }
-              />
+                  {/* ================= PREMIUM TOOLS ================= */}
+                  <Route
+                    path="/interview"
+                    element={
+                      <PremiumGate>
+                        <InterviewSimulator />
+                      </PremiumGate>
+                    }
+                  />
 
-              <Route
-                path="/github"
-                element={
-                  <PremiumGate>
-                    <GithubConverter />
-                  </PremiumGate>
-                }
-              />
+                  <Route
+                    path="/github"
+                    element={
+                      <PremiumGate>
+                        <GithubConverter />
+                      </PremiumGate>
+                    }
+                  />
 
-              <Route
-                path="/email"
-                element={
-                  <PremiumGate>
-                    <ColdEmail />
-                  </PremiumGate>
-                }
-              />
+                  <Route
+                    path="/email"
+                    element={
+                      <PremiumGate>
+                        <ColdEmail />
+                      </PremiumGate>
+                    }
+                  />
 
-              {/* ================= ATS (ENABLE WHEN FILE EXISTS) ================= */}
-             
-              <Route
-                path="/ats"
-                element={<ATSChecker />}
-              />
-              
+                  {/* ================= ATS ================= */}
+                  <Route
+                    path="/ats"
+                    element={<ATSChecker />}
+                  />
 
-              {/* ================= LEGAL ================= */}
-              <Route
-                path="/privacy"
-                element={<PrivacyPolicy onBack={() => window.history.back()} />}
-              />
-              <Route
-                path="/terms"
-                element={<TermsConditions onBack={() => window.history.back()} />}
-              />
-              <Route
-                path="/refund"
-                element={<RefundPolicy onBack={() => window.history.back()} />}
-              />
 
-              {/* ================= FALLBACK ================= */}
-              <Route path="*" element={<HomePage />} />
+                  {/* ================= LEGAL ================= */}
+                  <Route
+                    path="/privacy"
+                    element={<PrivacyPolicy />}
+                  />
+                  <Route
+                    path="/terms"
+                    element={<TermsConditions />}
+                  />
+                  <Route
+                    path="/refund"
+                    element={<RefundPolicy />}
+                  />
 
-              </Routes>
+                  {/* ================= FALLBACK ================= */}
+                  <Route path="*" element={<HomePage />} />
+
+                </Routes>
+              </Suspense>
             </ResumeProvider>
           </AuthProvider>
         </ThemeProvider>

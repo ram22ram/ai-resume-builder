@@ -3,15 +3,15 @@ import { useDownloadGuard } from '../hooks/useDownloadGuard';
 import { generatePDF } from '../utils/pdfExport';
 import { useAuth } from '../context/AuthContext';
 import { useResume } from '../context/ResumeContext';
-import { ALL_TEMPLATES } from '../templates/templates.config';
+import { TEMPLATES } from '../templates/TemplateRegistry';
 
 const DownloadResumeButton = () => {
     const { user } = useAuth();
-    const { selectedTemplate } = useResume();
+    const { resume } = useResume();
     const { handleDownload } = useDownloadGuard();
     
     // Determine Label
-    const template = ALL_TEMPLATES.find(t => t.id === selectedTemplate);
+    const template = TEMPLATES.find(t => t.id === resume.templateId);
     const isPremium = template?.isPremium;
 
     let label = 'Download Resume';

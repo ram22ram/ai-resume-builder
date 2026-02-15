@@ -60,6 +60,11 @@ const BuilderPage = () => {
             {/* PRINT CONTAINER (Hidden on Screen) */}
             <div id="print-container">
                 <ResumeRenderer key={resume.templateId} templateId={resume.templateId} data={resume} />
+                {!user?.isPremium && (
+                    <div className="watermark">
+                        Created with <b>ResumeAI</b> • resume-ai.co.in
+                    </div>
+                )}
             </div>
 
             <Box sx={{ height: 'calc(100vh - 80px)', display: 'flex', overflow: 'hidden', bgcolor: 'background.default' }}>
@@ -72,6 +77,20 @@ const BuilderPage = () => {
                          <Button startIcon={<LayoutIcon size={16}/>} onClick={() => navigate('/templates')} size="small" color="inherit">
                              Change Template
                          </Button>
+
+                         {/* Upgrade Button for Free Users */}
+                         {!user?.isPremium && (
+                           <Button 
+                             onClick={() => setIsPremiumOpen(true)}
+                             variant="outlined" 
+                             color="warning" 
+                             size="small"
+                             sx={{ mx: 2 }}
+                           >
+                             Upgrade to Pro
+                           </Button>
+                         )}
+
                          <Box>
                              {/* Progress or Step Name */}
                              <Typography variant="subtitle2" fontWeight="bold" color="primary">

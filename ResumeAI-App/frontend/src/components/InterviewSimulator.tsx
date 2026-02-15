@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { 
   Box, TextField, Button, Paper, Typography, 
   Container, Avatar, Chip, Fade, Stack, IconButton, Alert, Tooltip, Card
@@ -10,11 +10,7 @@ import {
 import { generateContent } from '../utils/aiService';
 import Layout from './Layout';
 import { useAuth } from '../context/AuthContext';
-import { GoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
-import { SEO } from './SEO';
-
-const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
+import SEO from './SEO';
 
 declare global {
   interface Window {
@@ -24,7 +20,7 @@ declare global {
 }
 
 const InterviewSimulator = () => {
-  const { user, login, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const [jobRole, setJobRole] = useState('');
   const [experience, setExperience] = useState('');
   const [started, setStarted] = useState(false);
@@ -56,13 +52,6 @@ const InterviewSimulator = () => {
       recognitionRef.current.onend = () => setIsListening(false);
     }
   }, []);
-
-  const handleGoogleSuccess = async (credentialResponse: any) => {
-    try {
-      const res = await axios.post(`${API_URL}/auth/google`, { token: credentialResponse.credential });
-      if (res.data.success) login(res.data.user, res.data.token);
-    } catch (err) { console.error("Login Failed", err); }
-  };
 
   const speakText = (text: string) => {
     if (!audioEnabled || !user) return;

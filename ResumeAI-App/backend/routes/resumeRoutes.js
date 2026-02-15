@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const axios = require('axios');
-const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js'); 
+const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
 const router = express.Router();
 
 // ATS Checker style cleaning logic
@@ -18,10 +18,12 @@ const cleanAIResponse = (text) => {
   } catch (err) { return null; }
 };
 
+const requirePremium = require('../middleware/requirePremium');
+
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post('/parse', upload.single('file'), async (req, res) => {
-  let cleanText = ""; 
+router.post('/parse', requirePremium, upload.single('file'), async (req, res) => {
+  let cleanText = "";
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No file' });
 
@@ -52,9 +54,9 @@ router.post('/parse', upload.single('file'), async (req, res) => {
         temperature: 0.1
       },
       {
-        headers: { 
-          'Authorization': `Bearer ${process.env.VITE_GROQ_API_KEY}`, 
-          'Content-Type': 'application/json' 
+        headers: {
+          'Authorization': `Bearer ${process.env.VITE_GROQ_API_KEY}`,
+          'Content-Type': 'application/json'
         }
       }
     );
@@ -65,15 +67,15 @@ router.post('/parse', upload.single('file'), async (req, res) => {
   } catch (err) {
     console.error('⚠️ AI Error/Fallback:', err.message);
     // 🔥 Fallback: Agar AI fail ho toh 500 mat bhejo, raw text bhej do
-    res.json({ 
-      success: true, 
-      data: { 
+    res.json({
+      success: true,
+      data: {
         summary: cleanText || "Error parsing file. Please fill manually.",
         full_name: "",
         email: "",
         job_title: ""
       },
-      message: "AI Busy: Extracted raw text." 
+      message: "AI Busy: Extracted raw text."
     });
   }
 });

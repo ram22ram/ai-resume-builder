@@ -1,14 +1,13 @@
-import React from 'react';
+import { useState, KeyboardEvent } from 'react';
 import { Box, Button, TextField, Typography, Chip } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
-import { Plus, X } from 'lucide-react';
 
 const SkillsForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
     const section = resume.sections.find(s => s.id === sectionId);
 
     // Local state for the new skill input to allow pressing "Enter"
-    const [newItem, setNewItem] = React.useState('');
+    const [newItem, setNewItem] = useState('');
 
     if (!section) return null;
 
@@ -30,7 +29,7 @@ const SkillsForm = ({ sectionId }: { sectionId: string }) => {
         setNewItem('');
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             handleAdd();

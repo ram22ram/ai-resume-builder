@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Container, Typography, Grid, Paper, Chip, Button } from '@mui/material';
 import { TEMPLATES } from '../templates/TemplateRegistry';
 import { useNavigate } from 'react-router-dom';

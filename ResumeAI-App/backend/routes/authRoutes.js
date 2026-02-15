@@ -7,23 +7,10 @@ const router = express.Router();
 
 // Google Auth Route
 router.get('/google', (req, res, next) => {
-  console.log('Google OAuth Initiated - Uptime:', process.uptime());
-
-  // Render Cold Start protection
-  if (process.uptime() < 10) {
-    console.log('⚠️ Cold start: Adding delay for DB stability...');
-    setTimeout(() => {
-      passport.authenticate('google', {
-        scope: ['profile', 'email'],
-        prompt: 'select_account'
-      })(req, res, next);
-    }, 2000);
-  } else {
-    passport.authenticate('google', {
-      scope: ['profile', 'email'],
-      prompt: 'select_account'
-    })(req, res, next);
-  }
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    prompt: 'select_account'
+  })(req, res, next);
 });
 
 // Google Callback Route

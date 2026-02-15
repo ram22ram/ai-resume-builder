@@ -4,7 +4,6 @@ import { ShieldCheck } from 'lucide-react';
 import Layout from './Layout';
 
 interface PrivacyPolicyProps {
-  onBack?: () => void;
   onNavigate?: (page: string) => void;
 }
 

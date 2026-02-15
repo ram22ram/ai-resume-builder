@@ -1,15 +1,13 @@
 import React from 'react';
-import { Box, Container, Typography, Paper, Button, Divider, List, ListItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
-import { ArrowLeft, ShieldCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+import { Box, Container, Typography, Paper, Divider, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { ShieldCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
 import Layout from './Layout';
 
 interface RefundPolicyProps {
-  onBack?: () => void;
   onNavigate?: (page: string) => void;
 }
 
-const RefundPolicy: React.FC<RefundPolicyProps> = ({ onBack }) => {
+const RefundPolicy: React.FC<RefundPolicyProps> = () => {
   return (
 <Layout>
       <Box sx={{ flexGrow: 1, py: 8 }}>

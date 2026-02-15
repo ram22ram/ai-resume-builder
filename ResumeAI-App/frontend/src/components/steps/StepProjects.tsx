@@ -1,5 +1,5 @@
 // StepProjects.tsx - UPDATE WITH LOADING STATES
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, TextField, Button, IconButton, Typography, Paper, CircularProgress } from '@mui/material';
 import { Plus, Trash2, FolderGit2, Sparkles, GripVertical } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -18,7 +18,7 @@ const StepProjects = ({ resumeData, handlers, loadingAi }: any) => {
     handleListReorder && handleListReorder('projects', newItems);
   };
 
-  const handleEnhanceWithAI = async (id: number, title: string) => {
+  const handleEnhanceWithAI = async (id: number) => {
     if (!handleAiAction) {
       console.error('No AI handler available');
       return;
@@ -144,7 +144,7 @@ const StepProjects = ({ resumeData, handlers, loadingAi }: any) => {
                               </Typography>
                               <Button 
                                 startIcon={isAiLoading ? <CircularProgress size={12} color="inherit"/> : <Sparkles size={14} />} 
-                                onClick={() => handleEnhanceWithAI(proj.id, proj.title)}
+                                onClick={() => handleEnhanceWithAI(proj.id)}
                                 disabled={isAiLoading || loadingAi || !handleAiAction || !proj.title}
                                 sx={{ 
                                   color: '#f59e0b', 

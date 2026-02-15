@@ -1,4 +1,3 @@
-import React from 'react';
 import {
     Box, Button, Dialog, DialogTitle, DialogContent,
     DialogActions, List, ListItem, ListItemText,

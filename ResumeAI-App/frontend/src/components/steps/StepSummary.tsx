@@ -1,6 +1,5 @@
-import React from 'react';
 import { Box, TextField, Typography, Button, Alert, CircularProgress, Stack } from '@mui/material';
-import { Wand2, Sparkles, Zap } from 'lucide-react';
+import { Sparkles, Zap } from 'lucide-react';
 
 const StepSummary = ({ resumeData, handlers, loadingAi }: any) => {
   // ✅ Logic: resumeData yahan direct summary string ho sakta hai ya object

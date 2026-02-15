@@ -15,3 +15,5 @@ const JobMatcher = ({ resumeSkills, jobJD }: any) => {
     </Box>
   );
 };
+
+export default JobMatcher;

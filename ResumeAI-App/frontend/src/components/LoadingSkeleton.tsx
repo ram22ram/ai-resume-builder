@@ -1,5 +1,4 @@
 // Create: src/components/LoadingSkeleton.tsx
-import React from 'react';
 import { Box, Skeleton, Stack, Paper } from '@mui/material';
 
 export const LoadingSkeleton = () => {

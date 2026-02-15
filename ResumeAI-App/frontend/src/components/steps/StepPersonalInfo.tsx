@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Box, TextField, Typography, Button, Avatar, Stack, Alert } from '@mui/material';
 import { Upload, Mail, Phone, MapPin, Linkedin, Globe, User, Trash2 } from 'lucide-react';
-import { validateEmail, validatePhone, validatePersonalInfo } from '../../utils/validationUtils';
+import { validateEmail, validatePhone } from '../../utils/validationUtils';
 
 const StepPersonalInfo = ({ resumeData, handlers, errors: propErrors = {} }: any) => {
   const { personalInfo } = resumeData;
