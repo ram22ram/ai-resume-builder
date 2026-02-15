@@ -1,149 +1,71 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import { getTemplateComponent } from '../templates/TemplateRegistry';
 import { ResumeData } from '../types/resume';
+import { PREVIEW_RESUME } from '../data/previewResume';
 
 interface Props {
   templateId: string;
   scale?: number;
+  fitContainer?: boolean;
+  data?: ResumeData;
 }
 
 // A4 Dimensions (Standard)
 const A4_WIDTH = 595; // px (at 72 DPI approx)
 const A4_HEIGHT = 842;
 
-const DUMMY_DATA: ResumeData = {
-    id: "dummy_preview",
-    templateId: "simple_clean",
-    isPremium: false,
-    metadata: {
-        fontFamily: "Roboto",
-        accentColor: "#000000",
-        lineHeight: 1.5,
-        jobTitle: "Software Engineer"
-    },
-    sections: [
-        {
-            id: "personal",
-            type: "personal",
-            title: "Personal Info",
-            isVisible: true,
-            items: [{
-                id: "p1",
-                firstName: "Rahul",
-                lastName: "Sharma",
-                fullName: "Rahul Sharma",
-                email: "rahul@example.com",
-                phone: "+91 98765 43210",
-                city: "Bangalore",
-                country: "India",
-                jobTitle: "Software Engineer",
-                // summary is not in PersonalItem, separate section
-            }]
-        },
-        {
-            id: "summary",
-            type: "summary",
-            title: "Professional Summary",
-            isVisible: true,
-            items: [{
-                id: "s1",
-                description: "Passionate developer with 3+ years of experience in building scalable web apps using React and Node.js. Focused on performance and clean code."
-            }]
-        },
-        {
-            id: "experience",
-            type: "experience",
-            title: "Experience",
-            isVisible: true,
-            items: [
-                { 
-                    id: "exp1",
-                    position: "Senior Developer", 
-                    company: "TechCorp", 
-                    date: "2023 - Present",
-                    description: ["Led frontend team of 5.", "Improved site speed by 40%.", "Implemented CI/CD pipelines."] 
-                },
-                { 
-                    id: "exp2",
-                    position: "Software Engineer", 
-                    company: "StartupInc", 
-                    date: "2021 - 2023",
-                    description: ["Built MVP from scratch using MERN stack.", "Integrated payment gateways."] 
-                }
-            ]
-        },
-        {
-            id: "education",
-            type: "education",
-            title: "Education",
-            isVisible: true,
-            items: [
-                { 
-                    id: "edu1",
-                    degree: "B.Tech Computer Science", 
-                    institution: "IIT Delhi", 
-                    date: "2017 - 2021",
-                    description: "8.5 CGPA"
-                }
-            ]
-        },
-        {
-            id: "skills",
-            type: "skills",
-            title: "Skills",
-            isVisible: true,
-            items: [
-                {
-                    name: "React", level: "Expert",
-                    id: 'sk1'
-                },
-                {
-                    name: "Node.js", level: "Advanced",
-                    id: 'sk2'
-                },
-                {
-                    name: "TypeScript",
-                    id: 'sk3'
-                },
-                {
-                    name: "AWS",
-                    id: 'sk4'
-                },
-                {
-                    name: "Figma",
-                    id: 'sk5'
-                }
-            ],
-            columns: 2
-        },
-        {
-            id: "projects",
-            type: "projects",
-            title: "Projects",
-            isVisible: true,
-            items: [
-                {
-                    id: "proj1",
-                    title: "E-Commerce Platform",
-                    description: ["A full-featured shopping platform with cart and checkout."],
-                    technologies: "React, Node.js, MongoDB",
-                    link: "github.com/rahul/shop"
-                }
-            ]
-        }
-    ]
-};
+const MiniResumePreview: React.FC<Props> = ({ 
+    templateId, 
+    scale: initialScale = 0.4, 
+    fitContainer = false,
+    data: customData 
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(initialScale);
 
-const MiniResumePreview: React.FC<Props> = ({ templateId, scale = 0.4 }) => {
+  // Auto-scale logic
+  useEffect(() => {
+    if (!fitContainer || !containerRef.current) return;
+
+    const updateScale = () => {
+        if (containerRef.current) {
+            const parentWidth = containerRef.current.offsetWidth;
+            // Add a small buffer/padding calculation if needed, 
+            // but usually direct ratio is best for "fit width"
+            const newScale = parentWidth / A4_WIDTH;
+            setScale(newScale);
+        }
+    };
+
+    // Initial calculation
+    updateScale();
+
+    const resizeObserver = new ResizeObserver(() => {
+        updateScale();
+    });
+
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, [fitContainer]);
+
   // Memoize the data to prevent unnecessary re-renders
-  const data = useMemo(() => {
-     // Ensure we pass the templateId in the data as well, as some components might check it
+  const resumeData = useMemo(() => {
+     // Use custom data if provided, otherwise use the rich PREVIEW_RESUME
+     const baseData = customData || PREVIEW_RESUME;
+     
      return { 
-         ...DUMMY_DATA, 
-         templateId 
+         ...baseData, 
+         templateId,
+         // Ensure metadata matches template defaults if they exist in baseData, 
+         // though usually the renderer handles font/color. 
+         // If we want to enforce template defaults here we could, 
+         // but the TemplateRegistry usually handles defaults if metadata is missing.
+         // For preview, we might want to override font/color from the template definition 
+         // but PREVIEW_RESUME has its own. Let's keep PREVIEW_RESUME as is for consistency.
      }; 
-  }, [templateId]);
+  }, [templateId, customData]);
 
   // Get the specific component for this template
   let TemplateComponent;
@@ -156,13 +78,14 @@ const MiniResumePreview: React.FC<Props> = ({ templateId, scale = 0.4 }) => {
 
   return (
     <Box 
+        ref={containerRef}
         sx={{ 
             width: '100%', 
             height: '100%', 
             overflow: 'hidden',
             bgcolor: '#e5e7eb', // Slightly darker bg for contrast
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'start', // Align start so top of resume is visible
             justifyContent: 'center',
             position: 'relative',
             userSelect: 'none'
@@ -173,13 +96,15 @@ const MiniResumePreview: React.FC<Props> = ({ templateId, scale = 0.4 }) => {
             width: A4_WIDTH,
             height: A4_HEIGHT,
             transform: `scale(${scale})`,
-            transformOrigin: 'center center',
+            transformOrigin: 'top center', // Scale from top center
             bgcolor: 'white',
             boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-            overflow: 'hidden', // Ensure content doesn't bleed out even if component bugs out
-            pointerEvents: 'none' // Disable interaction
+            overflow: 'hidden', 
+            pointerEvents: 'none',
+            // If we are fitting container, we might want a margin top if it scales down a lot, 
+            // but usually filling the card is the goal.
         }}>
-            <TemplateComponent data={data} />
+            <TemplateComponent data={resumeData} />
         </Box>
     </Box>
   );

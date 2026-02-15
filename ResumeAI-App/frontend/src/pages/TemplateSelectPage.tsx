@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useResume } from '../context/ResumeContext';
 import { Lock } from 'lucide-react';
 import Layout from '../components/Layout';
-import ResumeRenderer from '../components/renderer/ResumeRenderer';
+import MiniResumePreview from '../components/MiniResumePreview';
 import { PREVIEW_RESUME } from '../data/previewResume';
 
 const TemplateSelectPage = () => {
@@ -90,7 +90,7 @@ const TemplateSelectPage = () => {
                                         }
                                     }}
                                 >
-                                    {/* A4 Preview Container */}
+                                    {/* A4 Preview Container - Auto Scaled */}
                                     <Box 
                                         className="group"
                                         sx={{ 
@@ -99,44 +99,16 @@ const TemplateSelectPage = () => {
                                             display: 'flex',
                                             justifyContent: 'center',
                                             alignItems: 'center',
-                                            position: 'relative'
+                                            position: 'relative',
+                                            overflow: 'hidden'
                                         }}
                                     >
-                                        {/* Mock Paper Look - NOW LIVE PREVIEW */}
-                                        <Box sx={{ 
-                                            width: '100%', 
-                                            height: '100%', 
-                                            bgcolor: 'white', 
-                                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                                            overflow: 'hidden',
-                                            position: 'relative'
-                                        }}>
-                                             {/* 
-                                                Scaling Container: 
-                                                Render the resume at a larger fixed width (e.g. 800px) 
-                                                and scale it down to fit the card.
-                                             */}
-                                             <Box sx={{
-                                                 width: '800px', // A4-ish width
-                                                 height: '1132px', // A4-ish height
-                                                 transform: 'scale(0.35)', // Fixed scale for thumbnail
-                                                 transformOrigin: 'top left',
-                                                 bgcolor: 'white'
-                                             }}>
-                                                        <ResumeRenderer
-                                                            templateId={item.id}
-                                                            data={{
-                                                                ...PREVIEW_RESUME,
-                                                                templateId: item.id,
-                                                                metadata: {
-                                                                    ...PREVIEW_RESUME.metadata,
-                                                                    fontFamily: item.defaultFont,
-                                                                    accentColor: item.defaultColor
-                                                                }
-                                                            }}
-                                                        />
-                                             </Box>
-                                        </Box>
+                                        <MiniResumePreview 
+                                            templateId={item.id} 
+                                            fitContainer 
+                                            data={PREVIEW_RESUME}
+                                        />
+                                    </Box>
 
                                         {/* Hover Overlay */}
                                         <Box sx={{
@@ -173,7 +145,7 @@ const TemplateSelectPage = () => {
                                                 <Lock size={12} /> Premium
                                             </Box>
                                         )}
-                                    </Box>
+
 
                                     {/* Info */}
                                     <Box sx={{ p: 2, bgcolor: 'white' }}>
