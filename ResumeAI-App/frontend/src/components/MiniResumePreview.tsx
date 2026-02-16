@@ -12,7 +12,9 @@ interface Props {
 }
 
 // A4 Dimensions (Standard at 96 DPI)
-const A4_WIDTH = 794; 
+// 210mm = ~793.7px. We use a slightly smaller value (793) to force a tiny overscale,
+// ensuring the content strictly fills the container without sub-pixel gaps.
+const A4_WIDTH = 793; 
 const A4_HEIGHT = 1123;
 
 const MiniResumePreview: React.FC<Props> = ({ 
@@ -30,7 +32,7 @@ const MiniResumePreview: React.FC<Props> = ({
 
     const updateScale = () => {
         if (containerRef.current) {
-            const parentWidth = containerRef.current.clientWidth; // Use clientWidth to exclude borders/scrollbar
+            const parentWidth = containerRef.current.getBoundingClientRect().width; // More precise than clientWidth
             const newScale = parentWidth / A4_WIDTH;
             setScale(newScale);
         }
@@ -81,10 +83,8 @@ const MiniResumePreview: React.FC<Props> = ({
             width: '100%', 
             height: '100%', 
             overflow: 'hidden',
-            bgcolor: '#e5e7eb', // Slightly darker bg for contrast
-            display: 'flex',
-            alignItems: 'start', // Align start so top of resume is visible
-            justifyContent: 'center',
+            bgcolor: 'white', // Changed to white to blend with paper
+            display: 'block', // Changed from flex to block for absolute positioning behavior
             position: 'relative',
             userSelect: 'none'
         }}
@@ -94,11 +94,10 @@ const MiniResumePreview: React.FC<Props> = ({
             width: A4_WIDTH,
             minHeight: A4_HEIGHT,
             transform: `scale(${scale})`,
-            transformOrigin: 'top center', // Scale from top center
+            transformOrigin: 'top left', // Scale from top-left to ensure it fills from edge
             bgcolor: 'white',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            boxShadow: 'none', // Remove shadow inside preview to flat look
             overflow: 'hidden', 
-            // Ensure no pointer events blocking scroll if needed, though this is a preview
             pointerEvents: 'none',
         }}>
             <TemplateComponent data={resumeData} />
