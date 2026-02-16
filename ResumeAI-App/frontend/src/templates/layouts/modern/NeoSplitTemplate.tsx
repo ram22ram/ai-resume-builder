@@ -1,6 +1,8 @@
 import React from 'react';
-import { ResumeData, ResumeSection, PersonalItem, SkillItem, ExperienceItem, ProjectItem, EducationItem } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, SkillItem, ExperienceItem, ProjectItem, EducationItem, CertificationItem, AchievementItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
+import IndianPersonalDetails from '../../components/IndianPersonalDetails';
+import IndianEducationTable from '../../components/IndianEducationTable';
 
 interface Props {
   data: ResumeData;
@@ -15,64 +17,100 @@ const NeoSplitTemplate: React.FC<Props> = ({ data }) => {
   const experience = getItems('experience') as ExperienceItem[];
   const projects = getItems('projects') as ProjectItem[];
   const education = getItems('education') as EducationItem[];
+  const certs = getItems('certifications') as CertificationItem[];
+  const achievements = getItems('achievements') as AchievementItem[];
 
   const accent = data.metadata.accentColor || '#0f172a';
 
   return (
     <div style={{ ...standardStyles.page, display: 'flex', fontFamily: standardStyles.fonts.sans }}>
       {/* SIDEBAR */}
-      <aside style={{ width: '30%', paddingRight: 20, borderRight: `3px solid ${accent}` }}>
-        <h1 style={{ fontSize: 32, lineHeight: 1.2 }}>{personal.fullName}</h1>
-        <div style={{ fontSize: '10pt', color: accent }}>{personal.jobTitle}</div>
+      <aside style={{ width: '32%', paddingRight: 20, borderRight: `3px solid ${accent}` }}>
+        <h1 style={{ fontSize: 28, lineHeight: 1.2, marginBottom: 5 }}>{personal.fullName}</h1>
+        <div style={{ fontSize: 13, color: accent, fontWeight: 700, marginBottom: 20 }}>{personal.jobTitle}</div>
 
-        <h3>Skills</h3>
-        {skills.map((s, i) => (
-          <div key={i}>• {s}</div>
-        ))}
+        <div style={{ fontSize: 12, marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 4 }}>
+             {personal.email && <div>✉️ {personal.email}</div>}
+             {personal.phone && <div>📱 {personal.phone}</div>}
+             {personal.linkedin && <div>🔗 {personal.linkedin}</div>}
+             {personal.address && <div>📍 {personal.address}</div>}
+        </div>
 
-        <h3>Links</h3>
-        {[personal.linkedin].filter(Boolean).map((l, i) => (
-          <div key={i}>{l}</div>
-        ))}
+        <h3 style={{ fontSize: 14, fontWeight: 700, textTransform: 'uppercase', borderBottom: '1px solid #ccc', paddingBottom: 4 }}>Skills</h3>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {skills.map((s, i) => (
+             <span key={i} style={{ fontSize: 11, background: '#f5f5f5', padding: '2px 6px', borderRadius: 4 }}>{s}</span>
+            ))}
+        </div>
+
+        <IndianPersonalDetails data={personal} layout="list" style={{ marginTop: 30 }} />
+
       </aside>
 
       {/* MAIN */}
-      <main style={{ width: '70%', paddingLeft: 24 }}>
+      <main style={{ width: '68%', paddingLeft: 24 }}>
+        
+        {personal.objective && (
+            <section style={{ marginBottom: 20 }}>
+                 <h2 style={{ fontSize: 16, fontWeight: 700, borderBottom: `2px solid ${accent}`, paddingBottom: 4, marginBottom: 10 }}>Profile</h2>
+                 <p style={{ fontSize: 13, lineHeight: 1.5 }}>{personal.objective}</p>
+            </section>
+        )}
+
         <section>
-          <h2>Experience</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 700, borderBottom: `2px solid ${accent}`, paddingBottom: 4, marginBottom: 10 }}>Experience</h2>
           {experience.map((e, i) => (
             <div key={i} style={{ marginBottom: 20 }}>
-              <strong>{e.position}</strong> @ {e.company}
-              <div style={{ fontSize: '9pt' }}>{e.date}</div>
+               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <strong style={{ fontSize: 14 }}>{e.position}</strong>
+                  <span style={{ fontSize: 12 }}>{e.date}</span>
+               </div>
+               <div style={{ fontSize: 13, fontStyle: 'italic', marginBottom: 4 }}>{e.company}</div>
               <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
-                  {e.description.map((desc, idx) => (
-                    <li key={idx} style={{ fontSize: '10pt' }}>{desc}</li>
-                  ))}
+                  {Array.isArray(e.description) ? e.description.map((desc, idx) => (
+                    <li key={idx} style={{ fontSize: 13 }}>{desc}</li>
+                  )) : <li style={{ fontSize: 13 }}>{e.description}</li>}
               </ul>
             </div>
           ))}
         </section>
 
-        <section>
-          <h2>Projects</h2>
-          {projects.map((p, i) => (
-            <div key={i} style={{ marginBottom: 15 }}>
-              <strong>{p.title}</strong>
-              <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
-                  {p.description.map((desc, idx) => (
-                    <li key={idx} style={{ fontSize: '10pt' }}>{desc}</li>
-                  ))}
-              </ul>
-            </div>
-          ))}
-        </section>
+        {projects.length > 0 && (
+            <section>
+                <h2 style={{ fontSize: 16, fontWeight: 700, borderBottom: `2px solid ${accent}`, paddingBottom: 4, marginBottom: 10 }}>Projects</h2>
+                {projects.map((p, i) => (
+                    <div key={i} style={{ marginBottom: 15 }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <strong style={{ fontSize: 14 }}>{p.title}</strong>
+                        <span style={{ fontSize: 12 }}>{p.startDate} - {p.endDate}</span>
+                     </div>
+                     {p.technologies && <div style={{ fontSize: 12, color: '#555', fontStyle: 'italic' }}>{p.technologies}</div>}
+                    <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                        {p.description.map((desc, idx) => (
+                            <li key={idx} style={{ fontSize: 13 }}>{desc}</li>
+                        ))}
+                    </ul>
+                    </div>
+                ))}
+            </section>
+        )}
 
-        <section>
-          <h2>Education</h2>
-          {education.map((e, i) => (
-            <div key={i}>{e.degree} — {e.institution}</div>
-          ))}
-        </section>
+        <IndianEducationTable data={education} />
+
+        {(achievements.length > 0 || certs.length > 0) && (
+             <section style={{ marginTop: 20 }}>
+                 <h2 style={{ fontSize: 16, fontWeight: 700, borderBottom: `2px solid ${accent}`, paddingBottom: 4, marginBottom: 10 }}>Achievements</h2>
+                 <ul style={{ paddingLeft: 16, fontSize: 13 }}>
+                     {achievements.map((a, i) => (
+                         <li key={`a-${i}`}><strong>{a.title}</strong>: {a.description}</li>
+                     ))}
+                     {certs.map((c, i) => (
+                         <li key={`c-${i}`}>{c.title} - {c.issuer}</li>
+                     ))}
+                 </ul>
+             </section>
+         )}
+
       </main>
     </div>
   );

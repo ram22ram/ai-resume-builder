@@ -1,6 +1,8 @@
 import React from 'react';
-import { ResumeData, ResumeSection, PersonalItem, ExperienceItem, SkillItem } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, ExperienceItem, SkillItem, EducationItem, ProjectItem, CertificationItem, AchievementItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
+import IndianPersonalDetails from '../../components/IndianPersonalDetails';
+import IndianEducationTable from '../../components/IndianEducationTable';
 
 const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
@@ -9,6 +11,10 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
   const personal = (get('personal')[0] || {}) as PersonalItem;
   const experience = get('experience') as ExperienceItem[];
   const skills = (get('skills') as SkillItem[]).map(s => s.name);
+  const education = get('education') as EducationItem[];
+  const projects = get('projects') as ProjectItem[];
+  const certs = get('certifications') as CertificationItem[];
+  const achievements = get('achievements') as AchievementItem[];
 
   const accent = data.metadata.accentColor || '#0f172a';
 
@@ -24,56 +30,104 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
       <div style={{
         backgroundColor: accent,
         color: '#fff',
-        padding: 40
+        padding: '30px 40px'
       }}>
-        <h1 style={{ margin: 0, fontSize: 28 }}>
+        <h1 style={{ margin: 0, fontSize: 28, textTransform: 'uppercase' }}>
           {personal.fullName}
         </h1>
-        <div style={{ fontSize: 14, marginTop: 6 }}>
+        <div style={{ fontSize: 14, marginTop: 6, fontWeight: 500, opacity: 0.9 }}>
           {personal.jobTitle}
+        </div>
+        <div style={{ fontSize: 12, marginTop: 15, display: 'flex', flexWrap: 'wrap', gap: '8px 20px', opacity: 0.9 }}>
+            <span>{personal.email}</span>
+            <span>{personal.phone}</span>
+            {personal.linkedin && <span>{personal.linkedin}</span>}
+            {personal.address && <span>{personal.address}</span>}
         </div>
       </div>
 
-      <div style={{ padding: 50 }}>
-        {/* Experience */}
-        <section style={{ marginBottom: 40 }}>
-          <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15 }}>
-            PROFESSIONAL EXPERIENCE
-          </h2>
-          {experience.map((exp, i) => (
-            <div key={i} style={{ marginBottom: 20 }}>
-              <div style={{ fontWeight: 600 }}>
-                {exp.position}
-              </div>
-              <div style={{ fontSize: 12 }}>
-                {exp.company} • {exp.date}
-              </div>
-              <ul style={{ paddingLeft: 16, margin: '6px 0' }}>
-                  {exp.description.map((desc, idx) => (
-                    <li key={idx} style={{ fontSize: 13, marginTop: 5 }}>{desc}</li>
-                  ))}
-              </ul>
+      <div style={{ padding: '30px 40px' }}>
+        
+        {personal.objective && (
+            <div style={{ marginBottom: 30 }}>
+                <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, color: accent, textTransform: 'uppercase' }}>
+                    Profile
+                </h2>
+                <p style={{ fontSize: 13, lineHeight: 1.5, color: '#333' }}>
+                    {personal.objective}
+                </p>
             </div>
-          ))}
-        </section>
+        )}
+
+        {/* Experience */}
+        {experience.length > 0 && (
+            <section style={{ marginBottom: 30 }}>
+            <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15, color: accent, textTransform: 'uppercase' }}>
+                Professional Experience
+            </h2>
+            {experience.map((exp, i) => (
+                <div key={i} style={{ marginBottom: 20 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{exp.position}</div>
+                    <div style={{ fontSize: 12, fontWeight: 600 }}>{exp.date}</div>
+                </div>
+                <div style={{ fontSize: 12, fontStyle: 'italic', marginBottom: 6, color: '#555' }}>
+                    {exp.company}
+                </div>
+                <ul style={{ paddingLeft: 16, margin: '6px 0' }}>
+                    {Array.isArray(exp.description) ? exp.description.map((desc, idx) => (
+                        <li key={idx} style={{ fontSize: 13, marginTop: 4, lineHeight: 1.4 }}>{desc}</li>
+                    )) : <li style={{ fontSize: 13 }}>{exp.description}</li>}
+                </ul>
+                </div>
+            ))}
+            </section>
+        )}
+
+         {/* Projects */}
+         {projects.length > 0 && (
+            <section style={{ marginBottom: 30 }}>
+            <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15, color: accent, textTransform: 'uppercase' }}>
+                Projects
+            </h2>
+            {projects.map((p, i) => (
+                <div key={i} style={{ marginBottom: 15 }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                         <div style={{ fontWeight: 600, fontSize: 14 }}>{p.title}</div>
+                         <div style={{ fontSize: 12 }}>{p.startDate} - {p.endDate}</div>
+                     </div>
+                     {p.technologies && <div style={{ fontSize: 12, fontStyle: 'italic', color: '#666' }}>{p.technologies}</div>}
+                    <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                         {p.description.map((desc, idx) => (
+                             <li key={idx} style={{ fontSize: 13, marginTop: 4, lineHeight: 1.4 }}>{desc}</li>
+                         ))}
+                     </ul>
+                </div>
+            ))}
+            </section>
+        )}
+
+        <IndianEducationTable data={education} style={{ marginBottom: 30 }} />
 
         {/* Skills Horizontal Layout */}
-        <section>
-          <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15 }}>
-            CORE SKILLS
+        <section style={{ marginBottom: 30 }}>
+          <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15, color: accent, textTransform: 'uppercase' }}>
+            Core Skills
           </h2>
           <div style={{
             display: 'flex',
             flexWrap: 'wrap',
-            gap: 15
+            gap: 10
           }}>
             {skills.map((s, i) => (
               <div
                 key={i}
                 style={{
-                  padding: '6px 14px',
+                  padding: '4px 12px',
                   border: `1px solid ${accent}`,
-                  fontSize: 12
+                  fontSize: 12,
+                  fontWeight: 500,
+                  borderRadius: 2
                 }}
               >
                 {s}
@@ -81,6 +135,25 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
             ))}
           </div>
         </section>
+
+        {/* Achievements & Certifications */}
+         {(achievements.length > 0 || certs.length > 0) && (
+             <section style={{ marginBottom: 30 }}>
+                 <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, color: accent, textTransform: 'uppercase' }}>
+                    Achievements & certifications
+                 </h2>
+                 <ul style={{ paddingLeft: 16, fontSize: 13, lineHeight: 1.5 }}>
+                     {achievements.map((a, i) => (
+                         <li key={`a-${i}`}><strong>{a.title}</strong>: {a.description}</li>
+                     ))}
+                     {certs.map((c, i) => (
+                         <li key={`c-${i}`}>{c.title} - {c.issuer}</li>
+                     ))}
+                 </ul>
+             </section>
+         )}
+
+         <IndianPersonalDetails data={personal} style={{ borderTop: `1px solid ${accent}`, paddingTop: 20 }} />
 
       </div>
 
