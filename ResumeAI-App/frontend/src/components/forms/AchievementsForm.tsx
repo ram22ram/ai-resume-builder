@@ -1,15 +1,15 @@
 import { Box, Button, TextField, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useResume } from '../../context/ResumeContext';
 import { Plus, Trash2, ChevronDown } from 'lucide-react';
-import { CertificationItem } from '../../types/resume';
+import { AchievementItem } from '../../types/resume';
 
-const CertificationsForm = ({ sectionId }: { sectionId: string }) => {
+const AchievementsForm = ({ sectionId }: { sectionId: string }) => {
     const { resume, dispatch } = useResume();
     const section = resume.sections.find(s => s.id === sectionId);
 
     if (!section) return null;
 
-    const items = section.items as CertificationItem[];
+    const items = section.items as AchievementItem[];
 
     const handleAdd = () => {
         dispatch({
@@ -18,16 +18,15 @@ const CertificationsForm = ({ sectionId }: { sectionId: string }) => {
                 sectionId,
                 item: {
                     id: Date.now().toString(),
-                    title: '', // Certification Name
-                    issuer: '', // Issuing Organization
-                    date: '',
-                    url: '' // Credential URL
-                } as CertificationItem
+                    title: '',
+                    description: '',
+                    date: ''
+                } as AchievementItem
             }
         });
     };
 
-    const handleUpdate = (itemId: string, field: keyof CertificationItem, value: string) => {
+    const handleUpdate = (itemId: string, field: keyof AchievementItem, value: string) => {
         dispatch({
             type: 'UPDATE_ITEM',
             payload: {
@@ -45,53 +44,65 @@ const CertificationsForm = ({ sectionId }: { sectionId: string }) => {
         });
     };
 
+    const handleTitleChange = (value: string) => {
+        dispatch({
+            type: 'UPDATE_SECTION_TITLE',
+            payload: { id: sectionId, title: value }
+        });
+    };
+
     return (
         <Box sx={{ p: 3 }}>
-             <Typography variant="h6" gutterBottom>Certifications</Typography>
-            
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6">Achievements</Typography>
+            </Box>
+
+            <TextField
+                fullWidth
+                label="Section Title"
+                value={section.title || ''}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                variant="outlined"
+                size="small"
+                sx={{ mb: 3 }}
+            />
+
             {items.map((item, index) => (
                 <Accordion key={item.id} defaultExpanded={index === items.length - 1} sx={{ mb: 2, '&:before': { display: 'none' }, boxShadow: 1 }}>
                     <AccordionSummary expandIcon={<ChevronDown />}>
                         <Box>
-                            <Typography fontWeight="bold">{item.title || '(No Certification Name)'}</Typography>
-                            <Typography variant="caption" color="text.secondary">{item.issuer || '(No Organization)'}</Typography>
+                            <Typography fontWeight="bold">{item.title || '(No Title)'}</Typography>
+                            <Typography variant="caption" color="text.secondary">{item.date || '(No Date)'}</Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <TextField
                                 fullWidth
-                                label="Certification Name"
+                                label="Achievement Title"
                                 value={item.title || ''}
                                 onChange={(e) => handleUpdate(item.id, 'title', e.target.value)}
+                                placeholder="e.g. Hackathon Winner"
                             />
+                            
                             <TextField
                                 fullWidth
-                                label="Issuing Organization"
-                                value={item.issuer || ''}
-                                onChange={(e) => handleUpdate(item.id, 'issuer', e.target.value)}
+                                label="Date"
+                                value={item.date || ''}
+                                onChange={(e) => handleUpdate(item.id, 'date', e.target.value)}
+                                placeholder="e.g. 2023"
                             />
-                             <Box sx={{ display: 'flex', gap: 2 }}>
-                                <TextField
-                                    fullWidth
-                                    label="Date Issued"
-                                    placeholder="e.g. May 2023"
-                                    value={item.date || ''}
-                                    onChange={(e) => handleUpdate(item.id, 'date', e.target.value)}
-                                />
-                                <TextField
-                                    fullWidth
-                                    value={item.url || ''}
-                                    onChange={(e) => handleUpdate(item.id, 'url', e.target.value)}
-                                />
-                            </Box>
+
                             <TextField
                                 fullWidth
-                                label="Credential ID"
-                                placeholder="e.g. AWS-123456"
-                                value={item.credentialId || ''}
-                                onChange={(e) => handleUpdate(item.id, 'credentialId', e.target.value)}
+                                multiline
+                                rows={3}
+                                label="Description"
+                                value={item.description || ''}
+                                onChange={(e) => handleUpdate(item.id, 'description', e.target.value)}
+                                placeholder="Describe your achievement..."
                             />
+
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                 <Button 
                                     startIcon={<Trash2 size={16} />} 
@@ -114,10 +125,10 @@ const CertificationsForm = ({ sectionId }: { sectionId: string }) => {
                 fullWidth
                 sx={{ py: 1.5, borderStyle: 'dashed' }}
             >
-                Add Certification
+                Add Achievement
             </Button>
         </Box>
     );
 };
 
-export default CertificationsForm;
+export default AchievementsForm;

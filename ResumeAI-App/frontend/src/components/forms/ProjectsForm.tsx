@@ -94,16 +94,48 @@ const ProjectsForm = ({ sectionId }: { sectionId: string }) => {
                                 label="Tech Stack"
                                 value={item.technologies || ''}
                                 onChange={(e) => handleUpdate(item.id, 'technologies', e.target.value)}
+                                placeholder="e.g. React, Node.js, MongoDB"
                             />
                              <Box sx={{ display: 'flex', gap: 2 }}>
                                 <TextField
                                     fullWidth
-                                    label="Project URL"
-                                    placeholder="e.g. github.com/username/project"
-                                    value={item.link || ''} 
-                                    onChange={(e) => handleUpdate(item.id, 'link', e.target.value)}
+                                    label="GitHub Link"
+                                    value={item.githubLink || ''}
+                                    onChange={(e) => handleUpdate(item.id, 'githubLink', e.target.value)}
+                                    placeholder="github.com/username/project"
+                                />
+                                <TextField
+                                    fullWidth
+                                    label="Live Demo Link"
+                                    value={item.liveLink || ''}
+                                    onChange={(e) => handleUpdate(item.id, 'liveLink', e.target.value)}
+                                    placeholder="project-demo.com"
                                 />
                             </Box>
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                <TextField
+                                    fullWidth
+                                    label="Start Date"
+                                    value={item.startDate || ''}
+                                    onChange={(e) => handleUpdate(item.id, 'startDate', e.target.value)}
+                                    placeholder="Jan 2023"
+                                />
+                                <TextField
+                                    fullWidth
+                                    label="End Date"
+                                    value={item.endDate || ''}
+                                    onChange={(e) => handleUpdate(item.id, 'endDate', e.target.value)}
+                                    placeholder="Present"
+                                />
+                            </Box>
+                            
+                            <TextField
+                                fullWidth
+                                label="Project URL (Generic)"
+                                placeholder="e.g. github.com/username/project"
+                                value={item.link || ''} 
+                                onChange={(e) => handleUpdate(item.id, 'link', e.target.value)}
+                            />
                             <TextField
                                 fullWidth
                                 multiline

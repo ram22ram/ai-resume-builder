@@ -1,4 +1,4 @@
-import { ResumeData, ResumeSection, SectionItem, PersonalSection, SummarySection, ExperienceSection, EducationSection, SkillsSection } from '../types/resume';
+import { ResumeData, ResumeSection, SectionItem, PersonalSection, SummarySection, ExperienceSection, EducationSection, SkillsSection, ProjectsSection, CertificationsSection, AwardsSection, AchievementsSection } from '../types/resume';
 
 // Action Types
 export type Action =
@@ -68,7 +68,35 @@ export const initialResumeState: ResumeData = {
             title: 'Skills',
             isVisible: true,
             items: []
-        } as SkillsSection
+        } as SkillsSection,
+        {
+            id: 'projects',
+            type: 'projects',
+            title: 'Projects',
+            isVisible: true,
+            items: []
+        } as ProjectsSection,
+        {
+            id: 'certifications',
+            type: 'certifications',
+            title: 'Certifications',
+            isVisible: true,
+            items: []
+        } as CertificationsSection,
+        {
+            id: 'awards',
+            type: 'awards',
+            title: 'Awards',
+            isVisible: true,
+            items: []
+        } as AwardsSection,
+        {
+            id: 'achievements',
+            type: 'achievements',
+            title: 'Achievements',
+            isVisible: true,
+            items: []
+        } as AchievementsSection
     ]
 };
 

@@ -12,6 +12,7 @@ import ProjectsForm from './forms/ProjectsForm';
 
 import CertificationsForm from './forms/CertificationsForm';
 import AwardsForm from './forms/AwardsForm';
+import AchievementsForm from './forms/AchievementsForm';
 import CustomSectionForm from './forms/CustomSectionForm';
 
 interface Props {
@@ -38,6 +39,8 @@ const SectionEditor: React.FC<Props> = ({ type, sectionId }) => {
             return <CertificationsForm sectionId={sectionId} />;
         case 'awards':
             return <AwardsForm sectionId={sectionId} />;
+        case 'achievements':
+            return <AchievementsForm sectionId={sectionId} />;
         case 'custom':
             return <CustomSectionForm sectionId={sectionId} />;
         default:

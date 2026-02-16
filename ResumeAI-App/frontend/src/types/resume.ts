@@ -7,6 +7,7 @@ export type SectionType =
     | 'projects'
     | 'certifications'
     | 'awards'
+    | 'achievements'
     | 'custom';
 
 // ----------------------------------------------------------------------
@@ -25,8 +26,19 @@ export interface PersonalItem {
     country?: string; // Optional
     linkedin?: string; // Optional
     github?: string; // Optional
+    portfolio?: string; // Optional
     photo?: string; // Optional (if needed in future)
     objective?: string; // Optional
+
+    // Indian Standard Fields
+    fatherName?: string;
+    dateOfBirth?: string;
+    nationality?: string;
+    maritalStatus?: string;
+    languages?: string[]; // ["English", "Hindi"]
+    gender?: string; // "Male", "Female"
+    address?: string; // Full address for govt resumes
+    pincode?: string;
 }
 
 export interface SummaryItem {
@@ -45,10 +57,18 @@ export interface ExperienceItem {
 
 export interface EducationItem {
     id: string;
-    degree: string;
-    institution: string;
+    degree: string; // "B.Tech", "Class XII", "Class X"
+    institution: string; // University/College
     date: string;
     description?: string; // Optional additional info
+
+    // Detailed Education Fields
+    board?: string; // "CBSE", "ICSE" (for 10th/12th)
+    schoolName?: string; // Alias for institution if needed, or separate
+    percentage?: string; // "95%"
+    cgpa?: string; // "9.5/10"
+    yearOfPassing?: string; // "2020"
+    standard?: string; // "10th", "12th", "UG", "PG"
 }
 
 export interface SkillItem {
@@ -60,9 +80,15 @@ export interface SkillItem {
 export interface ProjectItem {
     id: string;
     title: string;
-    link?: string;
+    link?: string; // Generic link
     technologies?: string; // Optional
     description: string[]; // Bullet points
+
+    // Enhanced Project Fields
+    githubLink?: string;
+    liveLink?: string;
+    startDate?: string;
+    endDate?: string;
 }
 
 export interface CertificationItem {
@@ -71,6 +97,7 @@ export interface CertificationItem {
     issuer: string;
     date: string;
     url?: string; // Optional
+    credentialId?: string; // Optional
 }
 
 export interface AwardItem {
@@ -79,6 +106,13 @@ export interface AwardItem {
     issuer: string;
     date: string;
     description?: string;
+}
+
+export interface AchievementItem {
+    id: string;
+    title: string;
+    description: string;
+    date?: string;
 }
 
 // ----------------------------------------------------------------------
@@ -133,6 +167,11 @@ export interface AwardsSection extends BaseSection {
     items: AwardItem[];
 }
 
+export interface AchievementsSection extends BaseSection {
+    type: 'achievements';
+    items: AchievementItem[];
+}
+
 export interface CustomItem {
     id: string;
     title: string;
@@ -156,6 +195,7 @@ export type ResumeSection =
     | ProjectsSection
     | CertificationsSection
     | AwardsSection
+    | AchievementsSection
     | CustomSection;
 
 // ----------------------------------------------------------------------

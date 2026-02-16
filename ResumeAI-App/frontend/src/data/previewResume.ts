@@ -27,7 +27,19 @@ export const PREVIEW_RESUME: ResumeData = {
                     phone: '+1 (555) 012-3456',
                     city: 'San Francisco',
                     country: 'CA',
-                    linkedin: 'linkedin.com/in/alexmorgan'
+                    linkedin: 'linkedin.com/in/alexmorgan',
+                    github: 'github.com/alexmorgan',
+                    portfolio: 'alexmorgan.dev',
+
+                    // Indian Standard Fields
+                    fatherName: 'Robert Morgan',
+                    dateOfBirth: '1994-08-15',
+                    nationality: 'American',
+                    maritalStatus: 'Single',
+                    gender: 'Male',
+                    languages: ['English', 'Spanish', 'French'],
+                    address: '123 Tech Park, Innovation Way, Silicon Valley, CA - 94025',
+                    pincode: '94025'
                 }
             ]
         },
@@ -87,14 +99,42 @@ export const PREVIEW_RESUME: ResumeData = {
                     degree: 'Master of Science in Computer Science',
                     institution: 'Stanford University',
                     date: '2016 - 2018',
-                    description: 'specialized in Human-Computer Interaction and Artificial Intelligence.'
+                    description: 'Specialized in Human-Computer Interaction and Artificial Intelligence.',
+                    cgpa: '3.8/4.0',
+                    yearOfPassing: '2018',
+                    standard: 'PG'
                 },
                 {
                     id: 'edu2',
                     degree: 'Bachelor of Science in Software Engineering',
                     institution: 'University of Texas at Austin',
                     date: '2012 - 2016',
-                    description: 'Graduated Magna Cum Laude.'
+                    description: 'Graduated Magna Cum Laude.',
+                    cgpa: '3.9/4.0',
+                    yearOfPassing: '2016',
+                    standard: 'UG'
+                },
+                {
+                    id: 'edu3',
+                    degree: 'Class XII (Senior Secondary)',
+                    institution: 'Austin High School',
+                    schoolName: 'Austin High School',
+                    board: 'State Board',
+                    date: '2012',
+                    percentage: '92%',
+                    yearOfPassing: '2012',
+                    standard: '12th'
+                },
+                {
+                    id: 'edu4',
+                    degree: 'Class X (Secondary)',
+                    institution: 'Austin High School',
+                    schoolName: 'Austin High School',
+                    board: 'State Board',
+                    date: '2010',
+                    percentage: '94%',
+                    yearOfPassing: '2010',
+                    standard: '10th'
                 }
             ]
         },
@@ -125,6 +165,10 @@ export const PREVIEW_RESUME: ResumeData = {
                     id: 'proj1',
                     title: 'E-Commerce Analytics Dashboard',
                     link: 'github.com/alexmorgan/analytics',
+                    githubLink: 'github.com/alexmorgan/analytics',
+                    liveLink: 'analytics-dashboard.demo',
+                    startDate: 'Jan 2020',
+                    endDate: 'Jun 2020',
                     description: [
                         'Built a real-time analytics dashboard processing over 1M events per day.',
                         'Utilized D3.js for complex data visualization and reporting.'
@@ -134,10 +178,55 @@ export const PREVIEW_RESUME: ResumeData = {
                     id: 'proj2',
                     title: 'Task Management App',
                     link: 'taskmaster.io',
+                    githubLink: 'github.com/alexmorgan/taskmaster',
+                    liveLink: 'taskmaster.io',
+                    startDate: 'Jul 2019',
+                    endDate: 'Dec 2019',
                     description: [
                         'Launched a productivity app with 10k+ active monthly users.',
                         'Implemented offline support and real-time synchronization using Firebase.'
                     ]
+                }
+            ]
+        },
+        {
+            id: 'certifications',
+            type: 'certifications',
+            title: 'Certifications',
+            isVisible: true,
+            items: [
+                {
+                    id: 'cert1',
+                    title: 'AWS Certified Solutions Architect',
+                    issuer: 'Amazon Web Services',
+                    date: '2021',
+                    credentialId: 'AWS-123456'
+                },
+                {
+                    id: 'cert2',
+                    title: 'Google Professional Cloud Architect',
+                    issuer: 'Google Cloud',
+                    date: '2020'
+                }
+            ]
+        },
+        {
+            id: 'achievements',
+            type: 'achievements',
+            title: 'Achievements',
+            isVisible: true,
+            items: [
+                {
+                    id: 'ach1',
+                    title: 'Hackathon Winner',
+                    description: 'Won 1st place in the Global AI Hackathon 2021 out of 500+ teams.',
+                    date: '2021'
+                },
+                {
+                    id: 'ach2',
+                    title: 'Open Source Contributor',
+                    description: 'Core contributor to major React UI libraries with over 1k stars on GitHub.',
+                    date: '2019 - Present'
                 }
             ]
         }

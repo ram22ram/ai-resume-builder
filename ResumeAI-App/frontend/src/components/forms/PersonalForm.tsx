@@ -27,7 +27,8 @@ const PersonalForm = ({ sectionId }: { sectionId: string }) => {
         );
     }
 
-    const handleChange = (field: keyof PersonalItem, value: string) => {
+    // Generic handler
+    const handleChangeWithDispatch = (field: keyof PersonalItem, value: string) => {
         dispatch({
             type: 'UPDATE_ITEM',
             payload: {
@@ -100,7 +101,7 @@ const PersonalForm = ({ sectionId }: { sectionId: string }) => {
                         fullWidth
                         label="Job Title"
                         value={item.jobTitle || ''} 
-                        onChange={(e) => handleChange('jobTitle', e.target.value)}
+                        onChange={(e) => handleChangeWithDispatch('jobTitle', e.target.value)}
                         placeholder="e.g. Software Engineer"
                     />
                 </Box>
@@ -110,7 +111,7 @@ const PersonalForm = ({ sectionId }: { sectionId: string }) => {
                         fullWidth
                         label="Email"
                         value={item.email || ''}
-                        onChange={(e) => handleChange('email', e.target.value)}
+                        onChange={(e) => handleChangeWithDispatch('email', e.target.value)}
                     />
                 </Box>
                 <Box sx={{ width: { xs: '100%', sm: 'calc(50% - 12px)' } }}>
@@ -118,7 +119,7 @@ const PersonalForm = ({ sectionId }: { sectionId: string }) => {
                         fullWidth
                         label="Phone"
                         value={item.phone || ''}
-                        onChange={(e) => handleChange('phone', e.target.value)}
+                        onChange={(e) => handleChangeWithDispatch('phone', e.target.value)}
                     />
                 </Box>
 
@@ -127,7 +128,7 @@ const PersonalForm = ({ sectionId }: { sectionId: string }) => {
                         fullWidth
                         label="City"
                         value={item.city || ''}
-                        onChange={(e) => handleChange('city', e.target.value)}
+                        onChange={(e) => handleChangeWithDispatch('city', e.target.value)}
                     />
                 </Box>
                 <Box sx={{ width: { xs: '100%', sm: 'calc(50% - 12px)' } }}>
@@ -135,33 +136,138 @@ const PersonalForm = ({ sectionId }: { sectionId: string }) => {
                         fullWidth
                         label="Country"
                         value={item.country || ''}
-                        onChange={(e) => handleChange('country', e.target.value)}
+                        onChange={(e) => handleChangeWithDispatch('country', e.target.value)}
                     />
                 </Box>
-                 <Box sx={{ width: '100%' }}>
+                 <Box sx={{ width: { xs: '100%', sm: 'calc(50% - 12px)' } }}>
                     <TextField
                         fullWidth
-                        label="LinkedIn / Website"
+                        label="LinkedIn URL"
                         value={item.linkedin || ''}
-                        onChange={(e) => handleChange('linkedin', e.target.value)}
+                        onChange={(e) => handleChangeWithDispatch('linkedin', e.target.value)}
+                        placeholder="linkedin.com/in/username"
                     />
                 </Box>
+                <Box sx={{ width: { xs: '100%', sm: 'calc(50% - 12px)' } }}>
+                    <TextField
+                        fullWidth
+                        label="GitHub URL"
+                        value={item.github || ''}
+                        onChange={(e) => handleChangeWithDispatch('github', e.target.value)}
+                        placeholder="github.com/username"
+                    />
+                </Box>
+                <Box sx={{ width: { xs: '100%', sm: 'calc(50% - 12px)' } }}>
+                    <TextField
+                        fullWidth
+                        label="Portfolio URL"
+                        value={item.portfolio || ''}
+                        onChange={(e) => handleChangeWithDispatch('portfolio', e.target.value)}
+                        placeholder="your-portfolio.com"
+                    />
+                </Box>
+
+                {/* Indian Standard Fields */}
+                <Box sx={{ width: '100%', mt: 2 }}>
+                    <Typography variant="subtitle2" color="text.secondary">Additional Details (Indian Standard)</Typography>
+                </Box>
+
+                <Box sx={{ width: { xs: '100%', sm: 'calc(50% - 12px)' } }}>
+                    <TextField
+                        fullWidth
+                        label="Father's Name"
+                        value={item.fatherName || ''}
+                        onChange={(e) => handleChangeWithDispatch('fatherName', e.target.value)}
+                    />
+                </Box>
+                <Box sx={{ width: { xs: '100%', sm: 'calc(50% - 12px)' } }}>
+                    <TextField
+                        fullWidth
+                        label="Date of Birth"
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                        value={item.dateOfBirth || ''}
+                        onChange={(e) => handleChangeWithDispatch('dateOfBirth', e.target.value)}
+                    />
+                </Box>
+
+                <Box sx={{ width: { xs: '100%', sm: 'calc(33% - 12px)' } }}>
+                    <TextField
+                        fullWidth
+                        label="Gender"
+                        value={item.gender || ''}
+                        onChange={(e) => handleChangeWithDispatch('gender', e.target.value)}
+                    />
+                </Box>
+                <Box sx={{ width: { xs: '100%', sm: 'calc(33% - 12px)' } }}>
+                    <TextField
+                        fullWidth
+                        label="Nationality"
+                        value={item.nationality || ''}
+                        onChange={(e) => handleChangeWithDispatch('nationality', e.target.value)}
+                    />
+                </Box>
+                <Box sx={{ width: { xs: '100%', sm: 'calc(33% - 12px)' } }}>
+                    <TextField
+                        fullWidth
+                        label="Marital Status"
+                        value={item.maritalStatus || ''}
+                        onChange={(e) => handleChangeWithDispatch('maritalStatus', e.target.value)}
+                    />
+                </Box>
+                <Box sx={{ width: { xs: '100%', sm: 'calc(33% - 12px)' } }}>
+                    <TextField
+                        fullWidth
+                        label="Pincode"
+                        value={item.pincode || ''}
+                        onChange={(e) => handleChangeWithDispatch('pincode', e.target.value)}
+                    />
+                </Box>
+
                 <Box sx={{ width: '100%' }}>
                     <TextField
                         fullWidth
-                        label="GitHub Profile"
-                        value={item.github || ''}
-                        onChange={(e) => handleChange('github', e.target.value)}
+                        label="Languages Known (Comma separated)"
+                        value={item.languages?.join(', ') || ''}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            // Split by comma and trim, or empty array if empty string
+                            const arr = val ? val.split(',').map(s => s.trim()) : [];
+                            // We need to pass the array to dispatch
+                             dispatch({
+                                type: 'UPDATE_ITEM',
+                                payload: {
+                                    sectionId,
+                                    itemId: item.id,
+                                    data: { languages: arr }
+                                }
+                            });
+                        }}
+                        placeholder="English, Hindi, Spanish"
                     />
                 </Box>
-                 <Box sx={{ width: '100%' }}>
+
+                <Box sx={{ width: '100%' }}>
+                    <TextField
+                        fullWidth
+                        label="Full Address (For Govt/Formal Resumes)"
+                        value={item.address || ''}
+                        onChange={(e) => handleChangeWithDispatch('address', e.target.value)}
+                        multiline
+                        rows={2}
+                        placeholder="#123, Street Name, Locality, City, State"
+                    />
+                </Box>
+
+                <Box sx={{ width: '100%' }}>
                     <TextField
                         fullWidth
                         label="Career Objective"
                         multiline
-                        rows={2}
+                        rows={3}
                         value={item.objective || ''}
-                        onChange={(e) => handleChange('objective', e.target.value)}
+                        onChange={(e) => handleChangeWithDispatch('objective', e.target.value)}
+                        placeholder="Brief statement about your career goals..."
                     />
                 </Box>
             </Box>
