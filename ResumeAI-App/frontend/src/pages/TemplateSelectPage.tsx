@@ -75,7 +75,10 @@ const TemplateSelectPage = () => {
                     {/* Grid */}
                     <Grid container spacing={4}>
                         {displayedTemplates.map((item: any) => (
-                            <Grid key={item.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                            // Increased zoom level by reducing columns:
+                            // lg: 4 (3 cols) instead of 3 (4 cols)
+                            // md: 6 (2 cols) instead of 4 (3 cols)
+                            <Grid key={item.id} size={{ xs: 12, sm: 12, md: 6, lg: 4 }}>
                                 <Paper 
                                     elevation={0}
                                     sx={{ 
