@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResumeData, ResumeSection, PersonalItem, SkillItem, ProjectItem, EducationItem, CertificationItem, AchievementItem, ExperienceItem } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, SkillItem, ProjectItem, EducationItem, AchievementItem, ExperienceItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
 import IndianPersonalDetails from '../../components/IndianPersonalDetails';
 import IndianEducationTable from '../../components/IndianEducationTable';
