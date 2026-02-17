@@ -12,6 +12,10 @@ const userSchema = new mongoose.Schema({
   subscriptionId: String,
   subscriptionStatus: String, // active | cancelled
 
+  // 🪄 MAGIC LINK AUTH
+  magicToken: String,
+  magicTokenExpires: Date,
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

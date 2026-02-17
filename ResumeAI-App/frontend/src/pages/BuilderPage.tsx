@@ -67,10 +67,25 @@ const BuilderPage = () => {
                 )}
             </div>
 
-            <Box sx={{ height: 'calc(100vh - 80px)', display: 'flex', overflow: 'hidden', bgcolor: 'background.default' }}>
+            <Box sx={{ 
+                height: { xs: 'auto', md: 'calc(100vh - 80px)' }, 
+                display: 'flex', 
+                flexDirection: { xs: 'column', md: 'row' },
+                overflow: { xs: 'auto', md: 'hidden' }, 
+                bgcolor: 'background.default' 
+            }}>
                 
                 {/* --- LEFT PANEL: EDITOR (40-50%) --- */}
-                <Box sx={{ width: '45%', borderRight: 1, borderColor: 'divider', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
+                <Box sx={{ 
+                    width: { xs: '100%', md: '45%' }, 
+                    height: { xs: 'auto', md: '100%' },
+                    borderRight: { xs: 0, md: 1 }, 
+                    borderBottom: { xs: 1, md: 0 },
+                    borderColor: 'divider', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    bgcolor: 'background.paper' 
+                }}>
                     
                     {/* Toolbar */}
                     <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -85,7 +100,7 @@ const BuilderPage = () => {
                              variant="outlined" 
                              color="warning" 
                              size="small"
-                             sx={{ mx: 2 }}
+                             sx={{ mx: 2, display: { xs: 'none', sm: 'inline-flex' } }}
                            >
                              Upgrade to Pro
                            </Button>
@@ -100,7 +115,7 @@ const BuilderPage = () => {
                     </Box>
 
                     {/* Step Navigator (Scrollable) */}
-                    <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 0 }}>
+                    <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 0, minHeight: { xs: '300px', md: 0 } }}>
                          {steps[activeStep] && (
                              <SectionEditor 
                                  key={steps[activeStep].id}
@@ -151,7 +166,16 @@ const BuilderPage = () => {
 
 
                 {/* --- RIGHT PANEL: PREVIEW (55-60%) --- */}
-                <Box sx={{ flexGrow: 1, bgcolor: '#64748b', p: 4, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', overflowY: 'auto' }}>
+                <Box sx={{ 
+                    flexGrow: 1, 
+                    bgcolor: '#64748b', 
+                    p: 4, 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'flex-start', 
+                    overflowY: 'auto',
+                    minHeight: { xs: '500px', md: 'auto' }
+                }}>
 
 
                     {/* A4 Page Container */}
@@ -161,7 +185,7 @@ const BuilderPage = () => {
                             minHeight: '297mm', 
                             bgcolor: 'white', 
                             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                            transform: 'scale(0.85)',
+                            transform: { xs: 'scale(0.45)', sm: 'scale(0.65)', md: 'scale(0.85)' },
                             transformOrigin: 'top center',
                             mb: 10,
                             overflow: 'hidden' 

@@ -26,7 +26,8 @@ header h1 {
 header span {
   background: linear-gradient(135deg, #60a5fa, #c084fc);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; /* ✅ Safari fix */
+  -webkit-text-fill-color: transparent;
+  /* ✅ Safari fix */
   color: transparent;
 }
 
@@ -52,7 +53,10 @@ header p {
 }
 
 /* Journey Section */
-.journey h2, .template-head h2, .health h2, .resources h2 {
+.journey h2,
+.template-head h2,
+.health h2,
+.resources h2 {
   font-size: 20px;
   margin-bottom: 24px;
   display: flex;
@@ -189,11 +193,22 @@ header p {
   color: #94a3b8;
 }
 
-.green { background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.1); }
-.red { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.1); }
+.green {
+  background: rgba(34, 197, 94, 0.05);
+  border: 1px solid rgba(34, 197, 94, 0.1);
+}
+
+.red {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.1);
+}
 
 /* Right Section */
-.health { text-align: center; margin-bottom: 30px; }
+.health {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
 .circle {
   width: 120px;
   height: 120px;
@@ -220,7 +235,11 @@ header p {
   cursor: pointer;
 }
 
-.resources ul { list-style: none; margin-top: 20px; }
+.resources ul {
+  list-style: none;
+  margin-top: 20px;
+}
+
 .resources li {
   display: flex;
   justify-content: space-between;
@@ -230,7 +249,10 @@ header p {
   color: #cbd5e1;
 }
 
-.resources li span { color: #64748b; font-size: 11px; }
+.resources li span {
+  color: #64748b;
+  font-size: 11px;
+}
 
 /* Stats Bar */
 .stats {
@@ -243,8 +265,14 @@ header p {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.stats div { text-align: center; border-right: 1px solid rgba(255,255,255,0.05); }
-.stats div:last-child { border-right: none; }
+.stats div {
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stats div:last-child {
+  border-right: none;
+}
 
 .stats strong {
   display: block;
@@ -268,38 +296,86 @@ header p {
 /* ... (पुराना CSS रहेगा, बस ये कुछ लाइनें जोड़ देना) ... */
 
 .step.active {
-    cursor: pointer;
-    transition: transform 0.2s;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
 .step.active:hover {
-    transform: translateX(5px);
+  transform: translateX(5px);
 }
 
 .step.locked {
-    opacity: 0.5;
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .template-box {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .template-box .shimmer {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-    animation: shimmer 2s infinite;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  animation: shimmer 2s infinite;
 }
 
 @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .stats div {
-    flex: 1;
+  flex: 1;
 }
 
+@media (max-width: 900px) {
+  .dashboard {
+    padding: 20px;
+  }
 
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  /* Reorder cards if needed: Journey (top), Template (middle), Tools (bottom) */
+  .card.journey {
+    order: 1;
+  }
+
+  .card.template {
+    order: 2;
+  }
+
+  .card.side {
+    order: 3;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .stats div {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 32px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}

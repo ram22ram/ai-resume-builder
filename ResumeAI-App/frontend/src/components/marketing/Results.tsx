@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-import { Box, Container, Grid, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
 
 const stats = [
   { label: 'ATS Match Rate', value: '92%', suffix: '+' },

@@ -29,11 +29,12 @@ const VerticalAccentProTemplate: React.FC<{ data: ResumeData }> = ({ data }) => 
         <h1 style={{ marginBottom: 4, fontWeight: 800, fontSize: 28, textTransform: 'uppercase' }}>{personal.fullName}</h1>
         <div style={{ color: accent, fontWeight: 700, fontSize: 14, textTransform: 'uppercase' }}>{personal.jobTitle}</div>
         
-        <div style={{ fontSize: 12, marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: '8px 16px', color: '#555' }}>
-             {personal.email && <span>✉️ {personal.email}</span>}
-             {personal.phone && <span>📱 {personal.phone}</span>}
-             {personal.linkedin && <span>🔗 {personal.linkedin}</span>}
-             {personal.address && <span>📍 {personal.address}</span>}
+        <div style={{ marginTop: 10 }}>
+            <IndianPersonalDetails 
+                data={personal} 
+                layout="list" 
+                style={{ fontSize: 12, display: 'flex', flexWrap: 'wrap', gap: '8px 16px', color: '#555' }} 
+            />
         </div>
 
         {summary && (
@@ -83,12 +84,15 @@ const VerticalAccentProTemplate: React.FC<{ data: ResumeData }> = ({ data }) => 
                 </section>
             )}
 
+            <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: accent, borderBottom: `2px solid ${accent}`, paddingBottom: 6, marginBottom: 15 }}>Education</h2>
             <IndianEducationTable data={education} style={{ marginBottom: 30 }} />
 
-            <section style={{ marginBottom: 30 }}>
-            <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: accent, borderBottom: `2px solid ${accent}`, paddingBottom: 6, marginBottom: 15 }}>Skills</h2>
-            <div style={{ fontSize: 13, lineHeight: 1.6 }}>{skills.join(' • ')}</div>
-            </section>
+            {skills.length > 0 && (
+                <section style={{ marginBottom: 30 }}>
+                <h2 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, color: accent, borderBottom: `2px solid ${accent}`, paddingBottom: 6, marginBottom: 15 }}>Skills</h2>
+                <div style={{ fontSize: 13, lineHeight: 1.6 }}>{skills.join(' • ')}</div>
+                </section>
+            )}
 
              {(achievements.length > 0 || certs.length > 0) && (
                  <section style={{ marginBottom: 30 }}>
@@ -98,15 +102,12 @@ const VerticalAccentProTemplate: React.FC<{ data: ResumeData }> = ({ data }) => 
                              <li key={`a-${i}`}><strong>{a.title}</strong>: {a.description}</li>
                          ))}
                          {certs.map((c, i) => (
-                             <li key={`c-${i}`}>{c.title} - {c.issuer}</li>
+                             <li key={`c-${i}`}><strong>{c.title}</strong> - {c.issuer}</li>
                          ))}
                      </ul>
                  </section>
              )}
         </div>
-
-        <IndianPersonalDetails data={personal} style={{ marginTop: 20, paddingTop: 20, borderTop: '1px solid #eee' }} />
-
       </div>
     </div>
   );

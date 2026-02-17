@@ -11,6 +11,7 @@ const authRoutes = require('./routes/authRoutes.js');
 const resumeRoutes = require('./routes/resumeRoutes.js');
 const atsRoutes = require('./routes/atsRoutes.js');
 const paymentRoutes = require('./routes/paymentRoutes.js');
+const aiRoutes = require('./routes/aiRoutes.js');
 
 const User = require('./models/User');
 
@@ -180,6 +181,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/resume', resumeRoutes);
 app.use('/api/ats', atsRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/ai', aiRoutes);
 
 /* ======================================================
    8. ERROR HANDLER

@@ -38,11 +38,12 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
         <div style={{ fontSize: 14, marginTop: 6, fontWeight: 500, opacity: 0.9 }}>
           {personal.jobTitle}
         </div>
-        <div style={{ fontSize: 12, marginTop: 15, display: 'flex', flexWrap: 'wrap', gap: '8px 20px', opacity: 0.9 }}>
-            <span>{personal.email}</span>
-            <span>{personal.phone}</span>
-            {personal.linkedin && <span>{personal.linkedin}</span>}
-            {personal.address && <span>{personal.address}</span>}
+        <div style={{ marginTop: 15 }}>
+            <IndianPersonalDetails 
+                data={personal} 
+                layout="list" 
+                style={{ fontSize: 12, display: 'flex', flexWrap: 'wrap', gap: '8px 20px', opacity: 0.9, color: '#fff' }} 
+            />
         </div>
       </div>
 
@@ -107,9 +108,15 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
             </section>
         )}
 
-        <IndianEducationTable data={education} style={{ marginBottom: 30 }} />
+        <section style={{ marginBottom: 30 }}>
+             <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15, color: accent, textTransform: 'uppercase' }}>
+                Education
+            </h2>
+            <IndianEducationTable data={education} style={{ marginBottom: 30 }} />
+        </section>
 
         {/* Skills Horizontal Layout */}
+        {skills.length > 0 && (
         <section style={{ marginBottom: 30 }}>
           <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15, color: accent, textTransform: 'uppercase' }}>
             Core Skills
@@ -135,6 +142,7 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
             ))}
           </div>
         </section>
+        )}
 
         {/* Achievements & Certifications */}
          {(achievements.length > 0 || certs.length > 0) && (
@@ -147,13 +155,11 @@ const CorporateSplitLineTemplate: React.FC<{ data: ResumeData }> = ({ data }) =>
                          <li key={`a-${i}`}><strong>{a.title}</strong>: {a.description}</li>
                      ))}
                      {certs.map((c, i) => (
-                         <li key={`c-${i}`}>{c.title} - {c.issuer}</li>
+                         <li key={`c-${i}`}><strong>{c.title}</strong> - {c.issuer}</li>
                      ))}
                  </ul>
              </section>
          )}
-
-         <IndianPersonalDetails data={personal} style={{ borderTop: `1px solid ${accent}`, paddingTop: 20 }} />
 
       </div>
 

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Box, Typography, Button, Container, Paper, 
-  Grid, Stack, Chip, useTheme, useMediaQuery
+  Stack, Chip, useTheme, useMediaQuery
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { 
   Layout as LayoutIcon, Mic, Github, Mail, 
   CheckCircle2, XCircle, Code, Zap, Target,
@@ -338,7 +339,7 @@ const HomePage: React.FC = () => {
           <Container maxWidth="lg" sx={{ py: 15 }}>
             <Box sx={{ mb: 10, textAlign: isMobile ? 'center' : 'left' }}>
               <Grid container alignItems="flex-end">
-                <Grid size={{ xs: 12, md:8}}>
+                  <Grid size={{ xs: 12, md:8}}>
                   <Typography variant="overline" color={COLORS.secondary} fontWeight="bold" letterSpacing={2}>
                     THE REALITY CHECK
                   </Typography>
@@ -347,7 +348,7 @@ const HomePage: React.FC = () => {
                     <span style={{ color: COLORS.success }}>Fixed.</span>
                   </Typography>
                 </Grid>
-                {/* <Grid size={{ xs: 12, md:4 }} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
+                {/* <Grid item xs={12} md={4} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
                   <Typography color="#94a3b8">Hover over the cards to see the fix.</Typography>
                 </Grid> */}
               </Grid>
@@ -368,7 +369,7 @@ const HomePage: React.FC = () => {
                   solution: { title: "Targeted Precision", icon: <Target size={40} />, desc: "Instantly tailor your resume to the specific JD keywords.", color: COLORS.primary }
                 }
               ].map((item, idx) => (
-                <Grid size={{ xs: 12, md:4 }} key={idx}>
+                <Grid size={{ xs: 12, md: 4 }} key={idx}>
                   <Box sx={{ 
                     height: 350, position: 'relative', perspective: '1000px', group: 'card'
                   }}>
@@ -452,7 +453,7 @@ const HomePage: React.FC = () => {
                     bg: '#06b6d4' 
                   }
                 ].map((feature, i) => (
-                  <Grid size={{ xs: 12, md:6, lg:3 }} key={i}>
+                  <Grid size={{ xs: 12, md: 6, lg: 3 }} key={i}>
                     <Paper className="glass-panel" sx={{ 
                       p: 4, height: '100%', borderRadius: 4,
                       transition: '0.3s',

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Box, Container, Typography, Grid, Paper, Chip, Button } from '@mui/material';
+import { Box, Container, Typography, Paper, Chip, Button } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { TEMPLATES } from '../templates/TemplateRegistry';
 import { useNavigate } from 'react-router-dom';
 import { useResume } from '../context/ResumeContext';
@@ -7,6 +8,7 @@ import { Lock } from 'lucide-react';
 import Layout from '../components/Layout';
 import MiniResumePreview from '../components/MiniResumePreview';
 import { PREVIEW_RESUME } from '../data/previewResume';
+import ResumeUpload from '../components/ResumeUpload';
 
 const TemplateSelectPage = () => {
     const navigate = useNavigate();
@@ -51,6 +53,9 @@ const TemplateSelectPage = () => {
                             Professional, ATS-friendly templates designed for top-tier companies. 
                             Select one to start building.
                         </Typography>
+                        
+                        {/* 🚀 NEW: Upload Feature */}
+                        <ResumeUpload />
                     </Box>
 
                     {/* Filters */}

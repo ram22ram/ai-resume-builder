@@ -1,6 +1,8 @@
 import React from 'react';
 import { ResumeData, ResumeSection, PersonalItem, EducationItem, ExperienceItem, SkillItem, ProjectItem, CertificationItem, AchievementItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
+import IndianPersonalDetails from '../../components/IndianPersonalDetails';
+import IndianEducationTable from '../../components/IndianEducationTable';
 
 const SarkariStandardTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
@@ -27,19 +29,6 @@ const SarkariStandardTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
         marginBottom: 8,
         fontSize: 14
     },
-    table: {
-        width: '100%',
-        borderCollapse: 'collapse' as const,
-        fontSize: 12,
-        marginBottom: 10
-    },
-    th: { border: '1px solid #000', padding: 5, textAlign: 'center' as const, fontWeight: 'bold' },
-    td: { border: '1px solid #000', padding: 5, textAlign: 'center' as const },
-    tdLeft: { border: '1px solid #000', padding: 5, textAlign: 'left' as const },
-    // Personal Details Grid
-    pdRow: { display: 'flex' }, 
-    pdLabel: { width: 140, fontWeight: 'bold', padding: '2px 0' },
-    pdValue: { flex: 1, padding: '2px 0' },
     declaration: { textAlign: 'justify' as const, marginTop: 10, textIndent: 30 }
   };
 
@@ -85,28 +74,7 @@ const SarkariStandardTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
       {education.length > 0 && (
         <section>
           <div style={styles.sectionHeader}>ACADEMIC QUALIFICATIONS</div>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.th}>Examination</th>
-                <th style={styles.th}>Board / University</th>
-                <th style={styles.th}>School / College</th>
-                <th style={styles.th}>Year</th>
-                <th style={styles.th}>% / CGPA</th>
-              </tr>
-            </thead>
-            <tbody>
-              {education.map((e, i) => (
-                <tr key={i}>
-                  <td style={styles.tdLeft}>{e.standard || e.degree}</td>
-                  <td style={styles.tdLeft}>{e.board || '-'}</td>
-                  <td style={styles.tdLeft}>{e.institution}</td>
-                  <td style={styles.td}>{e.yearOfPassing || e.date}</td>
-                  <td style={styles.td}>{e.percentage || e.cgpa || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <IndianEducationTable data={education} />
         </section>
       )}
 
@@ -128,38 +96,30 @@ const SarkariStandardTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
           </section>
       )}
 
+      {(achievements.length > 0 || certifications.length > 0) && (
+          <section>
+              <div style={styles.sectionHeader}>ACHIEVEMENTS & CERTIFICATIONS</div>
+              <ul style={{ paddingLeft: 20, margin: '5px 0' }}>
+                  {achievements.map((a, i) => (
+                      <li key={`a-${i}`}><strong>{a.title}</strong>: {a.description}</li>
+                  ))}
+                  {certifications.map((c, i) => (
+                      <li key={`c-${i}`}>{c.title} - {c.issuer} ({c.date})</li>
+                  ))}
+              </ul>
+          </section>
+      )}
+
+      {skills.length > 0 && (
+          <section>
+               <div style={styles.sectionHeader}>SKILLS</div>
+               <div>{skills.join(', ')}</div>
+          </section>
+      )}
+
       <section>
         <div style={styles.sectionHeader}>PERSONAL DETAILS</div>
-        <div>
-            <div style={styles.pdRow}>
-                <div style={styles.pdLabel}>Father's Name</div>
-                <div style={styles.pdValue}>: {personal.fatherName}</div>
-            </div>
-            <div style={styles.pdRow}>
-                <div style={styles.pdLabel}>Date of Birth</div>
-                <div style={styles.pdValue}>: {personal.dateOfBirth}</div>
-            </div>
-            <div style={styles.pdRow}>
-                <div style={styles.pdLabel}>Gender</div>
-                <div style={styles.pdValue}>: {personal.gender}</div>
-            </div>
-            <div style={styles.pdRow}>
-                <div style={styles.pdLabel}>Marital Status</div>
-                <div style={styles.pdValue}>: {personal.maritalStatus}</div>
-            </div>
-            <div style={styles.pdRow}>
-                <div style={styles.pdLabel}>Nationality</div>
-                <div style={styles.pdValue}>: {personal.nationality}</div>
-            </div>
-            <div style={styles.pdRow}>
-                <div style={styles.pdLabel}>Languages Known</div>
-                <div style={styles.pdValue}>: {personal.languages?.join(', ')}</div>
-            </div>
-            <div style={styles.pdRow}>
-                <div style={styles.pdLabel}>Permanent Address</div>
-                <div style={styles.pdValue}>: {personal.address} {personal.pincode && `- ${personal.pincode}`}</div>
-            </div>
-        </div>
+        <IndianPersonalDetails data={personal} layout="grid" style={{ fontSize: 13 }} />
       </section>
 
       <section>

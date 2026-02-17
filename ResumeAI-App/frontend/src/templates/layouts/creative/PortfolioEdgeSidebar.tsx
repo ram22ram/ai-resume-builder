@@ -1,6 +1,8 @@
 import React from 'react';
-import { ResumeData, ResumeSection, PersonalItem, SummaryItem, ExperienceItem, SkillItem } from '../../../types/resume';
+import { ResumeData, ResumeSection, PersonalItem, SummaryItem, ExperienceItem, SkillItem, ProjectItem, EducationItem, CertificationItem, AchievementItem } from '../../../types/resume';
 import { standardStyles } from '../../styles/standardStyles';
+import IndianPersonalDetails from '../../components/IndianPersonalDetails';
+import IndianEducationTable from '../../components/IndianEducationTable';
 
 const PortfolioEdgeSidebar: React.FC<{ data: ResumeData }> = ({ data }) => {
   const get = (t: ResumeSection['type']) =>
@@ -10,6 +12,10 @@ const PortfolioEdgeSidebar: React.FC<{ data: ResumeData }> = ({ data }) => {
   const summary = ((get('summary')[0] || {}) as SummaryItem).description || '';
   const experience = get('experience') as ExperienceItem[];
   const skills = (get('skills') as SkillItem[]).map(s => s.name);
+  const projects = get('projects') as ProjectItem[];
+  const education = get('education') as EducationItem[];
+  const certs = get('certifications') as CertificationItem[];
+  const achievements = get('achievements') as AchievementItem[];
 
   const accent = data.metadata.accentColor || '#111';
 
@@ -33,51 +39,101 @@ const PortfolioEdgeSidebar: React.FC<{ data: ResumeData }> = ({ data }) => {
           <h1 style={{ fontSize: 36, margin: 0 }}>
             {personal.fullName}
           </h1>
-          <div style={{ fontSize: 16, marginTop: 5 }}>
+          <div style={{ fontSize: 16, marginTop: 5, color: accent, fontWeight: 600 }}>
             {personal.jobTitle}
           </div>
-          <div style={{ fontSize: 13, marginTop: 8 }}>
-            {personal.email} • {personal.phone}
+           <div style={{ marginTop: 10 }}>
+              <IndianPersonalDetails 
+                  data={personal} 
+                  layout="list" 
+                  style={{ fontSize: 13, display: 'flex', gap: 15, flexWrap: 'wrap' }} 
+              />
           </div>
         </header>
 
         {summary && (
           <section style={{ marginBottom: 35 }}>
-            <p style={{ lineHeight: 1.7 }}>{summary}</p>
+            <p style={{ lineHeight: 1.7, fontSize: 13 }}>{summary}</p>
           </section>
         )}
 
+        {experience.length > 0 && (
         <section style={{ marginBottom: 35 }}>
-          <h3>Experience</h3>
+          <h3 style={{ textTransform: 'uppercase', color: accent, borderBottom: '1px solid #eee', paddingBottom: 5 }}>Experience</h3>
           {experience.map((exp, i) => (
             <div key={i} style={{ marginBottom: 18 }}>
-              <strong>{exp.position}</strong>
-              <div style={{ fontSize: 13 }}>
-                {exp.company} | {exp.date}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <strong>{exp.position}</strong>
+                  <span style={{ fontSize: 12 }}>{exp.date}</span>
+              </div>
+              <div style={{ fontSize: 13, fontStyle: 'italic', marginBottom: 4 }}>
+                {exp.company}
               </div>
               <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
-                  {exp.description.map((desc, idx) => (
-                    <li key={idx} style={{ marginTop: 4 }}>{desc}</li>
+                  {Array.isArray(exp.description) ? exp.description.map((desc, idx) => (
+                    <li key={idx} style={{ marginTop: 4, fontSize: 13 }}>{desc}</li>
+                  )) : <li style={{ fontSize: 13 }}>{exp.description}</li>}
+              </ul>
+            </div>
+          ))}
+        </section>
+        )}
+
+        {projects.length > 0 && (
+        <section style={{ marginBottom: 35 }}>
+          <h3 style={{ textTransform: 'uppercase', color: accent, borderBottom: '1px solid #eee', paddingBottom: 5 }}>Projects</h3>
+          {projects.map((p, i) => (
+            <div key={i} style={{ marginBottom: 15 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <strong>{p.title}</strong>
+                  <span style={{ fontSize: 12 }}>{p.startDate} - {p.endDate}</span>
+              </div>
+              {p.technologies && <div style={{ fontSize: 12, fontStyle: 'italic' }}>{p.technologies}</div>}
+              <ul style={{ paddingLeft: 16, margin: '4px 0' }}>
+                  {p.description.map((desc, idx) => (
+                    <li key={idx} style={{ fontSize: 13, marginBottom: 3 }}>{desc}</li>
                   ))}
               </ul>
             </div>
           ))}
         </section>
+        )}
 
-        <section>
-          <h3>Skills</h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-            {skills.map((s, i) => (
-              <span key={i} style={{
-                borderBottom: `2px solid ${accent}`,
-                paddingBottom: 2,
-                fontSize: 13
-              }}>
-                {s}
-              </span>
-            ))}
-          </div>
+        <section style={{ marginBottom: 35 }}>
+          <h3 style={{ textTransform: 'uppercase', color: accent, borderBottom: '1px solid #eee', paddingBottom: 5 }}>Education</h3>
+          <IndianEducationTable data={education} />
         </section>
+
+        {skills.length > 0 && (
+          <section style={{ marginBottom: 35 }}>
+            <h3 style={{ textTransform: 'uppercase', color: accent, borderBottom: '1px solid #eee', paddingBottom: 5 }}>Skills</h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+              {skills.map((s, i) => (
+                <span key={i} style={{
+                  borderBottom: `2px solid ${accent}`,
+                  paddingBottom: 2,
+                  fontSize: 13
+                }}>
+                  {s}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {(achievements.length > 0 || certs.length > 0) && (
+            <section>
+                <h3 style={{ textTransform: 'uppercase', color: accent, borderBottom: '1px solid #eee', paddingBottom: 5 }}>Additional</h3>
+                <ul style={{ paddingLeft: 16, fontSize: 13 }}>
+                    {certs.map((c, i) => (
+                        <li key={`c-${i}`}><strong>{c.title}</strong> - {c.issuer}</li>
+                    ))}
+                    {achievements.map((a, i) => (
+                        <li key={`a-${i}`}><strong>{a.title}</strong>: {a.description}</li>
+                    ))}
+                </ul>
+            </section>
+        )}
 
       </div>
     </div>

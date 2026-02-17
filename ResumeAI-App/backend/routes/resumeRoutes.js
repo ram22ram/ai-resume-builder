@@ -55,7 +55,7 @@ router.post('/parse', requirePremium, upload.single('file'), async (req, res) =>
       },
       {
         headers: {
-          'Authorization': `Bearer ${process.env.VITE_GROQ_API_KEY}`,
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }

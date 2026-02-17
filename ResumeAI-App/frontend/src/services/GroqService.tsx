@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 export const askGroq = async (command: string, currentData: any) => {
   const prompt = `
@@ -11,12 +11,9 @@ export const askGroq = async (command: string, currentData: any) => {
     Constraint: Return ONLY valid JSON in the same schema. No text.
   `;
 
-  const res = await axios.post('https://api.groq.com/openai/v1/chat/completions', {
-    model: "llama-3.3-70b-versatile",
+  const res = await axios.post(`${API_URL}/ai/chat`, {
     messages: [{ role: "user", content: prompt }]
-  }, {
-    headers: { Authorization: `Bearer ${GROQ_API_KEY}` }
   });
 
-  return JSON.parse(res.data.choices[0].message.content);
+  return res.data;
 };

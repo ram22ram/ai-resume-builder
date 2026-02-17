@@ -1,5 +1,6 @@
 // StepExperience.tsx - REPLACE ENTIRE FILE
-import { Box, TextField, Button, IconButton, Typography, Paper, Checkbox, FormControlLabel, CircularProgress, Grid } from '@mui/material';
+import { Box, TextField, Button, IconButton, Typography, Paper, Checkbox, FormControlLabel, CircularProgress } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { Plus, Trash2, Briefcase, GripVertical, Zap } from 'lucide-react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
