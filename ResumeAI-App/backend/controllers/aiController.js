@@ -4,11 +4,11 @@ exports.generateContent = async (req, res) => {
     try {
         const { prompt, systemRole } = req.body;
 
-        if (!process.env.VITE_GROQ_API_KEY && !process.env.GROQ_API_KEY) {
-            return res.status(500).json({ error: 'Server missing GROQ_API_KEY' });
+        if (!process.env.GROQ_API_KEY) {
+            return res.status(500).json({ error: 'Server missing GROQ_API_KEY. Set it in Render environment variables.' });
         }
 
-        const apiKey = process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY;
+        const apiKey = process.env.GROQ_API_KEY;
 
         const response = await axios.post(
             'https://api.groq.com/openai/v1/chat/completions',
@@ -42,11 +42,11 @@ exports.chat = async (req, res) => {
     try {
         const { messages } = req.body;
 
-        if (!process.env.VITE_GROQ_API_KEY && !process.env.GROQ_API_KEY) {
-            return res.status(500).json({ error: 'Server missing GROQ_API_KEY' });
+        if (!process.env.GROQ_API_KEY) {
+            return res.status(500).json({ error: 'Server missing GROQ_API_KEY. Set it in Render environment variables.' });
         }
 
-        const apiKey = process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY;
+        const apiKey = process.env.GROQ_API_KEY;
 
         const response = await axios.post(
             'https://api.groq.com/openai/v1/chat/completions',

@@ -223,7 +223,7 @@ const InterviewSimulator = () => {
                   <Button
                     variant="contained"
                     size="large"
-                    onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
+                    onClick={() => window.location.href = `${(import.meta.env.VITE_API_URL || '').replace(/\/$/, '')}/api/auth/google`}
                     sx={{ 
                       bgcolor: '#a855f7', 
                       color: 'white',
@@ -352,7 +352,7 @@ const InterviewSimulator = () => {
                 <Button 
                   variant="contained" 
                   size="large" 
-                  onClick={isUserLoggedIn ? startInterview : () => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
+                  onClick={isUserLoggedIn ? startInterview : () => window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`}
                   disabled={!jobRole && isUserLoggedIn} // ✅ FIXED: boolean value
                   startIcon={isUserLoggedIn ? <Mic size={20} /> : <Lock size={20} />}
                   sx={{ 
@@ -430,7 +430,7 @@ const InterviewSimulator = () => {
                   />
                   <Button 
                     variant="contained" 
-                    onClick={isUserLoggedIn ? handleSend : () => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
+                    onClick={isUserLoggedIn ? handleSend : () => window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`}
                     disabled={(loading || !input) && isUserLoggedIn} // ✅ FIXED: boolean value
                     sx={{ 
                       bgcolor: isUserLoggedIn ? '#3b82f6' : '#a855f7',

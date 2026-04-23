@@ -15,6 +15,7 @@ export type Action =
     | { type: 'LOAD_DATA'; payload: ResumeData }
     | { type: 'RESET' };
 
+
 export const initialResumeState: ResumeData = {
     id: 'draft',
     templateId: 'BoardroomGridTemplate',
@@ -123,6 +124,16 @@ export function resumeReducer(state: ResumeData, action: Action): ResumeData {
 
         case 'REORDER_SECTIONS':
             return { ...state, sections: action.payload };
+
+        case 'UPDATE_SECTION_TITLE':
+            return {
+                ...state,
+                sections: state.sections.map(s =>
+                    s.id === action.payload.id
+                        ? { ...s, title: action.payload.title }
+                        : s
+                )
+            };
 
         case 'TOGGLE_SECTION_VISIBILITY':
             return {

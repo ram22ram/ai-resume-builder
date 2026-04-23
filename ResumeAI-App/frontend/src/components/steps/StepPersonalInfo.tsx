@@ -1,7 +1,7 @@
 // StepPersonalInfo.tsx - UPDATE WITH VALIDATION
 import { useState } from 'react';
 import { Box, TextField, Typography, Button, Avatar, Stack, Alert } from '@mui/material';
-import { Upload, Mail, Phone, MapPin, Linkedin, Globe, User, Trash2 } from 'lucide-react';
+import { Upload, Mail, Phone, MapPin, Users, Globe, User, Trash2 } from 'lucide-react';
 import { validateEmail, validatePhone } from '../../utils/validationUtils';
 
 const StepPersonalInfo = ({ resumeData, handlers, errors: propErrors = {} }: any) => {
@@ -215,7 +215,7 @@ const StepPersonalInfo = ({ resumeData, handlers, errors: propErrors = {} }: any
           { label: 'Email', name: 'email', icon: <Mail size={18} />, required: true },
           { label: 'Phone', name: 'phone', icon: <Phone size={18} />, required: false },
           { label: 'Address', name: 'address', icon: <MapPin size={18} />, required: false },
-          { label: 'LinkedIn', name: 'linkedin', icon: <Linkedin size={18} />, required: false },
+          { label: 'LinkedIn', name: 'linkedin', icon: <Users size={18} />, required: false },
           { label: 'Portfolio', name: 'portfolio', icon: <Globe size={18} />, required: false },
         ].map((field) => (
           <Box key={field.name}>

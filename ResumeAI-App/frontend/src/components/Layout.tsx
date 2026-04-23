@@ -6,7 +6,7 @@ import {
   useTheme, useMediaQuery, Avatar
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FileText, Mic, Github, Mail, Menu as MenuIcon, X, LogOut, LayoutDashboard, Search } from 'lucide-react';
+import { FileText, Mic, Terminal, Mail, Menu as MenuIcon, X, LogOut, LayoutDashboard, Search } from 'lucide-react';
 import { Helmet } from 'react-helmet-async'; 
 
 // ✅ IMPORT RESUME CONTEXT
@@ -27,7 +27,7 @@ interface LayoutProps {
   { label: 'Resume Builder', path: '/builder', icon: <FileText size={18}/> },
   { label: 'ATS Checker', path: '/ats', icon: <Search size={18}/> },
   { label: 'Mock Interview', path: '/interview', icon: <Mic size={18}/> },
-  { label: 'GitHub to CV', path: '/github', icon: <Github size={18}/> },
+  { label: 'GitHub to CV', path: '/github', icon: <Terminal size={18}/> },
   { label: 'Cold Email', path: '/email', icon: <Mail size={18}/> },
 ];
 
@@ -69,16 +69,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </Helmet>
       
       <style>{`
-        html.lenis, html.lenis body { height: auto; }
+        html.lenis, html.lenis body { height: auto; overscroll-behavior: none; }
         .lenis.lenis-smooth { scroll-behavior: auto !important; }
         .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
         .lenis.lenis-stopped { overflow: hidden; }
         .lenis.lenis-scrolling iframe { pointer-events: none; }
-        body { font-family: 'Outfit', sans-serif; background-color: #020617; }
+        body { font-family: 'Inter', 'Outfit', sans-serif; background-color: #020617; }
         ::selection { background: rgba(59, 130, 246, 0.3); color: white; }
       `}</style>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#020617', overflow: 'hidden' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#020617' }}>
         
         {/* === 1. PREMIUM HEADER === */}
         <AppBar position="sticky" elevation={0} sx={{ 
@@ -170,7 +170,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       </Box>
                     ) : (
                       <Button 
-                        onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
+                        onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`}
                         sx={{
                           bgcolor: 'white', color: 'black', fontWeight: 'bold',
                           '&:hover': { bgcolor: '#f1f1f1' }
@@ -282,7 +282,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 // Mobile Logged Out
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Button 
-                    onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
+                    onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`}
                     sx={{
                       bgcolor: 'white', color: 'black', fontWeight: 'bold',
                       '&:hover': { bgcolor: '#f1f1f1' }
@@ -298,11 +298,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </Drawer>
 
         {/* === 2. MAIN CONTENT === */}
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
           {children}
         </Box>
 
-        {/* === 3. PREMIUM FOOTER === */}
+        {/* === 3. PREMIUM FOOTER — hidden on /builder (full-viewport layout) === */}
+        {location.pathname !== '/builder' && (
         <Box sx={{ pt: 10, pb: 6, bgcolor: '#020617', borderTop: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
           <Box sx={{ position: 'absolute', top: '-50%', left: '50%', width: '60%', height: '200px', bgcolor: '#3b82f6', filter: 'blur(100px)', opacity: 0.1, transform: 'translateX(-50%)', borderRadius: '50%' }} />
           <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
@@ -326,6 +327,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </Typography>
           </Container>
         </Box>
+        )}
 
       </Box>
     </ReactLenis>

@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
 
+# Block AI crawlers from scraping templates/builder logic
+User-agent: GPTBot
+Disallow: /
+User-agent: ChatGPT-User
+Disallow: /
+User-agent: Google-Extended
+Disallow: /
+
 Sitemap: https://resume-ai.co.in/sitemap.xml

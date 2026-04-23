@@ -5,7 +5,7 @@ import {
   Stack, Chip, Alert
 } from '@mui/material';
 import { 
-  Github, Check, Copy, Zap, Code, Eye, Sparkles 
+  Code, Check, Copy, Zap, Eye, Sparkles 
 } from 'lucide-react';
 // @ts-ignore
 import { generateContent } from '../utils/aiService';
@@ -27,7 +27,7 @@ const GithubConverter = () => {
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     try {
-      const res = await axios.post(`${API_URL}/auth/google`, {
+      const res = await axios.post(`${API_URL}/api/auth/google`, {
         token: credentialResponse.credential
       });
       if (res.data.success) {
@@ -88,7 +88,7 @@ const GithubConverter = () => {
         <Stack spacing={4}>
           <Paper className="glass-panel" sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, background: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(20px)' }}>
             <Stack direction="row" alignItems="center" spacing={2} mb={3}>
-              <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'rgba(34, 197, 94, 0.1)', color: '#22c55e' }}><Github size={24} /></Box>
+              <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'rgba(34, 197, 94, 0.1)', color: '#22c55e' }}><Code size={24} /></Box>
               <Box>
                 <Typography variant="h6" fontWeight="bold" sx={{ color: 'white' }}>Paste Your Project Details</Typography>
                 <Typography variant="caption" sx={{ color: '#94a3b8' }}>GitHub Readme, Code Snippets, or Project Summary</Typography>

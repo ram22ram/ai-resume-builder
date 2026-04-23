@@ -1,4 +1,4 @@
-// frontend/vite.config.ts (Updated)
+// frontend/vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 // @ts-ignore
@@ -6,45 +6,43 @@ import Sitemap from 'vite-plugin-sitemap'
 
 export default defineConfig({
   build: {
-    emptyOutDir: false,  // ← Ye line add karo
+    emptyOutDir: false,
   },
   assetsInclude: ['**/*.lottie'],
   plugins: [
     react(),
-    // Sitemap({
-    //   hostname: 'https://resume-ai.co.in',
-    //   dynamicRoutes: [
-    //     '/builder',
-    //     '/ats',
-    //     '/templates',
-    //     '/interview',
-    //     '/github',
-    //     '/email',
-    //     '/privacy',
-    //     '/terms',
-    //     '/refund'
-    //   ],
-    //   // generateRobotsTxt: true,
-    // }),
+    // ✅ SITEMAP — generates /sitemap.xml on every build for Google indexing
+    Sitemap({
+      hostname: 'https://resume-ai.co.in',
+      dynamicRoutes: [
+        '/',
+        '/builder',
+        '/ats',
+        '/templates',
+        '/interview',
+        '/github',
+        '/email',
+        '/privacy',
+        '/terms',
+        '/refund',
+        '/start',
+      ],
+      generateRobotsTxt: false, // We have our own robots.txt
+    }),
   ],
-    server: {
-      headers: {
-  'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
-  'Cross-Origin-Embedder-Policy': 'require-corp',
-},
-      proxy: {
-        '/.netlify': {
-          target: 'http://localhost:8888',
-          changeOrigin: true,
-          secure: false,
-        },
-        // Keep the API proxy. It works with the backend's cors() middleware.
-        '/api': {
-          target: 'http://localhost:5001',
-          changeOrigin: true,
-          secure: false,
-        },
+  server: {
+    // ⚠️ COOP/COEP removed from dev server — they break Google OAuth popup
+    proxy: {
+      '/.netlify': {
+        target: 'http://localhost:8888',
+        changeOrigin: true,
+        secure: false,
       },
-      // REMOVE the 'headers' section that sets COOP/COEP policies.
-    }
-  });
+      '/api': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  }
+});

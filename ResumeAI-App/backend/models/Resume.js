@@ -12,8 +12,8 @@ const resumeSchema = new mongoose.Schema({
   },
   origin: {
     type: String,
-    enum: ['upload', 'ai', 'linkedin'],
-    required: true
+    enum: ['upload', 'ai', 'linkedin', 'manual'],
+    default: 'manual',
   },
   createdAt: {
     type: Date,

@@ -13,7 +13,7 @@ const LoginModal: React.FC<Props> = ({ open, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5001').replace(/\/$/, '');
 
     // 🪄 Magic Link Logic
     const handleMagicLogin = async () => {
@@ -34,7 +34,7 @@ const LoginModal: React.FC<Props> = ({ open, onClose }) => {
     };
 
     const handleGoogleRedirect = () => {
-         window.location.href = `${API_URL}/auth/google`;
+         window.location.href = `${API_URL}/api/auth/google`;
     };
 
     return (

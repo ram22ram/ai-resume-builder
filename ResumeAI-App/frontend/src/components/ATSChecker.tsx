@@ -11,6 +11,7 @@ import Layout from './Layout';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import SEO from './SEO';
 
 const ATSChecker = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -144,6 +145,11 @@ const ATSChecker = () => {
 
   return (
     <Layout>
+      <SEO 
+        title="Free ATS Resume Checker Online | ResumeAI India"
+        description="Check your resume ATS score for free. Identify missing keywords and fix formatting errors that get your resume rejected by top Indian IT companies."
+        keywords="ATS resume checker free, resume scanner online, ATS score calculator, beat the ATS, resume parser"
+      />
       <Paper sx={{ p: 4, maxWidth: 700, mx: 'auto', mt: 6 }}>
         <Typography variant="h4" mb={2}>ATS Resume Checker</Typography>
         

@@ -3,8 +3,9 @@ const multer = require('multer');
 const axios = require('axios');
 const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
 const router = express.Router();
+const Resume = require('../models/Resume');
+const requireAuth = require('../middleware/requireAuth');
 
-// ATS Checker style cleaning logic
 const cleanAIResponse = (text) => {
   if (!text) return null;
   let cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -18,11 +19,64 @@ const cleanAIResponse = (text) => {
   } catch (err) { return null; }
 };
 
-const requirePremium = require('../middleware/requirePremium');
-
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post('/parse', requirePremium, upload.single('file'), async (req, res) => {
+/* ======================================================
+   SAVE — Upsert the active resume for authenticated user
+   POST /api/resume/save
+   Body: { resumeData: ResumeData }
+   ====================================================== */
+router.post('/save', requireAuth, async (req, res) => {
+  try {
+    const { resumeData } = req.body;
+    if (!resumeData) {
+      return res.status(400).json({ success: false, message: 'resumeData is required' });
+    }
+
+    // Upsert: one active resume per user (most recent wins)
+    const resume = await Resume.findOneAndUpdate(
+      { user: req.user._id || req.user.id },
+      {
+        data: resumeData,
+        origin: 'manual',
+        updatedAt: new Date(),
+      },
+      { upsert: true, new: true }
+    );
+
+    res.json({ success: true, resumeId: resume._id });
+  } catch (err) {
+    console.error('Resume save error:', err.message);
+    res.status(500).json({ success: false, message: 'Failed to save resume' });
+  }
+});
+
+/* ======================================================
+   LOAD — Fetch the most recent resume for authenticated user
+   GET /api/resume/load
+   ====================================================== */
+router.get('/load', requireAuth, async (req, res) => {
+  try {
+    const resume = await Resume.findOne({ user: req.user._id || req.user.id })
+      .sort({ updatedAt: -1 })
+      .lean();
+
+    if (!resume) {
+      return res.json({ success: true, data: null }); // No resume yet — not an error
+    }
+
+    res.json({ success: true, data: resume.data });
+  } catch (err) {
+    console.error('Resume load error:', err.message);
+    res.status(500).json({ success: false, message: 'Failed to load resume' });
+  }
+});
+
+/* ======================================================
+   PARSE — PDF upload → AI extraction (premium only)
+   POST /api/resume/parse
+   ====================================================== */
+router.post('/parse', requireAuth, upload.single('file'), async (req, res) => {
   let cleanText = "";
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No file' });
@@ -39,7 +93,7 @@ router.post('/parse', requirePremium, upload.single('file'), async (req, res) =>
     }
     cleanText = fullText.replace(/\s+/g, ' ').trim();
 
-    console.log(`🧠 Calling Groq with VITE_GROQ_API_KEY...`);
+    console.log(`🧠 Calling Groq with GROQ_API_KEY...`);
 
     // 2. Groq AI Call
     const groqResponse = await axios.post(
@@ -55,7 +109,7 @@ router.post('/parse', requirePremium, upload.single('file'), async (req, res) =>
       },
       {
         headers: {
-          'Authorization': `Bearer ${process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY}`,
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }
@@ -66,7 +120,6 @@ router.post('/parse', requirePremium, upload.single('file'), async (req, res) =>
 
   } catch (err) {
     console.error('⚠️ AI Error/Fallback:', err.message);
-    // 🔥 Fallback: Agar AI fail ho toh 500 mat bhejo, raw text bhej do
     res.json({
       success: true,
       data: {

@@ -6,7 +6,7 @@ import {
   Stack, Chip, Alert
 } from '@mui/material';
 import { 
-  Mail, Linkedin, Users, Copy, Sparkles, 
+  Mail, Users, Copy, Sparkles, 
   Zap, MessageSquare, Send, Award, Target,
   Check
 } from 'lucide-react';
@@ -63,7 +63,7 @@ const ColdEmail = () => {
   const messageTypes = [
     { 
       val: 'linkedin', 
-      icon: <Linkedin size={20} />, 
+      icon: <Users size={20} />, 
       label: 'LinkedIn Connect', 
       desc: 'Short connection request',
       color: '#0A66C2'

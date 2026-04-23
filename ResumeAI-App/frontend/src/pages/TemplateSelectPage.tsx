@@ -9,6 +9,7 @@ import Layout from '../components/Layout';
 import MiniResumePreview from '../components/MiniResumePreview';
 import { PREVIEW_RESUME } from '../data/previewResume';
 import ResumeUpload from '../components/ResumeUpload';
+import SEO from '../components/SEO';
 
 const TemplateSelectPage = () => {
     const navigate = useNavigate();
@@ -42,6 +43,11 @@ const TemplateSelectPage = () => {
 
     return (
         <Layout>
+            <SEO 
+                title="Free ATS Resume Templates | Fresher & Professional Formats"
+                description="Download standard resume formats for freshers and experienced professionals in India. Choose from simple, modern, and creative CV templates."
+                keywords="resume format for freshers, best resume template, free resume templates india, ATS friendly resume format, standard resume format download"
+            />
             <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh', py: 6 }}>
                 <Container maxWidth="xl">
                     {/* Header */}

@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { 
-  Layout as LayoutIcon, Mic, Github, Mail, 
+  Layout as LayoutIcon, Mic, Terminal, Mail, 
   CheckCircle2, XCircle, Code, Zap, Target,
   ArrowRight, Sparkles
 } from 'lucide-react';
@@ -65,8 +65,9 @@ const HomePage: React.FC = () => {
   return (
     <Layout>
       <SEO 
-        title="Journey to Hired | AI Career Copilot"
-        description="The unfair advantage for your job search. AI Resume Builder, Interview Coach, and Portfolio Analyzer."
+        title="Free AI Resume Builder India | ATS Resume Checker"
+        description="Build a job-winning ATS resume in minutes. Free AI-powered resume builder for freshers and professionals in India. Get higher interview callbacks."
+        keywords="free resume builder india, ATS resume checker free, AI resume builder freshers, resume maker online, best resume format"
       />
 
       {/* === GLOBAL STYLES === */}
@@ -443,7 +444,7 @@ const HomePage: React.FC = () => {
                   { 
                     title: 'Github to Resume', 
                     desc: 'Turn repositories into impact statements.', 
-                    icon: <Github />, 
+                    icon: <Terminal />, 
                     bg: COLORS.success 
                   },
                   { 

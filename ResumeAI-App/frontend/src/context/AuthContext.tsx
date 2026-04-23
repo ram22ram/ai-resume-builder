@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { googleLogout } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 /* ================= TYPES ================= */
 
@@ -29,31 +30,51 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/* ================= HELPERS ================= */
+
+const clearAuthStorage = () => {
+  localStorage.removeItem('resume_user');
+  localStorage.removeItem('resume_token');
+};
+
+const isTokenValid = (token: string): boolean => {
+  try {
+    const decoded = jwtDecode<{ exp: number }>(token);
+    // exp is in seconds; Date.now() in ms
+    return decoded.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+};
+
 /* ================= PROVIDER ================= */
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  
   const [isLoading, setIsLoading] = useState(true);
 
-  // 🔁 Restore login on refresh
+  // 🔁 Restore login on refresh — validates JWT expiry before restoring
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem('resume_user');
       const storedToken = localStorage.getItem('resume_token');
 
       if (storedUser && storedToken) {
-        setUser(JSON.parse(storedUser));
-        
+        if (isTokenValid(storedToken)) {
+          setUser(JSON.parse(storedUser));
+        } else {
+          // Token expired — clear stale session silently
+          clearAuthStorage();
+        }
       }
     } catch (err) {
       console.error('Auth restore failed', err);
-      localStorage.removeItem('resume_user');
-      localStorage.removeItem('resume_token');
+      clearAuthStorage();
     } finally {
       setIsLoading(false);
     }
   }, []);
+
 
   // ✅ LOGIN
   const login = (userData: User, token: string) => {
@@ -70,9 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     googleLogout();
     setUser(null);
-    
-    localStorage.removeItem('resume_user');
-    localStorage.removeItem('resume_token');
+    clearAuthStorage();
     window.location.href = '/';
   };
 

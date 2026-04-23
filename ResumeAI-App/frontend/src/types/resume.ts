@@ -24,6 +24,8 @@ export interface PersonalItem {
     phone: string;
     city?: string; // Optional
     country?: string; // Optional
+    location?: string; // Optional
+
     linkedin?: string; // Optional
     github?: string; // Optional
     portfolio?: string; // Optional
