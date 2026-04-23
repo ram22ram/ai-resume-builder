@@ -112,12 +112,12 @@ const BuilderPage = () => {
 
             {/* BUILDER CONTAINER */}
             <Box
-                data-lenis-prevent
+                // data-lenis-prevent
                 sx={{
-                    height: { xs: 'auto', md: 'calc(100vh - 80px)' },
+                    height: 'calc(100vh - 80px)',
                     display: 'flex',
                     flexDirection: { xs: 'column', md: 'row' },
-                    overflow: 'hidden',
+                    overflow: 'auto',
                     bgcolor: 'background.default',
                     minHeight: 0,
                     flex: 1,
@@ -287,6 +287,7 @@ const BuilderPage = () => {
                     overflowX: 'hidden',
                     minHeight: 0,
                     position: 'relative',
+                    height: '100%', 
                 }}>
                     {/* Mobile: Back to editor button */}
                     <Box sx={{
@@ -352,7 +353,7 @@ const BuilderPage = () => {
                             position: 'absolute',
                             top: 0,
                             left: 0,
-                            overflow: 'hidden',
+                            overflow: 'visible',
                         }}>
                             <ResumeRenderer key={resume.templateId} templateId={resume.templateId} data={resume} />
                         </Box>
