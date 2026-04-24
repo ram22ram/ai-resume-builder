@@ -125,9 +125,48 @@ const BuilderPage = () => {
                     flex: 1,
                 }}
             >
+                {/* ── LEFT NAV (desktop) ─────────────────────────────────── */}
+                <Box sx={{
+                    display: { xs: 'none', md: 'flex' },
+                    width: 220,
+                    flexDirection: 'column',
+                    bgcolor: 'background.paper',
+                    borderRight: 1,
+                    borderColor: 'divider',
+                    px: 2,
+                    py: 3,
+                    minHeight: 0,
+                }}>
+                    <Typography variant="overline" sx={{ color: 'text.secondary', mb: 1, letterSpacing: 1 }}>SECTIONS</Typography>
+                    <LinearProgress variant="determinate" value={progress} sx={{ height: 6, borderRadius: 3, mb: 2 }} />
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'auto', minHeight: 0 }}>
+                        {steps.map((s, idx) => (
+                            <Button
+                                key={s.id}
+                                onClick={() => setActiveStep(idx)}
+                                size="small"
+                                fullWidth
+                                sx={{
+                                    justifyContent: 'flex-start',
+                                    textTransform: 'none',
+                                    color: idx === activeStep ? 'primary.main' : 'text.secondary',
+                                    bgcolor: idx === activeStep ? 'action.selected' : 'transparent',
+                                    px: 1.5,
+                                }}
+                            >
+                                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: idx === activeStep ? 'primary.main' : 'divider', mr: 1.5 }} />
+                                {s.title}
+                            </Button>
+                        ))}
+                    </Box>
+
+                    <Box sx={{ flex: 1 }} />
+                    <Button variant="outlined" color="secondary" fullWidth sx={{ mt: 2, borderStyle: 'dashed' }}>Upgrade to Pro</Button>
+                </Box>
+
                 {/* ── LEFT PANEL: EDITOR ──────────────────────────────────── */}
                 <Box sx={{
-                    width: { xs: '100%', md: '45%' },
+                    width: { xs: '100%', md: '40%' },
                     height: { xs: showPreviewMobile ? '0' : '100%', md: '100%' },
                     overflow: 'hidden',
                     display: { xs: showPreviewMobile ? 'none' : 'flex', md: 'flex' },
