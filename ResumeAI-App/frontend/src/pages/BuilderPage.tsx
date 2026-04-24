@@ -319,24 +319,19 @@ const BuilderPage = () => {
                 </Box>
 
                 {/* ── RIGHT PANEL: PREVIEW ────────────────────────────────── */}
-                  <Box sx={{
-                        width: {
-                            xs: 'calc(210mm * 0.38)',
-                            sm: 'calc(210mm * 0.55)',
-                            md: 'calc(210mm * 0.72)',
-                            lg: 'calc(210mm * 0.82)',
-                        },
-                        height: {
-                            xs: 'calc(297mm * 0.38)',
-                            sm: 'calc(297mm * 0.55)',
-                            md: 'calc(297mm * 0.72)',
-                            lg: 'calc(297mm * 0.82)',
-                        },
-                        position: 'relative',
-                        mb: 3,
-                        flexShrink: 0,
-                        mx: 'auto',
-                    }}>
+                <Box sx={{
+                    flex: 1,
+                    bgcolor: '#475569',
+                    p: { xs: 2, md: 3 },
+                    display: { xs: showPreviewMobile ? 'flex' : 'none', md: 'flex' },
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                    minHeight: 0,
+                    position: 'relative',
+                    height: '100%', 
+                }}>
                     {/* Mobile: Back to editor button */}
                     <Box sx={{
                         display: { xs: 'flex', md: 'none' },
