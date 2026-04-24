@@ -112,12 +112,15 @@ const BuilderPage = () => {
 
             {/* BUILDER CONTAINER */}
             <Box
+                // data-lenis-prevent
                 sx={{
                     height: 'calc(100vh - 80px)',
                     display: 'flex',
                     flexDirection: { xs: 'column', md: 'row' },
+                    // Prevent the page / parent from scrolling — only inner panels should scroll
                     overflow: 'hidden',
                     bgcolor: 'background.default',
+                    // allow children with flex and minHeight: 0 to properly constrain
                     minHeight: 0,
                     flex: 1,
                 }}
@@ -132,14 +135,14 @@ const BuilderPage = () => {
                     borderRight: { xs: 0, md: 1 },
                     borderBottom: { xs: 1, md: 0 },
                     borderColor: 'divider',
+                    // critical for nested flex children to allow inner scrolling
                     minHeight: 0,
                     bgcolor: 'background.paper',
                 }}>
 
                     {/* ── Toolbar ── */}
                     <Box sx={{
-                        px: 2, 
-                        py: 1.5,
+                        px: 2, py: 1.5,
                         borderBottom: 1,
                         borderColor: 'divider',
                         display: 'flex',
@@ -185,14 +188,7 @@ const BuilderPage = () => {
                     </Box>
 
                     {/* ── Progress Bar ── */}
-                    <Box sx={{ 
-                        px: 2, 
-                        pt: 1.5, 
-                        pb: 0.5, 
-                        flexShrink: 0,
-                        borderBottom: 1,
-                        borderColor: 'divider',
-                    }}>
+                    <Box sx={{ px: 2, pt: 1.5, pb: 0.5, flexShrink: 0 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                             <Typography variant="caption" color="text.secondary">
                                 Step {activeStep + 1} of {steps.length}
@@ -214,27 +210,7 @@ const BuilderPage = () => {
                     </Box>
 
                     {/* ── Step Content (Scrollable) ── */}
-                    <Box sx={{ 
-                        flex: 1, 
-                        overflowY: 'auto', 
-                        overflowX: 'hidden',
-                        minHeight: 0, 
-                        scrollbarWidth: 'thin',
-                        '&::-webkit-scrollbar': {
-                            width: '6px',
-                        },
-                        '&::-webkit-scrollbar-track': {
-                            background: '#f1f1f1',
-                            borderRadius: '3px',
-                        },
-                        '&::-webkit-scrollbar-thumb': {
-                            background: '#888',
-                            borderRadius: '3px',
-                        },
-                        '&::-webkit-scrollbar-thumb:hover': {
-                            background: '#555',
-                        },
-                    }}>
+                    <Box sx={{ flex: 1, overflowY: 'auto', minHeight: 0, scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' as any }}>
                         {steps[activeStep] && (
                             <SectionEditor
                                 key={steps[activeStep].id}
@@ -253,7 +229,6 @@ const BuilderPage = () => {
                         flexDirection: 'column',
                         gap: 1.5,
                         flexShrink: 0,
-                        bgcolor: 'background.paper',
                     }}>
                         <Button
                             variant="outlined"
