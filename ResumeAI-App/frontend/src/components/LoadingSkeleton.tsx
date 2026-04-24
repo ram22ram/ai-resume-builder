@@ -71,7 +71,7 @@ export const PreviewLoadingSkeleton = () => {
       p: 4, 
       bgcolor: 'white',
       borderRadius: '12px',
-      height: '100%',
+      height: 'auto',
       display: 'flex',
       flexDirection: 'column',
       gap: 3

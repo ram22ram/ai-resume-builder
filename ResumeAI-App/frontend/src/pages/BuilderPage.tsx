@@ -165,20 +165,19 @@ const BuilderPage = () => {
                 </Box>
 
                 {/* ── LEFT PANEL: EDITOR ──────────────────────────────────── */}
-                <Box sx={{
-                flex: 1,
-                bgcolor: '#475569',
-                p: { xs: 2, md: 3 },
-                display: { xs: showPreviewMobile ? 'flex' : 'none', md: 'flex' },
-                flexDirection: 'column',
-                alignItems: 'stretch', // 🔥 FIX
-                justifyContent: 'flex-start', // 🔥 FIX
-                overflowY: 'auto',
-                overflowX: 'hidden',
-                minHeight: 0,
-                position: 'relative',
-                height: '100%',
-            }}>
+              <Box sx={{
+                    width: { xs: '100%', md: '40%' },
+                    height: { xs: showPreviewMobile ? '0' : '100%', md: '100%' },
+                    overflow: 'hidden',
+                    display: { xs: showPreviewMobile ? 'none' : 'flex', md: 'flex' },
+                    flexDirection: 'column',
+                    alignItems: 'stretch',
+                    borderRight: { xs: 0, md: 1 },
+                    borderBottom: { xs: 1, md: 0 },
+                    borderColor: 'divider',
+                    minHeight: 0,
+                    bgcolor: 'background.paper',
+                }}>
 
                     {/* ── Toolbar ── */}
                     <Box sx={{
@@ -331,7 +330,7 @@ const BuilderPage = () => {
                     overflowX: 'hidden',
                     minHeight: 0,
                     position: 'relative',
-                    height: '100%', 
+                    height: 'auto', 
                 }}>
                     {/* Mobile: Back to editor button */}
                     <Box sx={{

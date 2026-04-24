@@ -5,11 +5,10 @@ import Grid from '@mui/material/Grid';
 /**
  * TRUST & SECURITY ICONS
  * Size: 128x128 (but we'll display at 60x60 for better UI)
- * 
+ *
  * Image file locations:
  * - Data privacy shield: /icons/trust/data-privacy.svg
  * - Secure lock: /icons/trust/secure-lock.svg
- * - No tracking: /icons/trust/no-tracking.svg
  * - Google OAuth: /icons/trust/google-oauth.svg
  */
 
@@ -64,7 +63,7 @@ const Trust: React.FC = () => {
                   border: '1px solid #334155',
                   textAlign: 'center',
                   transition: 'all 0.3s ease',
-                  height: '100%',
+                  height: 'auto',
                   display: 'flex',
                   flexDirection: 'column',
                   '&:hover': { 

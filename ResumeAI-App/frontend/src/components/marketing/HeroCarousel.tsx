@@ -114,7 +114,7 @@ const HeroCarousel: React.FC = () => {
       {/* Content Container */}
       <Container sx={{ 
         position: 'relative', 
-        height: '100%', 
+        height: 'auto', 
         display: 'flex', 
         alignItems: 'center',
         zIndex: 2

@@ -201,7 +201,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           onClose={() => setMobileOpen(false)}
           PaperProps={{ sx: { bgcolor: '#0f172a', color: 'white', borderLeft: '1px solid rgba(255,255,255,0.1)' } }} 
         >
-          <Box sx={{ width: 280, p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ width: 280, p: 3, height: 'auto', display: 'flex', flexDirection: 'column' }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
               <Typography variant="h6" fontWeight="bold">Menu</Typography>
               <IconButton onClick={() => setMobileOpen(false)} sx={{ color: 'grey.500' }}><X /></IconButton>
@@ -303,8 +303,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </Box>
 
         {/* === 3. PREMIUM FOOTER — hidden on /builder (full-viewport layout) === */}
-        {location.pathname !== '/builder' && (
-        <Box sx={{ pt: 10, pb: 6, bgcolor: '#020617', borderTop: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+  {location.pathname !== '/builder' && (
+  <Box sx={{ pt: 10, pb: 6, bgcolor: '#020617', borderTop: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', position: 'relative' }}>
           <Box sx={{ position: 'absolute', top: '-50%', left: '50%', width: '60%', height: '200px', bgcolor: '#3b82f6', filter: 'blur(100px)', opacity: 0.1, transform: 'translateX(-50%)', borderRadius: '50%' }} />
           <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1.5, mb: 3 }}>

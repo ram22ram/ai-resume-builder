@@ -170,9 +170,9 @@ const HomePage: React.FC = () => {
 
       {/* === BACKGROUND AMBIENCE === */}
       <Box sx={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-        <div className="tech-grid" style={{ width: '100%', height: '100%' }} />
-        <Box sx={{ position: 'absolute', top: '-20%', left: '20%', width: 600, height: 600, bgcolor: COLORS.primary, borderRadius: '50%', filter: 'blur(180px)', opacity: 0.1 }} />
-        <Box sx={{ position: 'absolute', bottom: '-20%', right: '10%', width: 500, height: 500, bgcolor: COLORS.secondary, borderRadius: '50%', filter: 'blur(160px)', opacity: 0.1 }} />
+        <div className="tech-grid" style={{ width: '100%', height: 'auto' }} />
+  <Box sx={{ position: 'absolute', top: '-20%', left: '20%', width: 600, height: 'auto', bgcolor: COLORS.primary, borderRadius: '50%', filter: 'blur(180px)', opacity: 0.1 }} />
+  <Box sx={{ position: 'absolute', bottom: '-20%', right: '10%', width: 500, height: 'auto', bgcolor: COLORS.secondary, borderRadius: '50%', filter: 'blur(160px)', opacity: 0.1 }} />
       </Box>
 
       <Box sx={{ position: 'relative', zIndex: 1 }}>
@@ -456,7 +456,7 @@ const HomePage: React.FC = () => {
                 ].map((feature, i) => (
                   <Grid size={{ xs: 12, md: 6, lg: 3 }} key={i}>
                     <Paper className="glass-panel" sx={{ 
-                      p: 4, height: '100%', borderRadius: 4,
+                      p: 4, height: 'auto', borderRadius: 4,
                       transition: '0.3s',
                       '&:hover': { transform: 'translateY(-10px)', borderColor: feature.bg }
                     }}>

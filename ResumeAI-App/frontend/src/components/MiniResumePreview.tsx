@@ -73,22 +73,22 @@ const MiniResumePreview: React.FC<Props> = ({
       TemplateComponent = getTemplateComponent(templateId);
   } catch (e) {
       console.error(`Preview failed for template: ${templateId}`, e);
-      return <Box sx={{ width: '100%', height: '100%', bgcolor: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>Error</Box>;
+      return <Box sx={{ width: '100%', height: 'auto', bgcolor: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>Error</Box>;
   }
 
-  return (
-    <Box 
-        ref={containerRef}
-        sx={{ 
-            width: '100%', 
-            height: '100%', 
-            overflow: 'hidden',
-            bgcolor: 'white', // Changed to white to blend with paper
-            display: 'block', // Changed from flex to block for absolute positioning behavior
-            position: 'relative',
-            userSelect: 'none'
-        }}
-    >
+    return (
+        <Box 
+                ref={containerRef}
+                sx={{ 
+                        width: '100%', 
+                        height: 'auto', 
+                        overflow: 'visible',
+                        bgcolor: 'white', // Changed to white to blend with paper
+                        display: 'block', // Changed from flex to block for absolute positioning behavior
+                        position: 'relative',
+                        userSelect: 'none'
+                }}
+        >
         {/* Scaled Container */}
         <Box sx={{
             width: A4_WIDTH,
