@@ -117,7 +117,7 @@ const BuilderPage = () => {
                     height: 'calc(100vh - 80px)',
                     display: 'flex',
                     flexDirection: { xs: 'column', md: 'row' },
-                    overflow: 'auto',
+                    overflow: 'hidden',
                     bgcolor: 'background.default',
                     minHeight: 0,
                     flex: 1,
@@ -126,7 +126,8 @@ const BuilderPage = () => {
                 {/* ── LEFT PANEL: EDITOR ──────────────────────────────────── */}
                 <Box sx={{
                     width: { xs: '100%', md: '45%' },
-                    height: { xs: showPreviewMobile ? '0' : 'auto', md: '100%' },
+                    height: { xs: showPreviewMobile ? '0' : '100%', md: '100%' },
+overflow: 'hidden',
                     display: { xs: showPreviewMobile ? 'none' : 'flex', md: 'flex' },
                     flexDirection: 'column',
                     borderRight: { xs: 0, md: 1 },
@@ -206,7 +207,7 @@ const BuilderPage = () => {
                     </Box>
 
                     {/* ── Step Content (Scrollable) ── */}
-                    <Box sx={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+                    <Box sx={{ flex: 1, overflowY: 'auto', minHeight: 0, scrollbarWidth: 'thin' }}>
                         {steps[activeStep] && (
                             <SectionEditor
                                 key={steps[activeStep].id}
