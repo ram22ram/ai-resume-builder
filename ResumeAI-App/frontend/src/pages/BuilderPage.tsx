@@ -168,7 +168,7 @@ const BuilderPage = () => {
                 <Box sx={{
                     width: { xs: '100%', md: '40%' },
                     height: { xs: showPreviewMobile ? '0' : '100%', md: '100%' },
-                    overflow: 'hidden',
+                    overflow: 'auto',
                     display: { xs: showPreviewMobile ? 'none' : 'flex', md: 'flex' },
                     flexDirection: 'column',
                     borderRight: { xs: 0, md: 1 },
@@ -177,6 +177,7 @@ const BuilderPage = () => {
                     // critical for nested flex children to allow inner scrolling
                     minHeight: 0,
                     bgcolor: 'background.paper',
+                    alignItems: 'center',
                 }}>
 
                     {/* ── Toolbar ── */}
