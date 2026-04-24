@@ -112,7 +112,6 @@ const BuilderPage = () => {
 
             {/* BUILDER CONTAINER */}
             <Box
-                // data-lenis-prevent
                 sx={{
                     height: 'calc(100vh - 80px)',
                     display: 'flex',
@@ -127,7 +126,7 @@ const BuilderPage = () => {
                 <Box sx={{
                     width: { xs: '100%', md: '45%' },
                     height: { xs: showPreviewMobile ? '0' : '100%', md: '100%' },
-overflow: 'hidden',
+                    overflow: 'hidden',
                     display: { xs: showPreviewMobile ? 'none' : 'flex', md: 'flex' },
                     flexDirection: 'column',
                     borderRight: { xs: 0, md: 1 },
@@ -139,7 +138,8 @@ overflow: 'hidden',
 
                     {/* ── Toolbar ── */}
                     <Box sx={{
-                        px: 2, py: 1.5,
+                        px: 2, 
+                        py: 1.5,
                         borderBottom: 1,
                         borderColor: 'divider',
                         display: 'flex',
@@ -185,7 +185,14 @@ overflow: 'hidden',
                     </Box>
 
                     {/* ── Progress Bar ── */}
-                    <Box sx={{ px: 2, pt: 1.5, pb: 0.5, flexShrink: 0 }}>
+                    <Box sx={{ 
+                        px: 2, 
+                        pt: 1.5, 
+                        pb: 0.5, 
+                        flexShrink: 0,
+                        borderBottom: 1,
+                        borderColor: 'divider',
+                    }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                             <Typography variant="caption" color="text.secondary">
                                 Step {activeStep + 1} of {steps.length}
@@ -207,7 +214,27 @@ overflow: 'hidden',
                     </Box>
 
                     {/* ── Step Content (Scrollable) ── */}
-                    <Box sx={{ flex: 1, overflowY: 'auto', minHeight: 0, scrollbarWidth: 'thin' }}>
+                    <Box sx={{ 
+                        flex: 1, 
+                        overflowY: 'auto', 
+                        overflowX: 'hidden',
+                        minHeight: 0, 
+                        scrollbarWidth: 'thin',
+                        '&::-webkit-scrollbar': {
+                            width: '6px',
+                        },
+                        '&::-webkit-scrollbar-track': {
+                            background: '#f1f1f1',
+                            borderRadius: '3px',
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                            background: '#888',
+                            borderRadius: '3px',
+                        },
+                        '&::-webkit-scrollbar-thumb:hover': {
+                            background: '#555',
+                        },
+                    }}>
                         {steps[activeStep] && (
                             <SectionEditor
                                 key={steps[activeStep].id}
@@ -226,6 +253,7 @@ overflow: 'hidden',
                         flexDirection: 'column',
                         gap: 1.5,
                         flexShrink: 0,
+                        bgcolor: 'background.paper',
                     }}>
                         <Button
                             variant="outlined"
